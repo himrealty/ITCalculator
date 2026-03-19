@@ -1,0 +1,14 @@
+packages:
+  - artifacts/*
+  - lib/*
+  - scripts
+
+autoInstallPeers: false
+
+catalog:
+  '@types/node': ^22.0.0
+  esbuild: ^0.24.0
+  tsx: ^4.19.2
+
+onlyBuiltDependencies:
+  - esbuild

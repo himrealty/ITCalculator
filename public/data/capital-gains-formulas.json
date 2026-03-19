@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "head": "Capital Gains",
+    "fy": "2024-25",
+    "lastUpdated": "2025-03-19",
+    "updatedBy": "admin"
+  },
+  "holdingPeriods": {
+    "equityShares": {
+      "stcpMonths": 12,
+      "label": "Listed Equity Shares & Equity MF"
+    },
+    "debtMF": {
+      "stcpMonths": 36,
+      "label": "Debt Mutual Funds (pre Apr 2023)"
+    },
+    "immovableProperty": {
+      "stcpMonths": 24,
+      "label": "Immovable Property (Land/Building)"
+    },
+    "otherAssets": {
+      "stcpMonths": 36,
+      "label": "Other Assets (Jewellery, Paintings etc)"
+    }
+  },
+  "taxRates": {
+    "stcg": {
+      "section111A": {
+        "rate": 20,
+        "label": "STCG on Equity (Sec 111A)",
+        "appliesTo": "equityShares",
+        "notes": "Applicable from 23 Jul 2024 (was 15% earlier)"
+      },
+      "otherSTCG": {
+        "rate": "slabRate",
+        "label": "STCG on Other Assets",
+        "appliesTo": "others",
+        "notes": "Added to total income, taxed at slab rate"
+      }
+    },
+    "ltcg": {
+      "section112A": {
+        "rate": 12.5,
+        "exemptionLimit": 125000,
+        "label": "LTCG on Equity (Sec 112A)",
+        "appliesTo": "equityShares",
+        "notes": "Exempt up to ₹1.25L per year. Rate from 23 Jul 2024"
+      },
+      "section112": {
+        "rateWithIndexation": 20,
+        "rateWithoutIndexation": 12.5,
+        "label": "LTCG on Other Assets (Sec 112)",
+        "appliesTo": "others",
+        "notes": "Indexation removed from 23 Jul 2024 for most assets"
+      },
+      "immovableProperty": {
+        "rateWithIndexation": 20,
+        "rateWithoutIndexation": 12.5,
+        "indexationAvailable": true,
+        "label": "LTCG on Immovable Property",
+        "notes": "For property acquired before 23 Jul 2024, can choose better of 20% with indexation or 12.5% without"
+      }
+    }
+  },
+  "indexation": {
+    "enabled": true,
+    "baseYear": "2001-02",
+    "ciiValues": {
+      "2001-02": 100,
+      "2002-03": 105,
+      "2003-04": 109,
+      "2004-05": 113,
+      "2005-06": 117,
+      "2006-07": 122,
+      "2007-08": 129,
+      "2008-09": 137,
+      "2009-10": 148,
+      "2010-11": 167,
+      "2011-12": 184,
+      "2012-13": 200,
+      "2013-14": 220,
+      "2014-15": 240,
+      "2015-16": 254,
+      "2016-17": 264,
+      "2017-18": 272,
+      "2018-19": 280,
+      "2019-20": 289,
+      "2020-21": 301,
+      "2021-22": 317,
+      "2022-23": 331,
+      "2023-24": 348,
+      "2024-25": 363
+    }
+  },
+  "exemptions": {
+    "section54": {
+      "label": "Sec 54 - Residential House",
+      "appliesTo": "Residential house property",
+      "condition": "Reinvest LTCG in new residential house within 1yr before or 2yr after sale (3yr if constructed)",
+      "maxExemption": null,
+      "notes": "Full LTCG exempt if invested. Max 1 house allowed (if gain > 2Cr, only 1 house)"
+    },
+    "section54B": {
+      "label": "Sec 54B - Agricultural Land",
+      "appliesTo": "Agricultural land",
+      "condition": "Purchase new agricultural land within 2 years",
+      "maxExemption": null
+    },
+    "section54EC": {
+      "label": "Sec 54EC - Capital Gain Bonds",
+      "appliesTo": "Land or Building LTCG",
+      "condition": "Invest in NHAI/REC bonds within 6 months",
+      "maxExemption": 5000000,
+      "lockIn": 60,
+      "notes": "Max ₹50L per financial year"
+    },
+    "section54F": {
+      "label": "Sec 54F - Residential House (Other Assets)",
+      "appliesTo": "LTCG from any asset other than house",
+      "condition": "Invest net sale consideration in new house within 1yr before or 2yr after",
+      "maxExemption": null,
+      "notes": "Proportional exemption if partial investment"
+    }
+  },
+  "surcharge": {
+    "applicableOnLTCG112A": false,
+    "maxSurchargeOnLTCG": 15,
+    "notes": "Surcharge on LTCG u/s 112A capped at 15% regardless of income"
+  },
+  "cess": {
+    "rate": 4,
+    "label": "Health & Education Cess"
+  },
+  "setOff": {
+    "stcgVsSTCG": true,
+    "stcgVsLTCG": false,
+    "ltcgVsLTCG": true,
+    "ltcgVsSTCG": false,
+    "carryForwardYears": 8,
+    "notes": "LTCG can only be set off against LTCG. STCG can be set off against any capital gain."
+  }
+}
