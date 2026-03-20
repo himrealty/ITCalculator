@@ -39,7 +39,7 @@ RUN npm install -g pnpm@10 && \
     pnpm --filter @workspace/api-server install --prod --ignore-scripts || true
 
 # Static site
-COPY public/ ./public/
+COPY public/ ./artifacts/api-server/public/
 
 # Start script (autopinger every 14 min)
 COPY scripts/start.sh ./scripts/start.sh
