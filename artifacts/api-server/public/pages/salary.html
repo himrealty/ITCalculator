@@ -1,0 +1,2304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salary Income Tax Calculator · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        --bg: #f7f5f0;
+        --surface: #ffffff;
+        --border: #e8e3da;
+        --accent: #2563eb;
+        --accent2: #16a34a;
+        --accent3: #dc2626;
+        --text: #111827;
+        --muted: #6b7280;
+        --light: #f1ede4;
+        --serif: "Playfair Display", serif;
+        --sans: "Plus Jakarta Sans", sans-serif;
+        --sh: 0 1px 12px rgba(0, 0, 0, 0.06);
+        --sh-lg: 0 4px 24px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        background: var(--text);
+        color: #fff;
+        padding: 44px 40px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "💰";
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 9rem;
+        opacity: 0.06;
+        pointer-events: none;
+      }
+      .hero-inner {
+        max-width: 1160px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .bc {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+      }
+      .bc a {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .bc a:hover {
+        color: #fff;
+      }
+      .hero h1 {
+        font-family: var(--serif);
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1.15;
+      }
+      .hero p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.96rem;
+        max-width: 560px;
+        line-height: 1.65;
+      }
+      .hero-pills {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .hpill {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 4px 13px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+      .hpill.new {
+        background: rgba(37, 99, 235, 0.3);
+        border-color: rgba(37, 99, 235, 0.5);
+        color: #93c5fd;
+      }
+      .regime-switcher {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+      .rs-label {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.45);
+        margin-right: 4px;
+      }
+      .rs-btn {
+        padding: 7px 18px;
+        border-radius: 20px;
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.65);
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .rs-btn:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        color: #fff;
+      }
+      .rs-btn.rs-active {
+        background: #fff;
+        color: var(--text);
+        border-color: #fff;
+      }
+
+      /* ── LAYOUT ── */
+      .wrap {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 32px 24px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ── SECTION SELECTOR ── */
+      .section-selector {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: var(--sh);
+      }
+      .ss-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .ss-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+      }
+      .ss-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+        user-select: none;
+      }
+      .ss-item:hover {
+        border-color: var(--accent);
+        background: #eff6ff;
+      }
+      .ss-item.active {
+        border-color: var(--accent);
+        background: #eff6ff;
+      }
+      .ss-item.locked {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .ss-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.15s;
+        font-size: 0.7rem;
+      }
+      .ss-item.active .ss-check {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .ss-item.locked .ss-check {
+        background: var(--light);
+        color: var(--muted);
+      }
+      .ss-icon {
+        font-size: 1.1rem;
+      }
+      .ss-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .ss-sublabel {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+
+      /* ── SECTION CARDS ── */
+      .section-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 16px;
+        box-shadow: var(--sh);
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+      }
+      .section-card:hover {
+        box-shadow: var(--sh-lg);
+      }
+
+      .sc-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 22px;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .section-card.open .sc-header {
+        border-bottom-color: var(--border);
+      }
+      .sc-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .sc-titles {
+        flex: 1;
+      }
+      .sc-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+      .sc-sub {
+        font-size: 0.76rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .sc-regime-tag {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tag-both {
+        background: #f3f4f6;
+        color: var(--muted);
+      }
+      .tag-old {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .tag-new {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .sc-amount {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent2);
+        white-space: nowrap;
+      }
+      .sc-chevron {
+        color: var(--muted);
+        font-size: 0.72rem;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+      .section-card.open .sc-chevron {
+        transform: rotate(180deg);
+      }
+
+      .sc-body {
+        display: none;
+        padding: 22px;
+      }
+      .section-card.open .sc-body {
+        display: block;
+      }
+
+      /* ── FORM ── */
+      .sec-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .fg {
+        margin-bottom: 16px;
+      }
+      .fl {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .fh {
+        font-size: 0.74rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+        line-height: 1.4;
+      }
+      .fh.eg {
+        background: var(--light);
+        border-left: 3px solid var(--accent2);
+        padding: 5px 9px;
+        border-radius: 0 5px 5px 0;
+        font-style: italic;
+        margin-top: 3px;
+      }
+      .iw {
+        position: relative;
+      }
+      .ipfx {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.85rem;
+        pointer-events: none;
+      }
+      .fi {
+        width: 100%;
+        padding: 10px 11px 10px 26px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--sans);
+        font-size: 0.9rem;
+        color: var(--text);
+        background: #fff;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        -moz-appearance: textfield;
+      }
+      .fi::-webkit-outer-spin-button,
+      .fi::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .fi:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+      }
+      .fi.np {
+        padding-left: 11px;
+      }
+      .fsel {
+        width: 100%;
+        padding: 10px 11px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--sans);
+        font-size: 0.9rem;
+        color: var(--text);
+        background: #fff;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .fsel:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .three {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      .tg {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tb {
+        padding: 7px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tb:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tb.on {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .cb {
+        display: none;
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+      }
+      .cb.show {
+        display: block;
+      }
+
+      .ibox {
+        border-radius: 8px;
+        padding: 10px 13px;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+      .ibox.green {
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        color: #15803d;
+      }
+      .ibox.yellow {
+        background: #fefce8;
+        border: 1px solid #fde047;
+        color: #854d0e;
+      }
+      .ibox.blue {
+        background: #eff6ff;
+        border: 1px solid #93c5fd;
+        color: #1d4ed8;
+      }
+      .ibox.red {
+        background: #fef2f2;
+        border: 1px solid #fca5a5;
+        color: #dc2626;
+      }
+
+      .calc-result {
+        background: #1e293b;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-top: 16px;
+        color: #fff;
+      }
+      .cr-title {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-bottom: 8px;
+      }
+      .cr-val {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #86efac;
+      }
+      .cr-sub {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 2px;
+      }
+
+      /* ── RESULTS PANEL ── */
+      .rp {
+        position: sticky;
+        top: 24px;
+      }
+      .rc {
+        background: var(--text);
+        color: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: var(--sh-lg);
+      }
+      .rc-title {
+        font-family: var(--serif);
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+      .rc-fy {
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 18px;
+      }
+
+      .rrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        font-size: 0.82rem;
+      }
+      .rrow:last-child {
+        border-bottom: none;
+      }
+      .rl {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .rv {
+        font-weight: 600;
+      }
+      .rrow.ded .rv {
+        color: #fca5a5;
+      }
+      .rrow.sub {
+        background: rgba(255, 255, 255, 0.03);
+        margin: 4px -4px;
+        padding: 8px 4px;
+        border-radius: 6px;
+        border-bottom: none;
+      }
+      .rrow.total {
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: none;
+        padding-top: 12px;
+        margin-top: 4px;
+      }
+      .rrow.total .rl {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.88rem;
+      }
+      .rrow.total .rv {
+        color: #86efac;
+        font-size: 0.98rem;
+      }
+
+      .regime-block {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 14px;
+      }
+      .rb-title {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 10px;
+      }
+      .rb-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.83rem;
+        margin-bottom: 6px;
+      }
+      .rb-label {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .rb-val {
+        font-weight: 700;
+      }
+      .rb-better {
+        color: #86efac;
+      }
+      .rb-worse {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .rb-note {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.25);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+
+      .tax-breakdown {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 12px;
+      }
+      .tb-title {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 10px;
+      }
+      .tb-slab {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .tb-slab:last-child {
+        border-bottom: none;
+      }
+      .tb-sl {
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .tb-sv {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .empty-rp {
+        text-align: center;
+        padding: 14px 0;
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.82rem;
+        line-height: 1.6;
+      }
+      .empty-rp span {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      .calc-btn {
+        width: 100%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 13px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: all 0.2s;
+      }
+      .calc-btn:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+      }
+      .reset-btn {
+        width: 100%;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 9px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: all 0.2s;
+      }
+      .reset-btn:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      @media (max-width: 860px) {
+        .wrap {
+          grid-template-columns: 1fr;
+          padding: 16px;
+        }
+        .rp {
+          position: static;
+        }
+        .hero {
+          padding: 28px 20px;
+        }
+        .hero h1 {
+          font-size: 1.9rem;
+        }
+        .two,
+        .three {
+          grid-template-columns: 1fr;
+        }
+        .ss-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="bc"><a href="/">Home</a> › Salary Income</div>
+        <h1>Salary Income<br />Tax Calculator</h1>
+        <p>
+          Just enter the numbers from your salary slip. Choose which sections
+          apply to you and we'll calculate your exact tax — in plain English.
+        </p>
+        <div class="hero-pills">
+          <span class="hpill">FY 2024-25</span>
+          <span class="hpill">AY 2025-26</span>
+        </div>
+        <div class="regime-switcher">
+          <span class="rs-label">View results for:</span>
+          <button class="rs-btn" id="rs-old" onclick="setRegimeView('old')">
+            Old Regime
+          </button>
+          <button
+            class="rs-btn rs-active"
+            id="rs-new"
+            onclick="setRegimeView('new')"
+          >
+            New Regime
+          </button>
+          <button class="rs-btn" id="rs-both" onclick="setRegimeView('both')">
+            Compare Both
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <!-- LEFT -->
+      <div>
+        <!-- SECTION SELECTOR -->
+        <div class="section-selector">
+          <div class="ss-title">
+            Choose what applies to your salary — tick all that match your
+            situation
+          </div>
+          <div class="ss-grid">
+            <div class="ss-item active locked" id="sel-basic">
+              <div class="ss-check">🔒</div>
+              <div class="ss-icon">💼</div>
+              <div>
+                <div class="ss-label">Basic Salary & DA</div>
+                <div class="ss-sublabel">Always required</div>
+              </div>
+            </div>
+            <div
+              class="ss-item active"
+              id="sel-hra"
+              onclick="toggleSection('hra')"
+            >
+              <div class="ss-check">✓</div>
+              <div class="ss-icon">🏠</div>
+              <div>
+                <div class="ss-label">HRA</div>
+                <div class="ss-sublabel">
+                  If employer pays House Rent Allowance
+                </div>
+              </div>
+            </div>
+            <div class="ss-item" id="sel-lta" onclick="toggleSection('lta')">
+              <div class="ss-check"></div>
+              <div class="ss-icon">✈️</div>
+              <div>
+                <div class="ss-label">LTA</div>
+                <div class="ss-sublabel">Leave Travel Allowance</div>
+              </div>
+            </div>
+            <div
+              class="ss-item"
+              id="sel-special"
+              onclick="toggleSection('special')"
+            >
+              <div class="ss-check"></div>
+              <div class="ss-icon">➕</div>
+              <div>
+                <div class="ss-label">Special Allowance</div>
+                <div class="ss-sublabel">Any other allowances</div>
+              </div>
+            </div>
+            <div
+              class="ss-item"
+              id="sel-perks"
+              onclick="toggleSection('perks')"
+            >
+              <div class="ss-check"></div>
+              <div class="ss-icon">🚗</div>
+              <div>
+                <div class="ss-label">Perquisites / Perks</div>
+                <div class="ss-sublabel">Company car, rent-free house etc</div>
+              </div>
+            </div>
+            <div
+              class="ss-item"
+              id="sel-proftax"
+              onclick="toggleSection('proftax')"
+            >
+              <div class="ss-check"></div>
+              <div class="ss-icon">📋</div>
+              <div>
+                <div class="ss-label">Professional Tax</div>
+                <div class="ss-sublabel">If deducted from your salary</div>
+              </div>
+            </div>
+            <div
+              class="ss-item"
+              id="sel-retirement"
+              onclick="toggleSection('retirement')"
+            >
+              <div class="ss-check"></div>
+              <div class="ss-icon">🏦</div>
+              <div>
+                <div class="ss-label">Retirement Benefits</div>
+                <div class="ss-sublabel">
+                  PF, Gratuity, NPS, Leave Encashment
+                </div>
+              </div>
+            </div>
+            <div
+              class="ss-item"
+              id="sel-deductions"
+              onclick="toggleSection('deductions')"
+            >
+              <div class="ss-check"></div>
+              <div class="ss-icon">💰</div>
+              <div>
+                <div class="ss-label">Tax-Saving Deductions</div>
+                <div class="ss-sublabel">80C, 80D, 80E etc (Old Regime)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. BASIC SALARY (always shown) -->
+        <div class="section-card open" id="card-basic">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">💼</span>
+            <div class="sc-titles">
+              <div class="sc-title">Basic Salary & Dearness Allowance</div>
+              <div class="sc-sub">
+                The fixed part of your salary — always taxable
+              </div>
+            </div>
+            <span class="sc-regime-tag tag-both">Both Regimes</span>
+            <span class="sc-amount" id="amt-basic">₹0</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 Look at your salary slip or offer letter. The "Basic" amount is
+              what everything else is calculated from. DA (Dearness Allowance)
+              is an extra amount some employers pay — mostly government
+              employees get this.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">Basic Salary (per month)</label>
+                <div class="fh">
+                  The fixed monthly salary before any allowances
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="basic"
+                    placeholder="e.g. 50000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Dearness Allowance (per month)</label>
+                <div class="fh">
+                  Leave blank if your employer doesn't pay DA
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="da"
+                    placeholder="e.g. 0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Bonus / Arrears received this year (annual)</label
+              >
+              <div class="fh">
+                Any one-time bonus or salary arrears received this financial
+                year
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="bonus"
+                  placeholder="e.g. 50000"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Your Age</label>
+              <div class="fh">Tax slabs are different for senior citizens</div>
+              <select class="fsel" id="age" onchange="liveCalc()">
+                <option value="below60">Below 60 years</option>
+                <option value="60to80">60 to 80 years (Senior Citizen)</option>
+                <option value="above80">
+                  Above 80 years (Super Senior Citizen)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. HRA -->
+        <div class="section-card open" id="card-hra">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🏠</span>
+            <div class="sc-titles">
+              <div class="sc-title">House Rent Allowance (HRA)</div>
+              <div class="sc-sub">Exemption on rent paid — Old Regime only</div>
+            </div>
+            <span class="sc-regime-tag tag-old">Old Regime Only</span>
+            <span class="sc-amount" id="amt-hra">₹0 exempt</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox green">
+              ✅ HRA exemption is calculated as the
+              <strong>lowest of 3 things</strong>: (1) Actual HRA received, (2)
+              50% of Basic+DA if metro / 40% if non-metro, (3) Actual rent paid
+              minus 10% of Basic+DA. The lowest of these 3 is exempt from tax.
+            </div>
+            <div class="ibox yellow">
+              ⚠️ HRA exemption is
+              <strong>not available in the New Regime</strong>. If you opt for
+              New Regime, the full HRA is taxable.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">HRA received from employer (per month)</label>
+                <div class="fh">Check your salary slip for "HRA" component</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="hraReceived"
+                    placeholder="e.g. 20000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Actual rent you pay (per month)</label>
+                <div class="fh">The rent you pay to your landlord</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="rentPaid"
+                    placeholder="e.g. 15000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Which city do you live in?</label>
+              <div class="fh">
+                Metro cities (Delhi, Mumbai, Kolkata, Chennai) get 50% — others
+                get 40%
+              </div>
+              <div class="tg">
+                <button class="tb on" onclick="setCity('metro',this)">
+                  Metro (Delhi, Mumbai, Chennai, Kolkata)
+                </button>
+                <button class="tb" onclick="setCity('nonmetro',this)">
+                  Non-Metro / Other City
+                </button>
+              </div>
+            </div>
+            <div id="hra-result" class="calc-result" style="display: none">
+              <div class="cr-title">HRA Exemption Calculation</div>
+              <div class="cr-val" id="hra-exempt-val">₹0</div>
+              <div class="cr-sub" id="hra-exempt-sub"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. LTA -->
+        <div class="section-card" id="card-lta" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">✈️</span>
+            <div class="sc-titles">
+              <div class="sc-title">Leave Travel Allowance (LTA)</div>
+              <div class="sc-sub">
+                Travel expense reimbursement — Old Regime only
+              </div>
+            </div>
+            <span class="sc-regime-tag tag-old">Old Regime Only</span>
+            <span class="sc-amount" id="amt-lta">₹0 exempt</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 LTA covers travel costs when you go on leave within India. You
+              can claim it twice in a block of 4 years. Only economy class air /
+              AC train / bus fares are covered — no hotel or food bills.
+            </div>
+            <div class="ibox yellow">
+              ⚠️ LTA exemption is only in the <strong>Old Regime</strong>. New
+              Regime taxes the full amount.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">LTA received from employer (annual)</label>
+                <div class="fh">Total LTA component in your annual salary</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="ltaReceived"
+                    placeholder="e.g. 30000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Actual travel expense claimed (annual)</label>
+                <div class="fh">
+                  Actual amount you spent on travel — exempt is lower of LTA or
+                  actual
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="ltaActual"
+                    placeholder="e.g. 25000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. SPECIAL ALLOWANCE -->
+        <div class="section-card" id="card-special" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">➕</span>
+            <div class="sc-titles">
+              <div class="sc-title">Special Allowance & Other Allowances</div>
+              <div class="sc-sub">Fully taxable in both regimes</div>
+            </div>
+            <span class="sc-regime-tag tag-both">Both Regimes</span>
+            <span class="sc-amount" id="amt-special">₹0</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 Special allowance is paid by employers to make up the salary.
+              It is <strong>fully taxable</strong> — no exemption in either
+              regime.
+            </div>
+            <div class="fg">
+              <label class="fl">Special Allowance (per month)</label>
+              <div class="fh">
+                Usually shown as "Special Allowance" or "Flexible Allowance" on
+                your salary slip
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="specialAllow"
+                  placeholder="e.g. 10000"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Any other taxable allowances (per month)</label>
+              <div class="fh">
+                Transport allowance, telephone allowance or any other amount not
+                covered above
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="otherAllow"
+                  placeholder="e.g. 5000"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. PERQUISITES -->
+        <div class="section-card" id="card-perks" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🚗</span>
+            <div class="sc-titles">
+              <div class="sc-title">Perquisites (Perks)</div>
+              <div class="sc-sub">
+                Non-cash benefits from employer — taxable value
+              </div>
+            </div>
+            <span class="sc-regime-tag tag-both">Both Regimes</span>
+            <span class="sc-amount" id="amt-perks">₹0</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 Perquisites are non-cash benefits your employer provides — like
+              a company car, rent-free accommodation, or ESOPs. Your employer
+              should tell you the taxable value of these in Form 16.
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Total taxable value of perquisites (annual)</label
+              >
+              <div class="fh">
+                This should be mentioned in your Form 16 under "Perquisites". If
+                unsure, check with your employer's payroll team.
+              </div>
+              <div class="fh eg">
+                Example: Company car perquisite value ₹1,800/month =
+                ₹21,600/year
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="perquisites"
+                  placeholder="e.g. 21600"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. PROFESSIONAL TAX -->
+        <div class="section-card" id="card-proftax" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">📋</span>
+            <div class="sc-titles">
+              <div class="sc-title">Professional Tax</div>
+              <div class="sc-sub">
+                State-level deduction — available in both regimes
+              </div>
+            </div>
+            <span class="sc-regime-tag tag-both">Both Regimes</span>
+            <span class="sc-amount" id="amt-proftax">₹0 deduction</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox green">
+              ✅ Professional tax is deducted by your employer and paid to the
+              state government. Maximum is ₹2,500/year. It is deductible in both
+              Old and New regimes.
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Professional tax deducted from your salary (annual)</label
+              >
+              <div class="fh">
+                Check your salary slip — usually ₹200/month = ₹2,400/year
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="profTax"
+                  placeholder="e.g. 2400"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. RETIREMENT BENEFITS -->
+        <div class="section-card" id="card-retirement" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🏦</span>
+            <div class="sc-titles">
+              <div class="sc-title">Retirement Benefits</div>
+              <div class="sc-sub">PF, Gratuity, NPS contributions</div>
+            </div>
+            <span class="sc-regime-tag tag-both">Partially Both</span>
+            <span class="sc-amount" id="amt-retirement">₹0</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="sec-label">Provident Fund (PF)</div>
+            <div class="ibox green">
+              ✅ Your employer's PF contribution (up to 12% of Basic+DA) is
+              exempt. Your own PF contribution goes under 80C deductions.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">Employer PF contribution (monthly)</label>
+                <div class="fh">
+                  Usually 12% of Basic — check your salary slip
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="employerPF"
+                    placeholder="e.g. 6000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Your own PF contribution (monthly)</label>
+                <div class="fh">
+                  Also usually 12% of Basic — deductible under 80C
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="employeePF"
+                    placeholder="e.g. 6000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sec-label" style="margin-top: 16px">
+              NPS (National Pension System)
+            </div>
+            <div class="ibox blue">
+              💡 Employer's NPS contribution up to 14% of Basic+DA is exempt
+              under Sec 80CCD(2) — available in <strong>both regimes</strong>.
+              Your own NPS contribution is under 80CCD(1B) — Old Regime only.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">Employer NPS contribution (annual)</label>
+                <div class="fh">
+                  Max 14% of Basic+DA — exempt in both regimes
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="employerNPS"
+                    placeholder="e.g. 84000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Your own NPS contribution (annual)</label>
+                <div class="fh">
+                  Old Regime: extra ₹50,000 deduction under 80CCD(1B)
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="employeeNPS"
+                    placeholder="e.g. 50000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sec-label" style="margin-top: 16px">
+              Gratuity & Leave Encashment
+            </div>
+            <div class="ibox green">
+              ✅ Gratuity up to ₹20 lakh is fully exempt. Leave encashment at
+              retirement is fully exempt. During service, leave encashment is
+              taxable.
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl">Gratuity received this year (if any)</label>
+                <div class="fh">
+                  Exempt up to ₹20,00,000 — enter 0 if not received
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="gratuity"
+                    placeholder="e.g. 500000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Leave encashment received (if any)</label>
+                <div class="fh">
+                  At retirement: fully exempt. During service: taxable
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="leaveEncash"
+                    placeholder="e.g. 0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Is this leave encashment at retirement/resignation?</label
+              >
+              <div class="tg">
+                <button
+                  class="tb on"
+                  id="le-retire-yes"
+                  onclick="setLeaveType('retire',this)"
+                >
+                  Yes — at retirement/resignation (exempt)
+                </button>
+                <button
+                  class="tb"
+                  id="le-retire-no"
+                  onclick="setLeaveType('service',this)"
+                >
+                  No — during service (taxable)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. CHAPTER VIA DEDUCTIONS -->
+        <div class="section-card" id="card-deductions" style="display: none">
+          <div
+            class="sc-header"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">💰</span>
+            <div class="sc-titles">
+              <div class="sc-title">Tax-Saving Deductions (Chapter VI-A)</div>
+              <div class="sc-sub">80C, 80D, 80E and more — Old Regime only</div>
+            </div>
+            <span class="sc-regime-tag tag-old">Old Regime Only</span>
+            <span class="sc-amount" id="amt-deductions">₹0 saved</span>
+            <span class="sc-chevron">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox yellow">
+              ⚠️ These deductions are
+              <strong>not available in the New Regime</strong>. But they can
+              significantly reduce your tax in the Old Regime. If your total
+              deductions are large, Old Regime may save you more tax.
+            </div>
+
+            <div class="sec-label">
+              Section 80C — Investments & Savings (Max ₹1,50,000)
+            </div>
+            <div class="ibox blue">
+              💡 All these investments together have a combined limit of ₹1.5
+              lakh. Even if you invest more, only ₹1.5L is deductible.
+            </div>
+            <div class="three">
+              <div class="fg">
+                <label class="fl">EPF / PF contribution</label>
+                <div class="fh">Your own PF deducted from salary</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="pf80c"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">PPF deposits</label>
+                <div class="fh">Public Provident Fund</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="ppf"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">ELSS Mutual Funds</label>
+                <div class="fh">Tax-saving mutual funds</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="elss"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Life Insurance Premium</label>
+                <div class="fh">LIC or other life insurance</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="lic"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Home Loan Principal</label>
+                <div class="fh">Principal repayment of home loan</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="homeLoanPrincipal"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">NSC / Tax-Saver FD / Others</label>
+                <div class="fh">NSC, 5-year FD, Sukanya etc</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="other80c"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+            <div id="c80c-total" class="ibox green" style="display: none"></div>
+
+            <div class="sec-label" style="margin-top: 18px">
+              Section 80D — Health Insurance (Medical)
+            </div>
+            <div class="two">
+              <div class="fg">
+                <label class="fl"
+                  >Health insurance for self, spouse & children</label
+                >
+                <div class="fh">Max ₹25,000 (₹50,000 if you are 60+)</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="health80d"
+                    placeholder="e.g. 15000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Health insurance for parents</label>
+                <div class="fh">Max ₹25,000 (₹50,000 if parents are 60+)</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="parentHealth80d"
+                    placeholder="e.g. 25000"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Are your parents senior citizens (60+)?</label>
+              <div class="tg">
+                <button
+                  class="tb"
+                  id="parent-senior-yes"
+                  onclick="setParentSenior(true,this)"
+                >
+                  Yes — parents are 60+
+                </button>
+                <button
+                  class="tb on"
+                  id="parent-senior-no"
+                  onclick="setParentSenior(false,this)"
+                >
+                  No
+                </button>
+              </div>
+            </div>
+
+            <div class="sec-label" style="margin-top: 18px">
+              Other Deductions
+            </div>
+            <div class="three">
+              <div class="fg">
+                <label class="fl">80E — Education Loan Interest</label>
+                <div class="fh">
+                  No limit — full interest deductible for 8 years
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="edu80e"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">80CCD(1B) — NPS (extra)</label>
+                <div class="fh">
+                  Your own NPS contribution — extra ₹50,000 over 80C
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="nps80ccd"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">80TTA — Savings Bank Interest</label>
+                <div class="fh">
+                  Interest from savings account — max ₹10,000
+                </div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="savings80tta"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">80G — Donations</label>
+                <div class="fh">Donations to approved funds/charities</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="donation80g"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">80DD / 80DDB — Disability / Disease</label>
+                <div class="fh">Medical expenses for disabled dependant</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="disability80dd"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Any other deductions</label>
+                <div class="fh">Any other Chapter VI-A deductions</div>
+                <div class="iw">
+                  <span class="ipfx">₹</span
+                  ><input
+                    type="number"
+                    class="fi"
+                    id="otherDed"
+                    placeholder="0"
+                    oninput="liveCalc()"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end left -->
+
+      <!-- RIGHT: RESULTS -->
+      <div class="rp">
+        <div class="rc">
+          <div class="rc-title">Your Tax Summary</div>
+          <div class="rc-fy">FY 2024-25 · AY 2025-26</div>
+
+          <div id="rp-empty" class="empty-rp">
+            <span>💼</span>
+            Enter your salary details on the left to see your complete tax
+            calculation here.
+          </div>
+
+          <div id="rp-content" style="display: none">
+            <div class="rrow">
+              <span class="rl">Gross Salary</span>
+              <span class="rv" id="r-gross">₹0</span>
+            </div>
+            <div class="rrow ded">
+              <span class="rl">Less: HRA Exemption</span>
+              <span class="rv" id="r-hraEx">- ₹0</span>
+            </div>
+            <div class="rrow ded">
+              <span class="rl">Less: LTA Exemption</span>
+              <span class="rv" id="r-ltaEx">- ₹0</span>
+            </div>
+            <div class="rrow ded">
+              <span class="rl">Less: Other Exemptions</span>
+              <span class="rv" id="r-otherEx">- ₹0</span>
+            </div>
+            <div class="rrow sub">
+              <span class="rl" style="font-size: 0.78rem"
+                >= Income Chargeable under Salary</span
+              >
+              <span class="rv" id="r-chargeable">₹0</span>
+            </div>
+            <div class="rrow ded">
+              <span class="rl">Less: Standard Deduction</span>
+              <span class="rv" id="r-stdDed">- ₹0</span>
+            </div>
+            <div class="rrow ded">
+              <span class="rl">Less: Professional Tax</span>
+              <span class="rv" id="r-profTax">- ₹0</span>
+            </div>
+            <div class="rrow total">
+              <span class="rl">Net Salary Income</span>
+              <span class="rv" id="r-netSalary">₹0</span>
+            </div>
+
+            <div
+              style="
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              <div class="rrow ded">
+                <span class="rl">Less: Chapter VI-A (Old Regime)</span>
+                <span class="rv" id="r-chapVIA">- ₹0</span>
+              </div>
+              <div class="rrow ded">
+                <span class="rl">Less: Employer NPS 80CCD(2)</span>
+                <span class="rv" id="r-nps2">- ₹0</span>
+              </div>
+            </div>
+
+            <div class="regime-block">
+              <div class="rb-title">Taxable Income Comparison</div>
+              <div class="rb-row">
+                <span class="rb-label">Old Regime</span>
+                <span class="rb-val" id="r-taxableOld">—</span>
+              </div>
+              <div class="rb-row">
+                <span class="rb-label">New Regime</span>
+                <span class="rb-val" id="r-taxableNew">—</span>
+              </div>
+            </div>
+
+            <div class="tax-breakdown" id="tax-old-block">
+              <div class="tb-title">Tax — Old Regime</div>
+              <div id="slabs-old"></div>
+              <div
+                class="tb-slab"
+                style="
+                  margin-top: 6px;
+                  border-top: 1px solid rgba(255, 255, 255, 0.1);
+                  padding-top: 6px;
+                "
+              >
+                <span class="tb-sl">Subtotal Tax</span
+                ><span class="tb-sv" id="r-taxOldBase">₹0</span>
+              </div>
+              <div class="tb-slab">
+                <span class="tb-sl">Less: 87A Rebate</span
+                ><span class="tb-sv" id="r-rebateOld" style="color: #86efac"
+                  >₹0</span
+                >
+              </div>
+              <div class="tb-slab">
+                <span class="tb-sl">+ Cess @ 4%</span
+                ><span class="tb-sv" id="r-cessOld">₹0</span>
+              </div>
+              <div class="tb-slab" style="font-weight: 700">
+                <span class="tb-sl" style="color: #fff">Total Tax (Old)</span>
+                <span class="tb-sv" style="color: #fca5a5" id="r-totalOld"
+                  >₹0</span
+                >
+              </div>
+            </div>
+
+            <div class="tax-breakdown" id="tax-new-block">
+              <div class="tb-title">Tax — New Regime</div>
+              <div id="slabs-new"></div>
+              <div
+                class="tb-slab"
+                style="
+                  margin-top: 6px;
+                  border-top: 1px solid rgba(255, 255, 255, 0.1);
+                  padding-top: 6px;
+                "
+              >
+                <span class="tb-sl">Subtotal Tax</span
+                ><span class="tb-sv" id="r-taxNewBase">₹0</span>
+              </div>
+              <div class="tb-slab">
+                <span class="tb-sl">Less: 87A Rebate</span
+                ><span class="tb-sv" id="r-rebateNew" style="color: #86efac"
+                  >₹0</span
+                >
+              </div>
+              <div class="tb-slab">
+                <span class="tb-sl">+ Cess @ 4%</span
+                ><span class="tb-sv" id="r-cessNew">₹0</span>
+              </div>
+              <div class="tb-slab" style="font-weight: 700">
+                <span class="tb-sl" style="color: #fff">Total Tax (New)</span>
+                <span class="tb-sv" style="color: #fca5a5" id="r-totalNew"
+                  >₹0</span
+                >
+              </div>
+            </div>
+
+            <div class="regime-block" style="margin-top: 12px">
+              <div class="rb-title">Recommendation</div>
+              <div class="rb-row">
+                <span class="rb-label">Old Regime Tax</span>
+                <span class="rb-val" id="rec-old">—</span>
+              </div>
+              <div class="rb-row">
+                <span class="rb-label">New Regime Tax</span>
+                <span class="rb-val" id="rec-new">—</span>
+              </div>
+              <div class="rb-note" id="rec-note"></div>
+            </div>
+          </div>
+
+          <button class="calc-btn" onclick="liveCalc()">Calculate Tax</button>
+          <button class="reset-btn" onclick="resetAll()">↺ Start Over</button>
+        </div>
+      </div>
+    </div>
+    <!-- end wrap -->
+
+    <div id="footer"></div>
+    <script src="/js/formula.js"></script>
+    <script>
+      // ── STATE ──────────────────────────────────────────────────────────────
+      let regimeView = "new"; // 'old' | 'new' | 'both'
+
+      function setRegimeView(v) {
+        regimeView = v;
+        ["old", "new", "both"].forEach((x) => {
+          document
+            .getElementById("rs-" + x)
+            .classList.toggle("rs-active", x === v);
+        });
+        applyRegimeView();
+        liveCalc();
+      }
+
+      function applyRegimeView() {
+        const showOld = regimeView === "old" || regimeView === "both";
+        const showNew = regimeView === "new" || regimeView === "both";
+        const oldBlock = document.getElementById("tax-old-block");
+        const newBlock = document.getElementById("tax-new-block");
+        const chapRow = document.getElementById("chapvia-row");
+        if (oldBlock) oldBlock.style.display = showOld ? "block" : "none";
+        if (newBlock) newBlock.style.display = showNew ? "block" : "none";
+        // Show Chapter VIA deductions section hint only for old/both
+        const dedCard = document.getElementById("card-deductions");
+        if (dedCard) {
+          const tag = dedCard.querySelector(".sc-regime-tag");
+          if (tag) tag.style.opacity = regimeView === "new" ? "0.4" : "1";
+        }
+      }
+
+      let city = "metro";
+      let parentSenior = false;
+      let leaveAtRetirement = true;
+      let activeSections = {
+        basic: true,
+        hra: true,
+        lta: false,
+        special: false,
+        perks: false,
+        proftax: false,
+        retirement: false,
+        deductions: false,
+      };
+
+      // ── INIT ───────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        applyRegimeView();
+        fetch("/components/header.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("header").innerHTML = d));
+        fetch("/components/footer.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("footer").innerHTML = d));
+      });
+
+      // ── SECTION TOGGLE ─────────────────────────────────────────────────────
+      function toggleSection(key) {
+        activeSections[key] = !activeSections[key];
+        const sel = document.getElementById("sel-" + key);
+        const card = document.getElementById("card-" + key);
+        sel.classList.toggle("active", activeSections[key]);
+        sel.querySelector(".ss-check").textContent = activeSections[key]
+          ? "✓"
+          : "";
+        card.style.display = activeSections[key] ? "block" : "none";
+        if (activeSections[key]) card.classList.add("open");
+        liveCalc();
+      }
+
+      // ── HELPERS ────────────────────────────────────────────────────────────
+      function gv(id) {
+        return parseFloat(document.getElementById(id)?.value) || 0;
+      }
+      function fmt(n) {
+        if (!n || isNaN(n)) return "₹0";
+        return (
+          (n < 0 ? "- ₹" : "₹") +
+          Math.abs(Math.round(n)).toLocaleString("en-IN")
+        );
+      }
+      function fmtL(n) {
+        const a = Math.abs(n);
+        if (a >= 10000000)
+          return (n < 0 ? "-" : "") + (a / 10000000).toFixed(2) + " Cr";
+        if (a >= 100000)
+          return (n < 0 ? "-" : "") + (a / 100000).toFixed(2) + " L";
+        return fmt(n);
+      }
+
+      function setCity(c, btn) {
+        city = c;
+        btn
+          .closest(".tg")
+          .querySelectorAll(".tb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        liveCalc();
+      }
+      function setParentSenior(v, btn) {
+        parentSenior = v;
+        btn
+          .closest(".tg")
+          .querySelectorAll(".tb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        liveCalc();
+      }
+      function setLeaveType(t, btn) {
+        leaveAtRetirement = t === "retire";
+        btn
+          .closest(".tg")
+          .querySelectorAll(".tb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        liveCalc();
+      }
+
+      // ── TAX SLAB CALCULATION ───────────────────────────────────────────────
+      function calcSlabTax(income, regime, age) {
+        let slabs = [];
+        if (regime === "new") {
+          // New Regime FY 2024-25
+          slabs = [
+            { min: 0, max: 300000, rate: 0, label: "Up to ₹3L" },
+            { min: 300000, max: 600000, rate: 5, label: "₹3L – ₹6L" },
+            { min: 600000, max: 900000, rate: 10, label: "₹6L – ₹9L" },
+            { min: 900000, max: 1200000, rate: 15, label: "₹9L – ₹12L" },
+            { min: 1200000, max: 1500000, rate: 20, label: "₹12L – ₹15L" },
+            { min: 1500000, max: Infinity, rate: 30, label: "Above ₹15L" },
+          ];
+        } else {
+          // Old Regime FY 2024-25
+          const exempt =
+            age === "60to80" ? 300000 : age === "above80" ? 500000 : 250000;
+          slabs = [
+            {
+              min: 0,
+              max: exempt,
+              rate: 0,
+              label: `Up to ₹${(exempt / 100000).toFixed(1)}L`,
+            },
+            {
+              min: exempt,
+              max: 500000,
+              rate: 5,
+              label: `₹${(exempt / 100000).toFixed(1)}L – ₹5L`,
+            },
+            { min: 500000, max: 1000000, rate: 20, label: "₹5L – ₹10L" },
+            { min: 1000000, max: Infinity, rate: 30, label: "Above ₹10L" },
+          ];
+        }
+
+        let tax = 0;
+        const details = [];
+        slabs.forEach((s) => {
+          if (income <= s.min) return;
+          const taxable = Math.min(income, s.max) - s.min;
+          const t = (taxable * s.rate) / 100;
+          if (s.rate > 0)
+            details.push({ label: s.label, rate: s.rate, taxable, tax: t });
+          tax += t;
+        });
+        return { tax, details };
+      }
+
+      // ── MAIN CALCULATION ───────────────────────────────────────────────────
+      function liveCalc() {
+        const age = document.getElementById("age")?.value || "below60";
+        const basicM = gv("basic");
+        const daM = gv("da");
+        const bonus = gv("bonus");
+        const basicDA = (basicM + daM) * 12;
+
+        // Gross components
+        const hraReceived = activeSections.hra ? gv("hraReceived") * 12 : 0;
+        const ltaReceived = activeSections.lta ? gv("ltaReceived") : 0;
+        const specialM = activeSections.special
+          ? gv("specialAllow") + gv("otherAllow")
+          : 0;
+        const perquisites = activeSections.perks ? gv("perquisites") : 0;
+        const gratuity = activeSections.retirement ? gv("gratuity") : 0;
+        const leaveEncash = activeSections.retirement ? gv("leaveEncash") : 0;
+
+        const grossSalary =
+          basicDA +
+          bonus +
+          hraReceived +
+          ltaReceived +
+          specialM * 12 +
+          perquisites +
+          (gratuity > 2000000 ? gratuity - 2000000 : 0) + // taxable gratuity
+          (leaveAtRetirement ? 0 : leaveEncash); // taxable leave encash
+
+        // HRA Exemption (Old Regime only)
+        let hraExempt = 0;
+        if (activeSections.hra && hraReceived > 0) {
+          const annualRent = gv("rentPaid") * 12;
+          const cityPct = city === "metro" ? 0.5 : 0.4;
+          const limit1 = hraReceived;
+          const limit2 = basicDA * cityPct;
+          const limit3 = Math.max(0, annualRent - basicDA * 0.1);
+          hraExempt = Math.min(limit1, limit2, limit3);
+          // Show HRA result
+          document.getElementById("hra-result").style.display = "block";
+          document.getElementById("hra-exempt-val").textContent =
+            fmt(hraExempt);
+          document.getElementById("hra-exempt-sub").textContent =
+            `Lowest of: (1) HRA received ${fmt(limit1)}, (2) ${cityPct * 100}% of Basic+DA ${fmt(limit2)}, (3) Rent - 10% of Basic+DA ${fmt(limit3)}`;
+          document.getElementById("amt-hra").textContent =
+            fmt(hraExempt) + " exempt";
+        }
+
+        // LTA Exemption (Old Regime only)
+        const ltaActual = activeSections.lta ? gv("ltaActual") : 0;
+        const ltaExempt = activeSections.lta
+          ? Math.min(ltaReceived, ltaActual)
+          : 0;
+        if (activeSections.lta)
+          document.getElementById("amt-lta").textContent =
+            fmt(ltaExempt) + " exempt";
+
+        // Gratuity exempt
+        const gratuityExempt = Math.min(gratuity, 2000000);
+
+        // Professional Tax (both regimes)
+        const profTax = activeSections.proftax
+          ? Math.min(gv("profTax"), 2500)
+          : 0;
+        if (activeSections.proftax)
+          document.getElementById("amt-proftax").textContent =
+            fmt(profTax) + " deduction";
+
+        // Employer NPS 80CCD(2) — both regimes, max 14% of Basic+DA
+        const employerNPS = activeSections.retirement ? gv("employerNPS") : 0;
+        const employerNPSMax = basicDA * 0.14;
+        const nps2Deduction = Math.min(employerNPS, employerNPSMax);
+
+        // Standard Deduction — ₹75,000 New Regime / ₹50,000 Old Regime (FY 2024-25)
+        const stdDedNew = 75000;
+        const stdDedOld = 50000;
+
+        // Chargeable salary (before std deduction)
+        const chargeableOld =
+          grossSalary - hraExempt - ltaExempt - gratuityExempt;
+        const chargeableNew = grossSalary - gratuityExempt; // no HRA/LTA exemption
+
+        // Net salary after Sec 16 deductions
+        const netSalaryOld = chargeableOld - stdDedOld - profTax;
+        const netSalaryNew = chargeableNew - stdDedNew - profTax;
+
+        // Chapter VI-A (Old Regime only)
+        let chapVIA = 0;
+        if (activeSections.deductions) {
+          // 80C (capped at 1.5L)
+          const c80c = Math.min(
+            gv("pf80c") +
+              gv("ppf") +
+              gv("elss") +
+              gv("lic") +
+              gv("homeLoanPrincipal") +
+              gv("other80c"),
+            150000,
+          );
+          const c80cTotal =
+            gv("pf80c") +
+            gv("ppf") +
+            gv("elss") +
+            gv("lic") +
+            gv("homeLoanPrincipal") +
+            gv("other80c");
+          if (c80cTotal > 0) {
+            document.getElementById("c80c-total").style.display = "block";
+            document.getElementById("c80c-total").textContent =
+              c80cTotal > 150000
+                ? `⚠️ Your 80C investments total ₹${c80cTotal.toLocaleString("en-IN")} but max deduction is ₹1,50,000`
+                : `✅ 80C deduction: ₹${c80c.toLocaleString("en-IN")}`;
+          }
+
+          // 80D
+          const selfAge = age !== "below60";
+          const selfLimit = selfAge ? 50000 : 25000;
+          const parentLimit = parentSenior ? 50000 : 25000;
+          const c80d =
+            Math.min(gv("health80d"), selfLimit) +
+            Math.min(gv("parentHealth80d"), parentLimit);
+
+          // Others
+          const c80e = gv("edu80e");
+          const c80ccd = Math.min(gv("nps80ccd"), 50000);
+          const c80tta = Math.min(gv("savings80tta"), 10000);
+          const c80g = gv("donation80g") * 0.5; // assuming 50% eligible donations
+          const c80dd = gv("disability80dd");
+          const cOther = gv("otherDed");
+
+          chapVIA =
+            c80c + c80d + c80e + c80ccd + c80tta + c80g + c80dd + cOther;
+          document.getElementById("amt-deductions").textContent =
+            fmt(chapVIA) + " saved";
+        }
+
+        // Employee PF & NPS in 80C already captured above
+
+        // TAXABLE INCOME
+        const taxableOld = Math.max(0, netSalaryOld - chapVIA - nps2Deduction);
+        const taxableNew = Math.max(0, netSalaryNew - nps2Deduction);
+
+        // CALCULATE TAX
+        const oldCalc = calcSlabTax(taxableOld, "old", age);
+        const newCalc = calcSlabTax(taxableNew, "new", age);
+
+        // 87A Rebate — Old: ₹12,500 if income ≤ ₹5L / New: ₹25,000 if income ≤ ₹7L
+        const rebateOld =
+          taxableOld <= 500000 ? Math.min(oldCalc.tax, 12500) : 0;
+        const rebateNew =
+          taxableNew <= 700000 ? Math.min(newCalc.tax, 25000) : 0;
+
+        const taxOldAfterRebate = oldCalc.tax - rebateOld;
+        const taxNewAfterRebate = newCalc.tax - rebateNew;
+
+        const cessOld = taxOldAfterRebate * 0.04;
+        const cessNew = taxNewAfterRebate * 0.04;
+
+        const totalOld = taxOldAfterRebate + cessOld;
+        const totalNew = taxNewAfterRebate + cessNew;
+
+        // UPDATE RESULTS UI
+        document.getElementById("rp-empty").style.display =
+          basicM > 0 ? "none" : "block";
+        document.getElementById("rp-content").style.display =
+          basicM > 0 ? "block" : "none";
+
+        if (basicM > 0) {
+          document.getElementById("r-gross").textContent = fmt(grossSalary);
+          document.getElementById("r-hraEx").textContent =
+            "- " + fmt(hraExempt);
+          document.getElementById("r-ltaEx").textContent =
+            "- " + fmt(ltaExempt);
+          document.getElementById("r-otherEx").textContent =
+            "- " + fmt(gratuityExempt);
+          document.getElementById("r-chargeable").textContent =
+            fmt(chargeableOld);
+          document.getElementById("r-stdDed").textContent =
+            "- " + fmt(stdDedOld) + " / " + fmt(stdDedNew);
+          document.getElementById("r-profTax").textContent =
+            "- " + fmt(profTax);
+          document.getElementById("r-netSalary").textContent =
+            fmt(netSalaryOld);
+          document.getElementById("r-chapVIA").textContent =
+            "- " + fmt(chapVIA);
+          document.getElementById("r-nps2").textContent =
+            "- " + fmt(nps2Deduction);
+          document.getElementById("r-taxableOld").textContent =
+            fmtL(taxableOld);
+          document.getElementById("r-taxableNew").textContent =
+            fmtL(taxableNew);
+
+          // Slab details
+          renderSlabs("slabs-old", oldCalc.details);
+          renderSlabs("slabs-new", newCalc.details);
+
+          document.getElementById("r-taxOldBase").textContent = fmt(
+            oldCalc.tax,
+          );
+          document.getElementById("r-taxNewBase").textContent = fmt(
+            newCalc.tax,
+          );
+          document.getElementById("r-rebateOld").textContent =
+            rebateOld > 0 ? "- " + fmt(rebateOld) : "₹0";
+          document.getElementById("r-rebateNew").textContent =
+            rebateNew > 0 ? "- " + fmt(rebateNew) : "₹0";
+          document.getElementById("r-cessOld").textContent = fmt(cessOld);
+          document.getElementById("r-cessNew").textContent = fmt(cessNew);
+          document.getElementById("r-totalOld").textContent = fmt(totalOld);
+          document.getElementById("r-totalNew").textContent = fmt(totalNew);
+
+          // Recommendation
+          document.getElementById("rec-old").textContent = fmt(totalOld);
+          document.getElementById("rec-new").textContent = fmt(totalNew);
+          const oldEl = document.getElementById("rec-old");
+          const newEl = document.getElementById("rec-new");
+          const note = document.getElementById("rec-note");
+          const saving = Math.abs(totalOld - totalNew);
+          if (totalNew < totalOld) {
+            oldEl.className = "rb-val rb-worse";
+            newEl.className = "rb-val rb-better";
+            note.textContent = `✅ New Regime saves you ${fmt(saving)} per year. Stick with New Regime unless your deductions are very large.`;
+          } else if (totalOld < totalNew) {
+            oldEl.className = "rb-val rb-better";
+            newEl.className = "rb-val rb-worse";
+            note.textContent = `✅ Old Regime saves you ${fmt(saving)} per year. Your deductions are large enough to make Old Regime worth it.`;
+          } else {
+            oldEl.className = "rb-val";
+            newEl.className = "rb-val";
+            note.textContent = `Both regimes result in the same tax. Choose whichever is simpler for you.`;
+          }
+
+          // Update section amount badges
+          document.getElementById("amt-basic").textContent = fmt(
+            basicDA + bonus,
+          );
+          document.getElementById("amt-special").textContent = fmt(
+            specialM * 12,
+          );
+          document.getElementById("amt-perks").textContent = fmt(perquisites);
+          document.getElementById("amt-retirement").textContent = fmt(
+            gratuity + leaveEncash,
+          );
+        }
+        applyRegimeView();
+      }
+
+      function renderSlabs(containerId, details) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        if (details.length === 0) {
+          el.innerHTML =
+            '<div class="tb-slab"><span class="tb-sl">Income within nil slab</span><span class="tb-sv">₹0</span></div>';
+          return;
+        }
+        el.innerHTML = details
+          .map(
+            (d) =>
+              `<div class="tb-slab">
+      <span class="tb-sl">${d.label} @ ${d.rate}%</span>
+      <span class="tb-sv">${fmt(d.tax)}</span>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function resetAll() {
+        document.querySelectorAll(".fi").forEach((i) => (i.value = ""));
+        document
+          .querySelectorAll(".fsel")
+          .forEach((s) => (s.selectedIndex = 0));
+        [
+          "lta",
+          "special",
+          "perks",
+          "proftax",
+          "retirement",
+          "deductions",
+        ].forEach((k) => {
+          if (activeSections[k]) toggleSection(k);
+        });
+        document.getElementById("rp-empty").style.display = "block";
+        document.getElementById("rp-content").style.display = "none";
+        document.getElementById("hra-result").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

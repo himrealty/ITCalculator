@@ -1,0 +1,1600 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>House Property Income Tax Calculator · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        --bg: #f4f1eb;
+        --surface: #ffffff;
+        --border: #e5e0d5;
+        --accent: #c84b31;
+        --accent2: #2d6a4f;
+        --accent3: #1a56a0;
+        --text: #1c1917;
+        --muted: #78716c;
+        --light: #ede9e0;
+        --serif: "DM Serif Display", serif;
+        --sans: "DM Sans", sans-serif;
+        --shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+      }
+
+      /* ── HERO ── */
+      .page-hero {
+        background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
+        color: white;
+        padding: 48px 40px 44px;
+        position: relative;
+        overflow: hidden;
+      }
+      .page-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .breadcrumb {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 14px;
+      }
+      .breadcrumb a {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        color: white;
+      }
+      .page-hero h1 {
+        font-family: var(--serif);
+        font-size: 2.6rem;
+        font-weight: 400;
+        margin-bottom: 10px;
+        line-height: 1.15;
+      }
+      .page-hero p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.98rem;
+        max-width: 560px;
+        line-height: 1.65;
+      }
+
+      .hero-pills {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+      .hero-pill {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 500;
+      }
+
+      /* ── EXPLAINER STRIP ── */
+      .explainer-strip {
+        background: white;
+        border-bottom: 1px solid var(--border);
+        padding: 0;
+        max-width: 100%;
+      }
+      .explainer-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 40px;
+        display: flex;
+        gap: 0;
+        align-items: stretch;
+      }
+      .explainer-item {
+        flex: 1;
+        padding: 16px 20px;
+        border-right: 1px solid var(--border);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .explainer-item:last-child {
+        border-right: none;
+      }
+      .explainer-item:hover {
+        background: var(--light);
+      }
+      .explainer-type {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+      .type-letout {
+        background: #fce8e4;
+        color: #c84b31;
+      }
+      .type-sop {
+        background: #e8f0fb;
+        color: #1a56a0;
+      }
+      .type-deemed {
+        background: #e8f5e9;
+        color: #2d6a4f;
+      }
+      .explainer-item h4 {
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .explainer-item p {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      /* ── MAIN LAYOUT ── */
+      .main-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ── PROPERTY CARDS ── */
+      .properties-area {
+      }
+
+      .properties-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .properties-header h2 {
+        font-family: var(--serif);
+        font-size: 1.4rem;
+        font-weight: 400;
+      }
+      .sop-counter {
+        font-size: 0.78rem;
+        color: var(--muted);
+        background: var(--light);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+      .sop-counter.warn {
+        background: #fff3e0;
+        color: #e65100;
+      }
+
+      /* property card */
+      .prop-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow);
+        transition:
+          box-shadow 0.2s,
+          border-color 0.2s;
+        overflow: hidden;
+      }
+      .prop-card:hover {
+        box-shadow: var(--shadow-lg);
+      }
+      .prop-card.letout {
+        border-left: 4px solid var(--accent);
+      }
+      .prop-card.sop {
+        border-left: 4px solid var(--accent3);
+      }
+      .prop-card.deemed {
+        border-left: 4px solid var(--accent2);
+      }
+
+      /* card top bar */
+      .card-topbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        background: var(--surface);
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .prop-card.expanded .card-topbar {
+        border-bottom-color: var(--border);
+      }
+
+      .card-index {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        background: var(--light);
+        color: var(--muted);
+      }
+      .prop-card.letout .card-index {
+        background: #fce8e4;
+        color: var(--accent);
+      }
+      .prop-card.sop .card-index {
+        background: #e8f0fb;
+        color: var(--accent3);
+      }
+      .prop-card.deemed .card-index {
+        background: #e8f5e9;
+        color: var(--accent2);
+      }
+
+      .card-name-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        font-family: var(--sans);
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text);
+        cursor: text;
+      }
+      .card-name-input:focus {
+        outline: none;
+      }
+      .card-name-input::placeholder {
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      .card-type-select {
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .card-type-select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .card-result-pill {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .pill-income {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .pill-loss {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .pill-zero {
+        background: var(--light);
+        color: var(--muted);
+      }
+
+      .card-chevron {
+        color: var(--muted);
+        font-size: 0.75rem;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+      .prop-card.expanded .card-chevron {
+        transform: rotate(180deg);
+      }
+
+      .card-delete {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 1rem;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.15s;
+        flex-shrink: 0;
+      }
+      .card-delete:hover {
+        color: var(--accent);
+        background: #fce8e4;
+      }
+
+      /* card body */
+      .card-body {
+        display: none;
+        padding: 24px;
+      }
+      .prop-card.expanded .card-body {
+        display: block;
+      }
+
+      /* ── FORM ELEMENTS ── */
+      .section-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .field-group {
+        margin-bottom: 18px;
+      }
+      .field-label {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .field-hint {
+        font-size: 0.76rem;
+        color: var(--muted);
+        margin-bottom: 7px;
+        line-height: 1.4;
+      }
+      .field-hint.eg {
+        background: var(--light);
+        border-left: 3px solid var(--accent2);
+        padding: 6px 10px;
+        border-radius: 0 6px 6px 0;
+        font-style: italic;
+        margin-top: 4px;
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+      .input-pfx {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.88rem;
+        pointer-events: none;
+      }
+      .finput {
+        width: 100%;
+        padding: 10px 12px 10px 28px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--sans);
+        font-size: 0.92rem;
+        color: var(--text);
+        background: var(--surface);
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        -moz-appearance: textfield;
+      }
+      .finput::-webkit-outer-spin-button,
+      .finput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .finput:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(200, 75, 49, 0.08);
+      }
+      .finput.no-pfx {
+        padding-left: 12px;
+      }
+
+      .fselect {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--sans);
+        font-size: 0.92rem;
+        color: var(--text);
+        background: var(--surface);
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .fselect:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .tog-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tog-btn {
+        padding: 7px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        background: var(--surface);
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tog-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tog-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      .cond-box {
+        display: none;
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 10px;
+      }
+      .cond-box.show {
+        display: block;
+      }
+
+      .info-box {
+        background: #e8f5e9;
+        border: 1px solid #a5d6a7;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        color: #2e7d32;
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+      .info-box.warn {
+        background: #fff8e1;
+        border-color: #ffe082;
+        color: #f57f17;
+      }
+      .info-box.blue {
+        background: #e8f0fb;
+        border-color: #90caf9;
+        color: #1a56a0;
+      }
+
+      /* SOP notice */
+      .sop-notice {
+        background: #e8f0fb;
+        border: 1px solid #90caf9;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.82rem;
+        color: #1a56a0;
+        margin-bottom: 16px;
+      }
+
+      /* card inline result */
+      .card-calc-result {
+        background: linear-gradient(135deg, #1c1917, #292524);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-top: 20px;
+        color: white;
+      }
+      .ccr-title {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 10px;
+      }
+      .ccr-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.84rem;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .ccr-row:last-child {
+        border-bottom: none;
+      }
+      .ccr-row .cl {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .ccr-row .cv {
+        font-weight: 600;
+      }
+      .ccr-row.total .cl {
+        color: white;
+        font-weight: 600;
+      }
+      .ccr-row.total .cv {
+        color: #a5d6a7;
+        font-size: 0.95rem;
+      }
+      .ccr-row.loss .cv {
+        color: #ffcc80;
+      }
+
+      /* ── ADD BUTTON ── */
+      .add-prop-btn {
+        width: 100%;
+        padding: 14px;
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        background: transparent;
+        font-family: var(--sans);
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 24px;
+      }
+      .add-prop-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: #fce8e4;
+      }
+
+      /* ── SUMMARY PANEL ── */
+      .summary-panel {
+        position: sticky;
+        top: 24px;
+      }
+
+      .summary-card {
+        background: var(--text);
+        color: white;
+        border-radius: 16px;
+        padding: 26px;
+        box-shadow: var(--shadow-lg);
+      }
+      .summary-title {
+        font-family: var(--serif);
+        font-size: 1.25rem;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+      .summary-fy {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.35);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+      }
+
+      .sum-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        font-size: 0.84rem;
+      }
+      .sum-row:last-child {
+        border-bottom: none;
+      }
+      .sum-row .sl {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .sum-row .sv {
+        font-weight: 600;
+      }
+      .sum-row.stotal {
+        padding-top: 12px;
+        margin-top: 4px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: none;
+      }
+      .sum-row.stotal .sl {
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .sum-row.stotal .sv {
+        color: #a5d6a7;
+        font-size: 1rem;
+      }
+      .sum-row.sloss .sv {
+        color: #ffcc80;
+      }
+
+      .regime-block {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 16px;
+      }
+      .regime-block-title {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-bottom: 10px;
+      }
+      .regime-line {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.84rem;
+        margin-bottom: 6px;
+      }
+      .regime-line .rl {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .regime-line .rv {
+        font-weight: 600;
+      }
+      .regime-line .better {
+        color: #a5d6a7;
+      }
+      .regime-line .worse {
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .regime-note {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.3);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+
+      .empty-sum {
+        text-align: center;
+        padding: 16px 0;
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.84rem;
+        line-height: 1.6;
+      }
+      .empty-sum span {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      .calc-all-btn {
+        width: 100%;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 13px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        margin-top: 18px;
+        transition: all 0.2s;
+      }
+      .calc-all-btn:hover {
+        background: #a83928;
+        transform: translateY(-1px);
+      }
+
+      .reset-all-btn {
+        width: 100%;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 9px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: all 0.2s;
+      }
+      .reset-all-btn:hover {
+        color: white;
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+
+      .prop-list-summary {
+        margin-top: 16px;
+      }
+      .pls-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.8rem;
+      }
+      .pls-row:last-child {
+        border-bottom: none;
+      }
+      .pls-name {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .pls-val {
+        font-weight: 600;
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 860px) {
+        .main-wrap {
+          grid-template-columns: 1fr;
+          padding: 16px;
+        }
+        .summary-panel {
+          position: static;
+        }
+        .page-hero {
+          padding: 28px 20px;
+        }
+        .page-hero h1 {
+          font-size: 2rem;
+        }
+        .explainer-inner {
+          flex-direction: column;
+          padding: 16px;
+          gap: 12px;
+        }
+        .explainer-item {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          padding: 12px 0;
+        }
+        .explainer-item:last-child {
+          border-bottom: none;
+        }
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <!-- HERO -->
+    <div class="page-hero">
+      <div class="hero-inner">
+        <div class="breadcrumb">
+          <a href="/">Home</a> › House Property Income
+        </div>
+        <h1>Multiple House Property<br />Tax Calculator</h1>
+        <p>
+          Own more than one house? Add each property below. We'll calculate the
+          tax on your rental income and tell you exactly how much you can save.
+        </p>
+        <div class="hero-pills">
+          <span class="hero-pill">FY 2024-25</span>
+          <span class="hero-pill">Old &amp; New Regime</span>
+          <span class="hero-pill">Upto 2 Self-Occupied</span>
+          <span class="hero-pill">Auto Set-Off ₹2L</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPLAINER -->
+    <div class="explainer-strip">
+      <div class="explainer-inner">
+        <div class="explainer-item" onclick="scrollToAdd()">
+          <span class="explainer-type type-letout">Let-Out</span>
+          <h4>Rented to a tenant</h4>
+          <p>
+            You receive monthly rent. Tax is calculated on the rent after
+            deductions.
+          </p>
+        </div>
+        <div class="explainer-item" onclick="scrollToAdd()">
+          <span class="explainer-type type-sop">Self-Occupied</span>
+          <h4>You live in it yourself</h4>
+          <p>
+            No rent income. Only home loan interest is deductible (max ₹2L in
+            Old Regime). Max 2 properties allowed.
+          </p>
+        </div>
+        <div class="explainer-item" onclick="scrollToAdd()">
+          <span class="explainer-type type-deemed">Deemed Let-Out</span>
+          <h4>Vacant / 3rd+ property</h4>
+          <p>
+            Even if empty, tax is calculated as if you rented it at market rate.
+            Applies when you have 3+ properties.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-wrap">
+      <!-- LEFT -->
+      <div>
+        <div class="properties-header">
+          <h2>Your Properties</h2>
+          <span class="sop-counter" id="sopCounter"
+            >0 / 2 Self-Occupied used</span
+          >
+        </div>
+
+        <div id="propertiesContainer"></div>
+
+        <button class="add-prop-btn" id="addBtn" onclick="addProperty()">
+          + Add a Property
+        </button>
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div class="summary-panel">
+        <div class="summary-card">
+          <div class="summary-title">Combined Summary</div>
+          <div class="summary-fy">FY 2024-25 · AY 2025-26</div>
+
+          <div id="summaryEmpty" class="empty-sum">
+            <span>🏠</span>
+            Add your properties on the left and click
+            <strong>Calculate All</strong>.
+          </div>
+
+          <div id="summaryContent" style="display: none">
+            <div class="prop-list-summary" id="propListSummary"></div>
+
+            <div
+              style="
+                margin-top: 14px;
+                padding-top: 14px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              <div class="sum-row">
+                <span class="sl">Total Rental Income</span>
+                <span class="sv" id="s-totalIncome">₹0</span>
+              </div>
+              <div class="sum-row sloss">
+                <span class="sl">Total Losses</span>
+                <span class="sv" id="s-totalLoss">₹0</span>
+              </div>
+              <div class="sum-row stotal">
+                <span class="sl">Net House Property Income</span>
+                <span class="sv" id="s-netIncome">₹0</span>
+              </div>
+            </div>
+
+            <div class="regime-block">
+              <div class="regime-block-title">Regime Comparison</div>
+              <div class="regime-line">
+                <span class="rl">Old Regime</span>
+                <span class="rv" id="s-old">—</span>
+              </div>
+              <div class="regime-line">
+                <span class="rl">New Regime</span>
+                <span class="rv" id="s-new">—</span>
+              </div>
+              <div class="regime-note" id="s-regimeNote"></div>
+            </div>
+
+            <div
+              style="
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                padding: 14px;
+                margin-top: 12px;
+              "
+              id="setOffBox"
+            >
+              <div class="regime-block-title">Loss Set-Off (Old Regime)</div>
+              <div
+                class="sum-row"
+                style="border-bottom: 1px solid rgba(255, 255, 255, 0.07)"
+              >
+                <span class="sl" style="font-size: 0.8rem"
+                  >Set off vs other income (max ₹2L)</span
+                >
+                <span class="sv" id="s-setoff" style="color: #ffcc80">₹0</span>
+              </div>
+              <div class="sum-row">
+                <span class="sl" style="font-size: 0.8rem"
+                  >Carried forward (8 years)</span
+                >
+                <span
+                  class="sv"
+                  id="s-carry"
+                  style="color: rgba(255, 255, 255, 0.4)"
+                  >₹0</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <button class="calc-all-btn" onclick="calculateAll()">
+            Calculate All Properties
+          </button>
+          <button class="reset-all-btn" onclick="resetAll()">
+            ↺ Clear All
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="/js/formula.js"></script>
+    <script>
+      // ── DATA ──────────────────────────────────────────────────────────────────
+      let properties = [];
+      let nextId = 1;
+
+      // ── INIT ──────────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/components/header.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("header").innerHTML = d));
+        fetch("/components/footer.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("footer").innerHTML = d));
+        addProperty(); // start with one card
+      });
+
+      // ── HELPERS ───────────────────────────────────────────────────────────────
+      function fmt(n) {
+        if (!n || isNaN(n)) return "₹0";
+        const abs = Math.abs(Math.round(n));
+        return (n < 0 ? "- ₹" : "₹") + abs.toLocaleString("en-IN");
+      }
+
+      function fmtL(n) {
+        const abs = Math.abs(n);
+        if (abs >= 10000000)
+          return (n < 0 ? "-" : "") + (abs / 10000000).toFixed(2) + " Cr";
+        if (abs >= 100000)
+          return (n < 0 ? "-" : "") + (abs / 100000).toFixed(2) + " L";
+        return fmt(n);
+      }
+
+      function getVal(id) {
+        return parseFloat(document.getElementById(id)?.value) || 0;
+      }
+
+      function scrollToAdd() {
+        document
+          .getElementById("addBtn")
+          .scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      // ── SOP COUNTER ───────────────────────────────────────────────────────────
+      function updateSopCounter() {
+        const sopCount = properties.filter((p) => p.type === "sop").length;
+        const el = document.getElementById("sopCounter");
+        el.textContent = `${sopCount} / 2 Self-Occupied used`;
+        el.className = "sop-counter" + (sopCount >= 2 ? " warn" : "");
+      }
+
+      // ── ADD PROPERTY ──────────────────────────────────────────────────────────
+      function addProperty() {
+        const id = nextId++;
+        const prop = { id, type: "letout", name: "", result: null };
+        properties.push(prop);
+        renderCard(prop);
+        updateSopCounter();
+      }
+
+      function renderCard(prop) {
+        const container = document.getElementById("propertiesContainer");
+        const div = document.createElement("div");
+        div.id = `prop-${prop.id}`;
+        div.className = `prop-card ${prop.type} expanded`;
+        div.innerHTML = cardHTML(prop);
+        container.appendChild(div);
+      }
+
+      function cardHTML(prop) {
+        return `
+  <!-- TOP BAR -->
+  <div class="card-topbar" onclick="toggleCard(${prop.id})">
+    <div class="card-index">${prop.id}</div>
+    <input class="card-name-input" placeholder="Give this property a name (e.g. Mumbai Flat)"
+           value="${prop.name}" onclick="event.stopPropagation()"
+           oninput="updatePropName(${prop.id}, this.value)" />
+    <select class="card-type-select" onclick="event.stopPropagation()"
+            onchange="updatePropType(${prop.id}, this.value)">
+      <option value="letout"  ${prop.type === "letout" ? "selected" : ""}>🏠 Let-Out (Rented)</option>
+      <option value="sop"     ${prop.type === "sop" ? "selected" : ""}>🏡 Self-Occupied</option>
+      <option value="deemed"  ${prop.type === "deemed" ? "selected" : ""}>🔑 Deemed Let-Out</option>
+    </select>
+    <span class="card-result-pill pill-zero" id="pill-${prop.id}">Not calculated</span>
+    <button class="card-delete" onclick="event.stopPropagation(); deleteProperty(${prop.id})" title="Remove">✕</button>
+    <span class="card-chevron">▼</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="card-body" id="body-${prop.id}">
+    ${getCardBody(prop)}
+  </div>`;
+      }
+
+      function getCardBody(prop) {
+        if (prop.type === "sop") return sopBody(prop.id);
+        if (prop.type === "deemed") return deemedBody(prop.id);
+        return letoutBody(prop.id);
+      }
+
+      // ── LET-OUT BODY ──────────────────────────────────────────────────────────
+      function letoutBody(id) {
+        return `
+  <div class="info-box">💡 This is a property where you receive monthly rent from a tenant.</div>
+
+  <div class="section-label">Rent Details</div>
+  <div class="two-col">
+    <div class="field-group">
+      <label class="field-label">Monthly Rent Received</label>
+      <div class="field-hint">What your tenant pays per month</div>
+      <div class="input-wrap"><span class="input-pfx">₹</span>
+        <input type="number" class="finput" id="lo-monthly-${id}" placeholder="e.g. 25000" oninput="liveCalc(${id})" />
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Months Rented This Year</label>
+      <div class="field-hint">How many months did you receive rent?</div>
+      <select class="fselect" id="lo-months-${id}" oninput="liveCalc(${id})">
+        <option value="12">12 months (full year)</option>
+        <option value="11">11 months</option>
+        <option value="10">10 months</option>
+        <option value="9">9 months</option>
+        <option value="8">8 months</option>
+        <option value="7">7 months</option>
+        <option value="6">6 months</option>
+        <option value="5">5 months</option>
+        <option value="4">4 months</option>
+        <option value="3">3 months</option>
+        <option value="2">2 months</option>
+        <option value="1">1 month</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Did any tenant not pay rent?</label>
+    <div class="field-hint">Unpaid rent is excluded from tax</div>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('lo-unrealised-${id}', false, this)">No</button>
+      <button class="tog-btn" onclick="togCond('lo-unrealised-${id}', true, this)">Yes</button>
+    </div>
+    <div class="cond-box" id="lo-unrealised-${id}">
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">Total unpaid rent amount</label>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="lo-unrealisedAmt-${id}" placeholder="e.g. 50000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">Municipal Tax & Deductions</div>
+  <div class="field-group">
+    <label class="field-label">Did you pay property/municipal tax?</label>
+    <div class="field-hint">Annual tax paid to your city corporation — not income tax</div>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('lo-municipal-${id}', false, this)">No</button>
+      <button class="tog-btn" onclick="togCond('lo-municipal-${id}', true, this)">Yes</button>
+    </div>
+    <div class="cond-box" id="lo-municipal-${id}">
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">Municipal tax paid this year</label>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="lo-municipalAmt-${id}" placeholder="e.g. 5000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">Home Loan (if any)</div>
+  <div class="field-group">
+    <label class="field-label">Do you have a home loan on this property?</label>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('lo-loan-${id}', false, this)">No loan</button>
+      <button class="tog-btn" onclick="togCond('lo-loan-${id}', true, this)">Yes, I have a loan</button>
+    </div>
+    <div class="cond-box" id="lo-loan-${id}">
+      <div class="field-group">
+        <label class="field-label">Loan interest paid this year</label>
+        <div class="field-hint">Only the interest part of your EMI — check your bank statement</div>
+        <div class="field-hint eg">Example: EMI ₹30,000/month, bank says ₹20,000 is interest → enter ₹2,40,000</div>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="lo-interest-${id}" placeholder="e.g. 240000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">Did you pay interest before this property was ready? (Pre-construction)</label>
+        <div class="field-hint">If the loan was taken while the house was under construction, interest paid during that period is deductible in 5 equal instalments</div>
+        <div class="tog-group">
+          <button class="tog-btn active" onclick="togCond('lo-preConst-${id}', false, this)">No / Not applicable</button>
+          <button class="tog-btn" onclick="togCond('lo-preConst-${id}', true, this)">Yes, I paid interest during construction</button>
+        </div>
+        <div class="cond-box" id="lo-preConst-${id}">
+          <div class="info-box warn" style="margin-bottom:12px;">
+            ⚠️ Total interest paid during construction is split equally over 5 years. Each year you can deduct 1/5th of that total.
+          </div>
+          <div class="two-col">
+            <div class="field-group" style="margin-bottom:0">
+              <label class="field-label">Total interest paid during construction</label>
+              <div class="field-hint">Add up all interest paid from loan start until property was ready</div>
+              <div class="input-wrap"><span class="input-pfx">₹</span>
+                <input type="number" class="finput" id="lo-preConstAmt-${id}" placeholder="e.g. 500000" oninput="liveCalc(${id})" />
+              </div>
+            </div>
+            <div class="field-group" style="margin-bottom:0">
+              <label class="field-label">Which instalment year is this?</label>
+              <div class="field-hint">You can claim for 5 years after property is ready</div>
+              <select class="fselect" id="lo-preYear-${id}" oninput="liveCalc(${id})">
+                <option value="1">Year 1 of 5</option>
+                <option value="2">Year 2 of 5</option>
+                <option value="3">Year 3 of 5</option>
+                <option value="4">Year 4 of 5</option>
+                <option value="5">Year 5 of 5 (last)</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-hint" style="margin-top:10px;" id="lo-preConstCalc-${id}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="lo-result-${id}"></div>`;
+      }
+
+      // ── SOP BODY ──────────────────────────────────────────────────────────────
+      function sopBody(id) {
+        return `
+  <div class="sop-notice">
+    🏡 <strong>Self-Occupied Property:</strong> You live in this house yourself, so there's no rental income. 
+    The only tax benefit here is the <strong>interest on your home loan</strong> (if any), which reduces your taxable income.
+    You can claim this in the Old Regime only (max ₹2,00,000 per year across all SOPs).
+  </div>
+
+  <div class="section-label">Home Loan Details</div>
+  <div class="field-group">
+    <label class="field-label">Do you have a home loan on this property?</label>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('sop-loan-${id}', false, this)">No loan</button>
+      <button class="tog-btn" onclick="togCond('sop-loan-${id}', true, this)">Yes, I have a loan</button>
+    </div>
+    <div class="cond-box" id="sop-loan-${id}">
+      <div class="field-group">
+        <label class="field-label">Loan interest paid this year</label>
+        <div class="field-hint">Only the interest part — check your bank's home loan statement</div>
+        <div class="field-hint eg">Example: Annual interest certificate from bank shows ₹1,80,000 — enter that amount</div>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="sop-interest-${id}" placeholder="e.g. 180000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+      <div class="info-box blue">
+        ℹ️ For self-occupied property, home loan interest deduction is capped at <strong>₹2,00,000 per year</strong> (Old Regime). 
+        In New Regime, <strong>no deduction</strong> is allowed on SOP loan interest.
+      </div>
+    </div>
+  </div>
+
+  <div id="sop-result-${id}"></div>`;
+      }
+
+      // ── DEEMED LET-OUT BODY ───────────────────────────────────────────────────
+      function deemedBody(id) {
+        return `
+  <div class="info-box warn">
+    ⚠️ <strong>Deemed Let-Out:</strong> Even if this property is vacant or you're not receiving rent, 
+    the government treats it as if it's rented. You need to enter what a similar property would fetch as rent in your area.
+  </div>
+
+  <div class="section-label">Expected Market Rent</div>
+  <div class="field-group">
+    <label class="field-label">What would this property rent for per month?</label>
+    <div class="field-hint">Look at similar properties in your area on housing websites. Use a fair estimate.</div>
+    <div class="field-hint eg">Example: A 2BHK in your building rents for ₹18,000/month — enter ₹18,000</div>
+    <div class="input-wrap"><span class="input-pfx">₹</span>
+      <input type="number" class="finput" id="dl-expectedRent-${id}" placeholder="e.g. 18000" oninput="liveCalc(${id})" />
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Did you pay property/municipal tax?</label>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('dl-municipal-${id}', false, this)">No</button>
+      <button class="tog-btn" onclick="togCond('dl-municipal-${id}', true, this)">Yes</button>
+    </div>
+    <div class="cond-box" id="dl-municipal-${id}">
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">Municipal tax paid</label>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="dl-municipalAmt-${id}" placeholder="e.g. 8000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">Home Loan (if any)</div>
+  <div class="field-group">
+    <label class="field-label">Do you have a home loan on this property?</label>
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="togCond('dl-loan-${id}', false, this)">No loan</button>
+      <button class="tog-btn" onclick="togCond('dl-loan-${id}', true, this)">Yes</button>
+    </div>
+    <div class="cond-box" id="dl-loan-${id}">
+      <div class="field-group">
+        <label class="field-label">Loan interest paid this year</label>
+        <div class="field-hint">Only the interest part of your EMI</div>
+        <div class="input-wrap"><span class="input-pfx">₹</span>
+          <input type="number" class="finput" id="dl-interest-${id}" placeholder="e.g. 200000" oninput="liveCalc(${id})" />
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">Did you pay interest during construction? (Pre-construction)</label>
+        <div class="tog-group">
+          <button class="tog-btn active" onclick="togCond('dl-preConst-${id}', false, this)">No</button>
+          <button class="tog-btn" onclick="togCond('dl-preConst-${id}', true, this)">Yes</button>
+        </div>
+        <div class="cond-box" id="dl-preConst-${id}">
+          <div class="info-box warn" style="margin-bottom:12px;">
+            ⚠️ Total pre-construction interest is split equally over 5 years. Each year 1/5th is deductible.
+          </div>
+          <div class="two-col">
+            <div class="field-group" style="margin-bottom:0">
+              <label class="field-label">Total interest during construction</label>
+              <div class="input-wrap"><span class="input-pfx">₹</span>
+                <input type="number" class="finput" id="dl-preConstAmt-${id}" placeholder="e.g. 300000" oninput="liveCalc(${id})" />
+              </div>
+            </div>
+            <div class="field-group" style="margin-bottom:0">
+              <label class="field-label">Which year of 5?</label>
+              <select class="fselect" id="dl-preYear-${id}" oninput="liveCalc(${id})">
+                <option value="1">Year 1 of 5</option>
+                <option value="2">Year 2 of 5</option>
+                <option value="3">Year 3 of 5</option>
+                <option value="4">Year 4 of 5</option>
+                <option value="5">Year 5 of 5</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dl-result-${id}"></div>`;
+      }
+
+      // ── TOGGLE HELPERS ────────────────────────────────────────────────────────
+      function togCond(sectionId, show, btn) {
+        document.getElementById(sectionId)?.classList.toggle("show", show);
+        btn
+          .closest(".tog-group")
+          .querySelectorAll(".tog-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+
+      function toggleCard(id) {
+        document.getElementById(`prop-${id}`).classList.toggle("expanded");
+      }
+
+      function updatePropName(id, val) {
+        const prop = properties.find((p) => p.id === id);
+        if (prop) prop.name = val;
+      }
+
+      function updatePropType(id, type) {
+        const prop = properties.find((p) => p.id === id);
+        if (!prop) return;
+
+        // Check SOP limit
+        if (type === "sop") {
+          const sopCount = properties.filter(
+            (p) => p.type === "sop" && p.id !== id,
+          ).length;
+          if (sopCount >= 2) {
+            alert(
+              "You can only have up to 2 Self-Occupied properties. Please change another property type first.",
+            );
+            document.querySelector(`#prop-${id} .card-type-select`).value =
+              prop.type;
+            return;
+          }
+        }
+
+        prop.type = type;
+        const card = document.getElementById(`prop-${id}`);
+        card.className = `prop-card ${type} expanded`;
+
+        // Re-render body
+        card.querySelector(".card-body").innerHTML = getCardBody(prop);
+        updateSopCounter();
+      }
+
+      function deleteProperty(id) {
+        if (properties.length === 1) {
+          alert("You need at least one property.");
+          return;
+        }
+        properties = properties.filter((p) => p.id !== id);
+        document.getElementById(`prop-${id}`)?.remove();
+        updateSopCounter();
+        calculateAll();
+      }
+
+      // ── CALCULATE ONE PROPERTY ────────────────────────────────────────────────
+      function calcProperty(prop) {
+        const id = prop.id;
+        const type = prop.type;
+        let income = 0,
+          loss = 0,
+          nav = 0,
+          stdDed = 0,
+          interestDed = 0,
+          grossRent = 0,
+          municipal = 0;
+
+        if (type === "letout") {
+          const monthly = getVal(`lo-monthly-${id}`);
+          const months = parseInt(
+            document.getElementById(`lo-months-${id}`)?.value || "12",
+          );
+          const unrealised = document
+            .getElementById(`lo-unrealised-${id}`)
+            ?.classList.contains("show")
+            ? getVal(`lo-unrealisedAmt-${id}`)
+            : 0;
+          municipal = document
+            .getElementById(`lo-municipal-${id}`)
+            ?.classList.contains("show")
+            ? getVal(`lo-municipalAmt-${id}`)
+            : 0;
+          const loanVisible = document
+            .getElementById(`lo-loan-${id}`)
+            ?.classList.contains("show");
+          const interest = loanVisible ? getVal(`lo-interest-${id}`) : 0;
+          const preConstVisible =
+            loanVisible &&
+            document
+              .getElementById(`lo-preConst-${id}`)
+              ?.classList.contains("show");
+          const preConstAmt = preConstVisible
+            ? getVal(`lo-preConstAmt-${id}`)
+            : 0;
+          const preAnnual = preConstAmt > 0 ? preConstAmt / 5 : 0;
+          if (preConstVisible && preConstAmt > 0) {
+            const hint = document.getElementById(`lo-preConstCalc-${id}`);
+            if (hint)
+              hint.textContent = `Annual deduction = ${String.fromCharCode(8377)}${Math.round(preConstAmt / 5).toLocaleString("en-IN")} (${String.fromCharCode(8377)}${preConstAmt.toLocaleString("en-IN")} divided by 5 years)`;
+          }
+
+          grossRent = monthly * months - unrealised;
+          nav = Math.max(0, grossRent - municipal);
+          stdDed = nav * 0.3;
+          interestDed = interest + preAnnual;
+          income = nav - stdDed - interestDed;
+        } else if (type === "sop") {
+          const interest = document
+            .getElementById(`sop-loan-${id}`)
+            ?.classList.contains("show")
+            ? getVal(`sop-interest-${id}`)
+            : 0;
+          const intOld = Math.min(interest, 200000);
+          income = -intOld;
+          interestDed = intOld;
+        } else if (type === "deemed") {
+          const expected = getVal(`dl-expectedRent-${id}`);
+          municipal = document
+            .getElementById(`dl-municipal-${id}`)
+            ?.classList.contains("show")
+            ? getVal(`dl-municipalAmt-${id}`)
+            : 0;
+          const dlLoanVis = document
+            .getElementById(`dl-loan-${id}`)
+            ?.classList.contains("show");
+          const interest = dlLoanVis ? getVal(`dl-interest-${id}`) : 0;
+          const dlPreVis =
+            dlLoanVis &&
+            document
+              .getElementById(`dl-preConst-${id}`)
+              ?.classList.contains("show");
+          const dlPreAmt = dlPreVis ? getVal(`dl-preConstAmt-${id}`) : 0;
+          const dlPreAnnual = dlPreAmt > 0 ? dlPreAmt / 5 : 0;
+
+          grossRent = expected * 12;
+          nav = Math.max(0, grossRent - municipal);
+          stdDed = nav * 0.3;
+          interestDed = interest + dlPreAnnual;
+          income = nav - stdDed - interestDed;
+        }
+
+        prop.result = {
+          income,
+          nav,
+          stdDed,
+          interestDed,
+          grossRent,
+          municipal,
+        };
+
+        // Update pill
+        const pill = document.getElementById(`pill-${id}`);
+        if (pill) {
+          if (income > 0) {
+            pill.className = "card-result-pill pill-income";
+            pill.textContent = "+ " + fmtL(income);
+          } else if (income < 0) {
+            pill.className = "card-result-pill pill-loss";
+            pill.textContent = "- " + fmtL(Math.abs(income));
+          } else {
+            pill.className = "card-result-pill pill-zero";
+            pill.textContent = "₹0";
+          }
+        }
+
+        // Show inline result
+        showCardResult(prop);
+        return income;
+      }
+
+      function showCardResult(prop) {
+        const { id, type, result } = prop;
+        if (!result) return;
+        const { income, nav, stdDed, interestDed, grossRent, municipal } =
+          result;
+        const resultEl = document.getElementById(
+          `${type === "sop" ? "sop" : type === "deemed" ? "dl" : "lo"}-result-${id}`,
+        );
+        if (!resultEl) return;
+
+        let rows = "";
+        if (type !== "sop") {
+          rows += `<div class="ccr-row"><span class="cl">Annual Rent / Expected Rent</span><span class="cv">${fmt(grossRent)}</span></div>`;
+          rows += `<div class="ccr-row"><span class="cl">Less: Municipal Tax</span><span class="cv">- ${fmt(municipal)}</span></div>`;
+          rows += `<div class="ccr-row"><span class="cl">Net Annual Value (NAV)</span><span class="cv">${fmt(nav)}</span></div>`;
+          rows += `<div class="ccr-row"><span class="cl">Less: Standard Deduction (30%)</span><span class="cv">- ${fmt(stdDed)}</span></div>`;
+        }
+        rows += `<div class="ccr-row"><span class="cl">Less: Loan Interest</span><span class="cv">- ${fmt(interestDed)}</span></div>`;
+        rows += `<div class="ccr-row total"><span class="cl">${income < 0 ? "Loss from this property" : "Income from this property"}</span><span class="cv ${income < 0 ? "loss" : ""}">${fmt(income)}</span></div>`;
+
+        resultEl.innerHTML = `<div class="card-calc-result"><div class="ccr-title">This Property's Calculation</div>${rows}</div>`;
+      }
+
+      // ── LIVE CALC ─────────────────────────────────────────────────────────────
+      function liveCalc(id) {
+        const prop = properties.find((p) => p.id === id);
+        if (prop) calcProperty(prop);
+      }
+
+      // ── CALCULATE ALL ─────────────────────────────────────────────────────────
+      function calculateAll() {
+        let totalIncome = 0,
+          totalLoss = 0;
+
+        properties.forEach((prop) => {
+          const income = calcProperty(prop);
+          if (income > 0) totalIncome += income;
+          else totalLoss += income; // negative
+        });
+
+        const net = totalIncome + totalLoss; // combined
+
+        // Old regime: set off max ₹2L loss vs other income
+        const setOffOld = net < 0 ? Math.max(net, -200000) : 0;
+        const carryForward =
+          net < 0 && Math.abs(net) > 200000 ? Math.abs(net) - 200000 : 0;
+        const netOld = net < 0 ? setOffOld : net; // what goes into total income (old)
+        const netNew = net < 0 ? 0 : net; // new regime: no set-off
+
+        // Update summary
+        document.getElementById("summaryEmpty").style.display = "none";
+        document.getElementById("summaryContent").style.display = "block";
+
+        // Property list
+        let plsHtml = "";
+        properties.forEach((p) => {
+          if (!p.result) return;
+          const name = p.name || `Property ${p.id}`;
+          const inc = p.result.income;
+          plsHtml += `<div class="pls-row">
+      <span class="pls-name">${name}</span>
+      <span class="pls-val" style="color:${inc >= 0 ? "#a5d6a7" : "#ffcc80"}">${fmt(inc)}</span>
+    </div>`;
+        });
+        document.getElementById("propListSummary").innerHTML = plsHtml;
+
+        document.getElementById("s-totalIncome").textContent = fmt(totalIncome);
+        document.getElementById("s-totalLoss").textContent = fmt(totalLoss);
+        document.getElementById("s-netIncome").textContent = fmt(net);
+        document.getElementById("s-netIncome").style.color =
+          net >= 0 ? "#a5d6a7" : "#ffcc80";
+
+        // Regime comparison
+        document.getElementById("s-old").textContent = fmtL(netOld);
+        document.getElementById("s-new").textContent = fmtL(netNew);
+
+        const oldEl = document.getElementById("s-old");
+        const newEl = document.getElementById("s-new");
+        const note = document.getElementById("s-regimeNote");
+
+        if (net < 0) {
+          oldEl.className = "rv better";
+          newEl.className = "rv worse";
+          note.textContent =
+            "✅ Old Regime is better — you can set off up to ₹2L of this loss against your salary or other income.";
+        } else {
+          oldEl.className = "rv";
+          newEl.className = "rv";
+          note.textContent =
+            "Both regimes give the same rental income. Choose your regime based on total income & other deductions.";
+        }
+
+        // Set-off box
+        const setOffBox = document.getElementById("setOffBox");
+        if (net < 0) {
+          setOffBox.style.display = "block";
+          document.getElementById("s-setoff").textContent = fmt(setOffOld);
+          document.getElementById("s-carry").textContent = fmt(carryForward);
+        } else {
+          setOffBox.style.display = "none";
+        }
+      }
+
+      // ── RESET ─────────────────────────────────────────────────────────────────
+      function resetAll() {
+        if (!confirm("Clear all properties and start over?")) return;
+        properties = [];
+        nextId = 1;
+        document.getElementById("propertiesContainer").innerHTML = "";
+        document.getElementById("summaryEmpty").style.display = "block";
+        document.getElementById("summaryContent").style.display = "none";
+        updateSopCounter();
+        addProperty();
+      }
+    </script>
+  </body>
+</html>
