@@ -826,69 +826,106 @@
                             (document.getElementById("footer").innerHTML = d),
                     );
 
-                // Load saved state from localStorage
-                loadState();
+                // Load from localStorage
+                loadFromStorage();
 
-                // Set up message listener for iframe results
-                window.addEventListener("message", handleModuleMessage);
+                // Listen for storage changes from other tabs
+                window.addEventListener("storage", function (event) {
+                    if (event.key === "pgbp_module_results") {
+                        console.log("Storage changed, refreshing...");
+                        loadFromStorage();
+                    }
+                });
+
+                // Refresh every 2 seconds as backup
+                setInterval(loadFromStorage, 2000);
             });
 
-            function handleModuleMessage(event) {
-                if (event.data.type === "PGBP_RESULT") {
-                    moduleResults[event.data.moduleId] = event.data.amount;
-                    updateModulePreview(event.data.moduleId, event.data.amount);
-                    calculateTotals();
+            function loadFromStorage() {
+                // Load module results from localStorage
+                const savedResults = localStorage.getItem(
+                    "pgbp_module_results",
+                );
+                if (savedResults) {
+                    try {
+                        moduleResults = JSON.parse(savedResults);
+
+                        // Auto-select modules that have results
+                        selectedModules.clear();
+                        Object.keys(moduleResults).forEach((moduleId) => {
+                            if (
+                                moduleResults[moduleId] !== 0 &&
+                                moduleResults[moduleId] !== null
+                            ) {
+                                selectedModules.add(moduleId);
+                            }
+                        });
+
+                        updateAllUI();
+                    } catch (e) {
+                        console.error("Failed to load saved results", e);
+                    }
+                } else {
+                    // Clear if no data
+                    moduleResults = {};
+                    selectedModules.clear();
+                    updateAllUI();
                 }
+            }
+
+            function updateAllUI() {
+                // Update checkboxes and previews
+                document.querySelectorAll(".module-item").forEach((item) => {
+                    const moduleId = item.dataset.module;
+                    const check = document.getElementById(`check-${moduleId}`);
+                    const preview = document.getElementById(
+                        `preview-${moduleId}`,
+                    );
+
+                    if (selectedModules.has(moduleId)) {
+                        item.classList.add("selected");
+                        if (check) {
+                            check.style.background = "white";
+                            check.style.color = "#667eea";
+                        }
+                    } else {
+                        item.classList.remove("selected");
+                        if (check) {
+                            check.style.background = "transparent";
+                            check.style.color = "#667eea";
+                        }
+                    }
+
+                    if (preview && moduleResults[moduleId] !== undefined) {
+                        preview.textContent = formatAmount(
+                            moduleResults[moduleId],
+                        );
+                        preview.style.color =
+                            moduleResults[moduleId] >= 0
+                                ? "#48bb78"
+                                : "#f56565";
+                    }
+                });
+
+                calculateTotals();
             }
 
             function toggleModule(moduleId) {
                 if (selectedModules.has(moduleId)) {
                     selectedModules.delete(moduleId);
-                    document.getElementById(
-                        `check-${moduleId}`,
-                    ).style.background = "transparent";
-                    document.getElementById(`check-${moduleId}`).style.color =
-                        "#667eea";
-                    document
-                        .querySelector(`[data-module="${moduleId}"]`)
-                        .classList.remove("selected");
-
-                    // If module was loaded in pgbp.html, we need to communicate to unload
-                    if (window.opener && window.opener.pgbpLoader) {
-                        window.opener.pgbpLoader.toggleModule(moduleId);
-                    }
                 } else {
                     selectedModules.add(moduleId);
-                    document.getElementById(
-                        `check-${moduleId}`,
-                    ).style.background = "white";
-                    document.getElementById(`check-${moduleId}`).style.color =
-                        "#667eea";
-                    document
-                        .querySelector(`[data-module="${moduleId}"]`)
-                        .classList.add("selected");
-
-                    // Trigger module load in pgbp.html
-                    if (window.opener && window.opener.pgbpLoader) {
-                        window.opener.pgbpLoader.toggleModule(moduleId);
-                    } else {
-                        // If standalone, show message
-                        alert(
-                            "Please open this summary from the PGBP main page to load modules",
-                        );
-                    }
                 }
 
-                saveState();
-                calculateTotals();
+                updateAllUI();
+                saveSelectedModules();
             }
 
-            function updateModulePreview(moduleId, amount) {
-                const preview = document.getElementById(`preview-${moduleId}`);
-                if (preview) {
-                    preview.textContent = formatAmount(amount);
-                    preview.style.color = amount >= 0 ? "#48bb78" : "#f56565";
-                }
+            function saveSelectedModules() {
+                localStorage.setItem(
+                    "pgbp_selected_modules",
+                    JSON.stringify(Array.from(selectedModules)),
+                );
             }
 
             function calculateTotals() {
@@ -909,6 +946,7 @@
                                 name: getModuleName(moduleId),
                                 amount: amount,
                                 category: "business",
+                                id: moduleId,
                             });
                         } else if (moduleId.startsWith("profession")) {
                             totalProfession += amount;
@@ -916,6 +954,7 @@
                                 name: getModuleName(moduleId),
                                 amount: amount,
                                 category: "profession",
+                                id: moduleId,
                             });
                         }
                     }
@@ -951,9 +990,6 @@
 
                 // Update regime comparison
                 updateRegimeComparison(totalPGBP);
-
-                // Save to localStorage
-                saveState();
             }
 
             function renderBreakdown(
@@ -968,11 +1004,11 @@
 
                 if (breakdown.length === 0) {
                     container.innerHTML = `
-                    <div class="empty-state">
-                        <span>📋</span>
-                        <p>Select modules from the left to see income breakdown</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <span>📋</span>
+                            <p>No data available. Fill out PGBP modules to see breakdown.</p>
+                        </div>
+                    `;
                     totalDiv.style.display = "none";
                     return;
                 }
@@ -988,16 +1024,16 @@
 
                 breakdown.forEach((item) => {
                     listHtml += `
-                    <div class="breakdown-item">
-                        <div class="breakdown-left">
-                            <div class="breakdown-icon">${getModuleIcon(item.name)}</div>
-                            <span class="breakdown-name">${item.name}</span>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-icon">${getModuleIcon(item.name)}</div>
+                                <span class="breakdown-name">${item.name}</span>
+                            </div>
+                            <span class="breakdown-value ${item.amount >= 0 ? "positive" : "negative"}">
+                                ${formatAmount(item.amount)}
+                            </span>
                         </div>
-                        <span class="breakdown-value ${item.amount >= 0 ? "positive" : "negative"}">
-                            ${formatAmount(item.amount)}
-                        </span>
-                    </div>
-                `;
+                    `;
                 });
 
                 listDiv.innerHTML = listHtml;
@@ -1045,8 +1081,8 @@
                 }
 
                 document.getElementById("recommendation").innerHTML = `
-                <span class="savings">${recommendation}</span>
-            `;
+                    <span class="savings">${recommendation}</span>
+                `;
             }
 
             function calculateTax(income, regime) {
@@ -1067,7 +1103,8 @@
             }
 
             function formatAmount(amount) {
-                if (amount === undefined || amount === null) return "₹0";
+                if (amount === undefined || amount === null || isNaN(amount))
+                    return "₹0";
                 const absAmount = Math.abs(amount);
                 const formatted = "₹" + absAmount.toLocaleString("en-IN");
                 return amount < 0 ? "- " + formatted : formatted;
@@ -1100,53 +1137,33 @@
             }
 
             function calculateAll() {
-                // Trigger recalculation in all modules
-                if (window.opener && window.opener.pgbpLoader) {
-                    selectedModules.forEach((moduleId) => {
-                        const iframe = window.opener.document.getElementById(
-                            `iframe-${moduleId}`,
-                        );
-                        if (iframe && iframe.contentWindow) {
-                            iframe.contentWindow.postMessage(
-                                { type: "CALCULATE" },
-                                "*",
-                            );
-                        }
-                    });
-                }
+                // Just reload from storage
+                loadFromStorage();
             }
 
             function resetAll() {
-                if (!confirm("Reset all selections and clear all data?"))
+                if (!confirm("Reset all selections and clear all PGBP data?"))
                     return;
 
-                selectedModules.clear();
+                // Clear localStorage
+                localStorage.removeItem("pgbp_module_results");
+                localStorage.removeItem("pgbp_total_income");
+                localStorage.removeItem("pgbp_selected_modules");
+
+                // Reset state
                 moduleResults = {};
+                selectedModules.clear();
 
                 // Reset UI
-                document.querySelectorAll(".module-item").forEach((item) => {
-                    item.classList.remove("selected");
-                });
+                updateAllUI();
 
-                document.querySelectorAll('[id^="check-"]').forEach((check) => {
-                    check.style.background = "transparent";
-                    check.style.color = "#667eea";
-                });
-
-                document
-                    .querySelectorAll('[id^="preview-"]')
-                    .forEach((preview) => {
-                        preview.textContent = "₹0";
-                        preview.style.color = "#333";
-                    });
-
-                // Clear breakdown
+                // Show empty state
                 document.getElementById("breakdownContainer").innerHTML = `
-                <div class="empty-state">
-                    <span>📋</span>
-                    <p>Select modules from the left to see income breakdown</p>
-                </div>
-            `;
+                    <div class="empty-state">
+                        <span>📋</span>
+                        <p>No data available. Fill out PGBP modules to see breakdown.</p>
+                    </div>
+                `;
                 document.getElementById("totalBreakdown").style.display =
                     "none";
                 document.getElementById("regimeComparison").style.display =
@@ -1156,43 +1173,36 @@
                 document.getElementById("totalBusiness").textContent = "₹0";
                 document.getElementById("totalProfession").textContent = "₹0";
                 document.getElementById("totalPGBP").textContent = "₹0";
-
-                // Clear saved state
-                localStorage.removeItem("pgbpSummaryState");
-
-                // Notify main window
-                if (window.opener && window.opener.pgbpLoader) {
-                    selectedModules.forEach((moduleId) => {
-                        window.opener.pgbpLoader.toggleModule(moduleId);
-                    });
-                }
             }
 
             function exportSummary() {
+                const totalBusiness =
+                    parseFloat(
+                        document
+                            .getElementById("totalBusiness")
+                            .textContent.replace(/[^0-9-]/g, ""),
+                    ) || 0;
+                const totalProfession =
+                    parseFloat(
+                        document
+                            .getElementById("totalProfession")
+                            .textContent.replace(/[^0-9-]/g, ""),
+                    ) || 0;
+                const totalPGBP = totalBusiness + totalProfession;
+
                 const data = {
                     timestamp: new Date().toISOString(),
                     fy: "2024-25",
                     selectedModules: Array.from(selectedModules),
                     results: moduleResults,
                     totals: {
-                        business:
-                            parseFloat(
-                                document
-                                    .getElementById("totalBusiness")
-                                    .textContent.replace(/[^0-9-]/g, ""),
-                            ) || 0,
-                        profession:
-                            parseFloat(
-                                document
-                                    .getElementById("totalProfession")
-                                    .textContent.replace(/[^0-9-]/g, ""),
-                            ) || 0,
-                        total:
-                            parseFloat(
-                                document
-                                    .getElementById("totalPGBP")
-                                    .textContent.replace(/[^0-9-]/g, ""),
-                            ) || 0,
+                        business: totalBusiness,
+                        profession: totalProfession,
+                        total: totalPGBP,
+                    },
+                    taxComparison: {
+                        oldRegime: calculateTax(totalPGBP, "old"),
+                        newRegime: calculateTax(totalPGBP, "new"),
                     },
                 };
 
@@ -1204,63 +1214,8 @@
                 a.href = url;
                 a.download = `pgbp-summary-${new Date().toISOString().split("T")[0]}.json`;
                 a.click();
+                URL.revokeObjectURL(url);
             }
-
-            function saveState() {
-                const state = {
-                    selected: Array.from(selectedModules),
-                    results: moduleResults,
-                };
-                localStorage.setItem("pgbpSummaryState", JSON.stringify(state));
-            }
-
-            function loadState() {
-                const saved = localStorage.getItem("pgbpSummaryState");
-                if (saved) {
-                    try {
-                        const state = JSON.parse(saved);
-                        selectedModules = new Set(state.selected || []);
-                        moduleResults = state.results || {};
-
-                        // Restore UI
-                        selectedModules.forEach((moduleId) => {
-                            const check = document.getElementById(
-                                `check-${moduleId}`,
-                            );
-                            const item = document.querySelector(
-                                `[data-module="${moduleId}"]`,
-                            );
-                            if (check && item) {
-                                check.style.background = "white";
-                                check.style.color = "#667eea";
-                                item.classList.add("selected");
-                            }
-                            if (moduleResults[moduleId]) {
-                                updateModulePreview(
-                                    moduleId,
-                                    moduleResults[moduleId],
-                                );
-                            }
-                        });
-
-                        calculateTotals();
-                    } catch (e) {
-                        console.error("Failed to load saved state", e);
-                    }
-                }
-            }
-            // Listen for storage changes (when modules save new data)
-            window.addEventListener("storage", function (event) {
-                if (event.key === "pgbp_module_results") {
-                    console.log("Storage changed, refreshing summary...");
-                    refreshSummary(); // Your function to reload and display
-                }
-            });
-
-            // Also refresh every few seconds as backup
-            setInterval(function () {
-                refreshSummary();
-            }, 2000);
         </script>
     </body>
 </html>
