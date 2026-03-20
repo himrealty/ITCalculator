@@ -2259,6 +2259,7 @@
           );
         }
         applyRegimeView();
+        saveSalaryToStorage();
       }
 
       function renderSlabs(containerId, details) {
@@ -2279,6 +2280,30 @@
           )
           .join("");
       }
+      // ADD THIS at the end of liveCalc() function, after updating all displays
+      function saveSalaryToStorage() {
+        // Get the net salary from both regimes (for summary page)
+        const netSalaryOld = document.getElementById("r-netSalary").textContent;
+        const netSalaryNew =
+          document.getElementById("r-taxableNew").textContent;
+
+        // Parse the amount (remove ₹ and commas)
+        let oldAmount = parseFloat(netSalaryOld.replace(/[^0-9-]/g, "")) || 0;
+        let newAmount = parseFloat(netSalaryNew.replace(/[^0-9-]/g, "")) || 0;
+
+        // For master summary, we use Old Regime taxable income
+        // But you can save both
+        localStorage.setItem("salary_income", oldAmount.toString());
+        localStorage.setItem("salary_income_new_regime", newAmount.toString());
+
+        // Trigger storage event for summary page
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: "salary_income",
+            newValue: oldAmount.toString(),
+          }),
+        );
+      }
 
       function resetAll() {
         document.querySelectorAll(".fi").forEach((i) => (i.value = ""));
@@ -2298,6 +2323,9 @@
         document.getElementById("rp-empty").style.display = "block";
         document.getElementById("rp-content").style.display = "none";
         document.getElementById("hra-result").style.display = "none";
+        // Add to resetAll() function
+        localStorage.removeItem("salary_income");
+        localStorage.removeItem("salary_income_new_regime");
       }
     </script>
   </body>

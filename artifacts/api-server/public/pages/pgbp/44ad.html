@@ -308,7 +308,7 @@
             
             // Show result box
             document.getElementById('resultBox').style.display = 'block';
-            
+            saveResultToStorage();
             // Send result to parent (main container)
             if (window.parent !== window) {
                 window.parent.postMessage({
@@ -318,6 +318,20 @@
                 }, '*');
             }
         }
+        function saveResultToStorage() {
+            // Get existing results from localStorage
+            const savedResults = localStorage.getItem('pgbp_module_results');
+            let results = savedResults ? JSON.parse(savedResults) : {};
+
+            // Update with current module result
+            results['business-44ad'] = netIncome; // Use correct module ID
+
+            // Save back to localStorage
+            localStorage.setItem('pgbp_module_results', JSON.stringify(results));
+
+            console.log('Saved result to storage:', results);
+        }
+
 
         // Auto-calculate if values exist on load
         window.addEventListener('load', function() {

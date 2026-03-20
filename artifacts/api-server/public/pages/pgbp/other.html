@@ -1,821 +1,1007 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Other Business Income · ITCalculator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        body {
-            background: transparent;
-            padding: 0;
-        }
-        
-        .module-content {
-            background: white;
-            border-radius: 8px;
-        }
-        
-        .other-badge {
-            display: inline-block;
-            background: #4a5568;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-        
-        .info-box {
-            background: #e2e8f0;
-            border-left: 4px solid #4a5568;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            color: #2d3748;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .info-box.warning {
-            background: #fff3e0;
-            border-left-color: #ed8936;
-        }
-        
-        .info-box.success {
-            background: #f0fff4;
-            border-left-color: #48bb78;
-        }
-        
-        .info-box.blue {
-            background: #e6f6ff;
-            border-left-color: #3182ce;
-            color: #1e4a6b;
-        }
-        
-        .info-box.purple {
-            background: #f3e8ff;
-            border-left-color: #805ad5;
-            color: #44337a;
-        }
-        
-        .info-box.gold {
-            background: #fef3c7;
-            border-left-color: #d69e2e;
-            color: #744210;
-        }
-        
-        .income-category {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .category-icon {
-            font-size: 1.5rem;
-        }
-        
-        .category-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #2d3748;
-        }
-        
-        .category-sub {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-left: auto;
-        }
-        
-        .income-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .income-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            transition: all 0.15s;
-        }
-        
-        .income-card:hover {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-color: #cbd5e0;
-        }
-        
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .card-title h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .card-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-        
-        .form-group {
-            margin-bottom: 12px;
-        }
-        
-        label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 4px;
-        }
-        
-        .hint {
-            font-size: 0.7rem;
-            color: #718096;
-            margin-bottom: 4px;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
-        .input-prefix {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #718096;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 8px 10px 8px 26px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            transition: all 0.15s;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
-        }
-        
-        textarea {
-            padding-left: 10px;
-            resize: vertical;
-            min-height: 60px;
-        }
-        
-        .toggle-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
-        }
-        
-        .toggle-option {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .toggle-option input[type="radio"] {
-            width: auto;
-            padding: 0;
-            accent-color: #4a5568;
-        }
-        
-        .recovery-item {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        
-        .recovery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .recovery-title {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #2d3748;
-        }
-        
-        .remove-btn {
-            color: #e53e3e;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 0 5px;
-        }
-        
-        .add-btn {
-            background: #48bb78;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        
-        .add-btn:hover {
-            background: #38a169;
-        }
-        
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #2d3748, #1a202c);
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .stat-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            margin-bottom: 8px;
-        }
-        
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #fbbf24;
-        }
-        
-        .result-box {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .result-row:last-child {
-            border-bottom: none;
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .result-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        
-        .result-total {
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 2px solid rgba(255,255,255,0.3);
-        }
-        
-        .btn-calculate {
-            background: #4a5568;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-            width: 100%;
-            font-size: 1rem;
-            margin: 20px 0;
-        }
-        
-        .btn-calculate:hover {
-            background: #2d3748;
-        }
-        
-        .note-box {
-            background: #fef3c7;
-            border: 1px solid #fcd34d;
-            border-radius: 6px;
-            padding: 12px;
-            margin: 15px 0;
-            color: #92400e;
-            font-size: 0.85rem;
-        }
-        
-        .disclaimer {
-            font-size: 0.75rem;
-            color: #718096;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        @media (max-width: 640px) {
-            .income-grid {
-                grid-template-columns: 1fr;
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Other Business Income · ITCalculator</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Inter", sans-serif;
             }
-        }
-    </style>
-</head>
-<body>
-    <div class="module-content">
-        <!-- Info Section -->
-        <div class="info-box">
-            <strong>💰 Other Business Income</strong><br>
-            Income that doesn't directly come from your main business operations but is still taxable under "Profits & Gains of Business or Profession".
-        </div>
 
-        <!-- Summary Stats -->
-        <div class="summary-stats">
-            <div class="stat-card">
-                <div class="stat-label">Interest Income</div>
-                <div class="stat-value" id="totalInterest">₹0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Rental Income</div>
-                <div class="stat-value" id="totalRent">₹0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Recoveries</div>
-                <div class="stat-value" id="totalRecoveries">₹0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Misc Income</div>
-                <div class="stat-value" id="totalMisc">₹0</div>
-            </div>
-        </div>
+            body {
+                background: transparent;
+                padding: 0;
+            }
 
-        <!-- 1. INTEREST INCOME SECTION -->
-        <div class="income-category">
-            <div class="category-header">
-                <span class="category-icon">🏦</span>
-                <span class="category-title">Interest Income from Business</span>
-                <span class="category-sub">Taxable under PGBP</span>
-            </div>
+            .module-content {
+                background: white;
+                border-radius: 8px;
+            }
 
-            <div class="income-grid">
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Interest on Bank Deposits</h4>
-                        <span class="card-badge">Business Account</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Interest from Business Bank Accounts</label>
-                        <div class="hint">Interest on savings/current accounts used for business</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="interestBank" placeholder="e.g. 25000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .other-badge {
+                display: inline-block;
+                background: #4a5568;
+                color: white;
+                font-size: 0.7rem;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 12px;
+                margin-bottom: 10px;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Interest on Fixed Deposits</h4>
-                        <span class="card-badge">Business Funds</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Interest on Business FDs</label>
-                        <div class="hint">FDs made from business surplus</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="interestFD" placeholder="e.g. 45000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .info-box {
+                background: #e2e8f0;
+                border-left: 4px solid #4a5568;
+                padding: 12px 16px;
+                margin-bottom: 20px;
+                font-size: 0.9rem;
+                color: #2d3748;
+                border-radius: 0 8px 8px 0;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Interest on Loans to Partners/Directors</h4>
-                        <span class="card-badge">Section 40A</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Interest received from partners/directors</label>
-                        <div class="hint">Loans given to partners or directors from business funds</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="interestLoans" placeholder="e.g. 35000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .info-box.warning {
+                background: #fff3e0;
+                border-left-color: #ed8936;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Interest on Income Tax Refund</h4>
-                        <span class="card-badge">Sec 244A</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Interest received on IT refund</label>
-                        <div class="hint">Interest on income tax refund related to business</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="interestITRefund" placeholder="e.g. 8000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            .info-box.success {
+                background: #f0fff4;
+                border-left-color: #48bb78;
+            }
 
-        <!-- 2. RENTAL INCOME FROM BUSINESS ASSETS -->
-        <div class="income-category">
-            <div class="category-header">
-                <span class="category-icon">🏢</span>
-                <span class="category-title">Rental Income from Business Assets</span>
-                <span class="category-sub">Taxable as Business Income (not House Property)</span>
-            </div>
+            .info-box.blue {
+                background: #e6f6ff;
+                border-left-color: #3182ce;
+                color: #1e4a6b;
+            }
 
-            <div class="info-box blue" style="margin-bottom: 15px;">
-                <strong>Note:</strong> Rent from letting out business assets (machinery, plant, furniture) is taxable as business income, not house property income.
-            </div>
+            .info-box.purple {
+                background: #f3e8ff;
+                border-left-color: #805ad5;
+                color: #44337a;
+            }
 
-            <div class="income-grid">
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Plant & Machinery Rent</h4>
-                        <span class="card-badge">Business Asset</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Rent from letting out plant/machinery</label>
-                        <div class="hint">When you rent out business equipment</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentPlant" placeholder="e.g. 120000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Related expenses (maintenance, insurance)</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentPlantExp" placeholder="e.g. 15000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .info-box.gold {
+                background: #fef3c7;
+                border-left-color: #d69e2e;
+                color: #744210;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Furniture & Fixtures Rent</h4>
-                        <span class="card-badge">Business Asset</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Rent from letting out furniture</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentFurniture" placeholder="e.g. 60000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Related expenses</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentFurnitureExp" placeholder="e.g. 5000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .income-category {
+                background: #f7fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Vehicle Rent</h4>
-                        <span class="card-badge">Business Asset</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Rent from letting out business vehicles</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentVehicle" placeholder="e.g. 90000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Related expenses</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="rentVehicleExp" placeholder="e.g. 12000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            .category-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #e2e8f0;
+            }
 
-        <!-- 3. RECOVERY OF BAD DEBTS & DEDUCTIONS -->
-        <div class="income-category">
-            <div class="category-header">
-                <span class="category-icon">🔄</span>
-                <span class="category-title">Recovery of Bad Debts & Deductions</span>
-                <span class="category-sub">Sec 41(1) & 41(4)</span>
-            </div>
+            .category-icon {
+                font-size: 1.5rem;
+            }
 
-            <div class="info-box gold" style="margin-bottom: 15px;">
-                <strong>⚠️ Important:</strong> If you claimed a deduction for bad debt or expense in an earlier year, and you recover it now, it becomes taxable in the year of recovery.
-            </div>
+            .category-title {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #2d3748;
+            }
 
-            <div id="recoveriesContainer">
-                <!-- Dynamic recovery items will be added here -->
-            </div>
+            .category-sub {
+                font-size: 0.8rem;
+                color: #718096;
+                margin-left: auto;
+            }
 
-            <button class="add-btn" onclick="addRecoveryItem()">+ Add Recovery Item</button>
+            .income-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
 
-            <div class="form-group" style="margin-top: 15px;">
-                <label>Any other recoveries</label>
-                <div class="hint">Specify other recoveries of previously claimed deductions</div>
-                <textarea id="otherRecoveries" placeholder="Describe other recoveries..." oninput="calculateOtherIncome()"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Amount for other recoveries</label>
-                <div class="input-wrapper">
-                    <span class="input-prefix">₹</span>
-                    <input type="number" id="otherRecoveriesAmt" placeholder="e.g. 10000" oninput="calculateOtherIncome()">
-                </div>
-            </div>
-        </div>
+            .income-card {
+                background: white;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 15px;
+                transition: all 0.15s;
+            }
 
-        <!-- 4. MISCELLANEOUS INCOME -->
-        <div class="income-category">
-            <div class="category-header">
-                <span class="category-icon">📦</span>
-                <span class="category-title">Miscellaneous Business Income</span>
-                <span class="category-sub">Other items</span>
-            </div>
+            .income-card:hover {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                border-color: #cbd5e0;
+            }
 
-            <div class="income-grid">
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Cash Back & Incentives</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Cashback from suppliers/vendors</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="cashback" placeholder="e.g. 15000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .card-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Insurance Claims</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Insurance claim received (business assets)</label>
-                        <div class="hint">Excess over WDV is taxable</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="insuranceClaim" placeholder="e.g. 50000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .card-title h4 {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #2d3748;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Sale of Scrap/Waste</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Sale proceeds of scrap material</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="scrapSale" placeholder="e.g. 25000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .card-badge {
+                font-size: 0.65rem;
+                padding: 2px 6px;
+                border-radius: 4px;
+                background: #e2e8f0;
+                color: #4a5568;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Foreign Exchange Gain</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Net gain on foreign exchange (business transactions)</label>
-                        <div class="hint">From export/import transactions</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="forexGain" placeholder="e.g. 20000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .form-group {
+                margin-bottom: 12px;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Grants & Subsidies</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Revenue grants/subsidies received</label>
-                        <div class="hint">Not capital in nature</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="grants" placeholder="e.g. 100000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Type of grant/subsidy</label>
-                        <select id="grantType" onchange="calculateOtherIncome()">
-                            <option value="revenue">Revenue Grant (Taxable)</option>
-                            <option value="capital">Capital Subsidy (Reduce from asset cost)</option>
-                        </select>
-                    </div>
-                </div>
+            label {
+                display: block;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #4a5568;
+                margin-bottom: 4px;
+            }
 
-                <div class="income-card">
-                    <div class="card-title">
-                        <h4>Other Miscellaneous Income</h4>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" id="miscDesc" placeholder="e.g., Prize, reward" oninput="calculateOtherIncome()">
-                    </div>
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="miscAmount" placeholder="e.g. 5000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            .hint {
+                font-size: 0.7rem;
+                color: #718096;
+                margin-bottom: 4px;
+            }
 
-        <!-- 5. EXPENSES RELATED TO OTHER INCOME -->
-        <div class="income-category">
-            <div class="category-header">
-                <span class="category-icon">📉</span>
-                <span class="category-title">Direct Expenses (Related to above income)</span>
-            </div>
+            .input-wrapper {
+                position: relative;
+            }
 
-            <div class="income-grid">
-                <div class="income-card">
-                    <div class="form-group">
-                        <label>Collection Charges</label>
-                        <div class="hint">Charges for collecting interest/rent</div>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="collectionCharges" placeholder="e.g. 3000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            .input-prefix {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #718096;
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
 
-                <div class="income-card">
-                    <div class="form-group">
-                        <label>Legal/Professional fees for recovery</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="recoveryFees" placeholder="e.g. 5000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
+            input,
+            select,
+            textarea {
+                width: 100%;
+                padding: 8px 10px 8px 26px;
+                border: 1.5px solid #e2e8f0;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                transition: all 0.15s;
+            }
 
-                <div class="income-card">
-                    <div class="form-group">
-                        <label>Other direct expenses</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">₹</span>
-                            <input type="number" id="otherDirectExp" placeholder="e.g. 2000" oninput="calculateOtherIncome()">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            input:focus,
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #4a5568;
+                box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
+            }
 
-        <!-- Calculate Button -->
-        <button class="btn-calculate" onclick="calculateOtherIncome()">Calculate Other Business Income</button>
+            textarea {
+                padding-left: 10px;
+                resize: vertical;
+                min-height: 60px;
+            }
 
-        <!-- Results -->
-        <div class="result-box" id="resultBox" style="display: none;">
-            <div class="result-row">
-                <span class="result-label">Interest Income:</span>
-                <span class="result-value" id="resultInterest">₹0</span>
-            </div>
-            <div class="result-row">
-                <span class="result-label">Rental Income (Net):</span>
-                <span class="result-value" id="resultRent">₹0</span>
-            </div>
-            <div class="result-row">
-                <span class="result-label">Recovery of Bad Debts:</span>
-                <span class="result-value" id="resultRecoveries">₹0</span>
-            </div>
-            <div class="result-row">
-                <span class="result-label">Miscellaneous Income:</span>
-                <span class="result-value" id="resultMisc">₹0</span>
-            </div>
-            <div class="result-row">
-                <span class="result-label">Less: Direct Expenses:</span>
-                <span class="result-value" id="resultExpenses">- ₹0</span>
-            </div>
-            <div class="result-row result-total">
-                <span class="result-label">Total Other Business Income:</span>
-                <span class="result-value" id="resultTotal">₹0</span>
-            </div>
-        </div>
+            .toggle-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 5px;
+            }
 
-        <!-- Note on Capital vs Revenue -->
-        <div class="note-box">
-            <strong>📌 Capital vs Revenue:</strong> This module is for revenue income only. Capital receipts (like sale of asset, capital subsidies) are not included here.
-        </div>
-        
-        <div class="disclaimer">
-            * Other business income is added to your regular business/profession income and taxed at applicable slab rates.
-            Consult a CA for proper classification of income items.
-        </div>
-    </div>
+            .toggle-option {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
 
-    <script>
-        let recoveryItems = [];
-        let recoveryCounter = 0;
+            .toggle-option input[type="radio"] {
+                width: auto;
+                padding: 0;
+                accent-color: #4a5568;
+            }
 
-        // Initialize with one recovery item
-        window.addEventListener('load', function() {
-            addRecoveryItem();
-        });
+            .recovery-item {
+                background: #f7fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 12px;
+                margin-bottom: 10px;
+            }
 
-        function addRecoveryItem() {
-            const id = ++recoveryCounter;
-            recoveryItems.push({
-                id: id,
-                description: '',
-                year: '',
-                amount: 0
-            });
-            renderRecoveryItems();
-            calculateOtherIncome();
-        }
+            .recovery-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
 
-        function removeRecoveryItem(id) {
-            recoveryItems = recoveryItems.filter(item => item.id !== id);
-            renderRecoveryItems();
-            calculateOtherIncome();
-        }
+            .recovery-title {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #2d3748;
+            }
 
-        function updateRecoveryItem(id, field, value) {
-            const item = recoveryItems.find(i => i.id === id);
-            if (item) {
-                if (field === 'description') {
-                    item.description = value;
-                } else if (field === 'year') {
-                    item.year = value;
-                } else if (field === 'amount') {
-                    item.amount = parseFloat(value) || 0;
+            .remove-btn {
+                color: #e53e3e;
+                cursor: pointer;
+                font-size: 1rem;
+                padding: 0 5px;
+            }
+
+            .add-btn {
+                background: #48bb78;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                cursor: pointer;
+                margin: 10px 0;
+            }
+
+            .add-btn:hover {
+                background: #38a169;
+            }
+
+            .summary-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin: 20px 0;
+            }
+
+            .stat-card {
+                background: linear-gradient(135deg, #2d3748, #1a202c);
+                color: white;
+                padding: 16px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                opacity: 0.7;
+                margin-bottom: 8px;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #fbbf24;
+            }
+
+            .result-box {
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+            }
+
+            .result-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .result-row:last-child {
+                border-bottom: none;
+            }
+
+            .result-label {
+                font-size: 0.9rem;
+                opacity: 0.9;
+            }
+
+            .result-value {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+
+            .result-total {
+                font-size: 1.2rem;
+                font-weight: 800;
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 2px solid rgba(255, 255, 255, 0.3);
+            }
+
+            .btn-calculate {
+                background: #4a5568;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.15s;
+                width: 100%;
+                font-size: 1rem;
+                margin: 20px 0;
+            }
+
+            .btn-calculate:hover {
+                background: #2d3748;
+            }
+
+            .note-box {
+                background: #fef3c7;
+                border: 1px solid #fcd34d;
+                border-radius: 6px;
+                padding: 12px;
+                margin: 15px 0;
+                color: #92400e;
+                font-size: 0.85rem;
+            }
+
+            .disclaimer {
+                font-size: 0.75rem;
+                color: #718096;
+                margin-top: 16px;
+                padding-top: 12px;
+                border-top: 1px solid #e2e8f0;
+            }
+
+            @media (max-width: 640px) {
+                .income-grid {
+                    grid-template-columns: 1fr;
                 }
             }
-            calculateOtherIncome();
-        }
+        </style>
+    </head>
+    <body>
+        <div class="module-content">
+            <!-- Info Section -->
+            <div class="info-box">
+                <strong>💰 Other Business Income</strong><br />
+                Income that doesn't directly come from your main business
+                operations but is still taxable under "Profits & Gains of
+                Business or Profession".
+            </div>
 
-        function renderRecoveryItems() {
-            const container = document.getElementById('recoveriesContainer');
-            container.innerHTML = '';
-            
-            recoveryItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'recovery-item';
-                div.innerHTML = `
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Interest Income</div>
+                    <div class="stat-value" id="totalInterest">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Rental Income</div>
+                    <div class="stat-value" id="totalRent">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Recoveries</div>
+                    <div class="stat-value" id="totalRecoveries">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Misc Income</div>
+                    <div class="stat-value" id="totalMisc">₹0</div>
+                </div>
+            </div>
+
+            <!-- 1. INTEREST INCOME SECTION -->
+            <div class="income-category">
+                <div class="category-header">
+                    <span class="category-icon">🏦</span>
+                    <span class="category-title"
+                        >Interest Income from Business</span
+                    >
+                    <span class="category-sub">Taxable under PGBP</span>
+                </div>
+
+                <div class="income-grid">
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Interest on Bank Deposits</h4>
+                            <span class="card-badge">Business Account</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Interest from Business Bank Accounts</label>
+                            <div class="hint">
+                                Interest on savings/current accounts used for
+                                business
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="interestBank"
+                                    placeholder="e.g. 25000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Interest on Fixed Deposits</h4>
+                            <span class="card-badge">Business Funds</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Interest on Business FDs</label>
+                            <div class="hint">
+                                FDs made from business surplus
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="interestFD"
+                                    placeholder="e.g. 45000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Interest on Loans to Partners/Directors</h4>
+                            <span class="card-badge">Section 40A</span>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >Interest received from
+                                partners/directors</label
+                            >
+                            <div class="hint">
+                                Loans given to partners or directors from
+                                business funds
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="interestLoans"
+                                    placeholder="e.g. 35000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Interest on Income Tax Refund</h4>
+                            <span class="card-badge">Sec 244A</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Interest received on IT refund</label>
+                            <div class="hint">
+                                Interest on income tax refund related to
+                                business
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="interestITRefund"
+                                    placeholder="e.g. 8000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. RENTAL INCOME FROM BUSINESS ASSETS -->
+            <div class="income-category">
+                <div class="category-header">
+                    <span class="category-icon">🏢</span>
+                    <span class="category-title"
+                        >Rental Income from Business Assets</span
+                    >
+                    <span class="category-sub"
+                        >Taxable as Business Income (not House Property)</span
+                    >
+                </div>
+
+                <div class="info-box blue" style="margin-bottom: 15px">
+                    <strong>Note:</strong> Rent from letting out business assets
+                    (machinery, plant, furniture) is taxable as business income,
+                    not house property income.
+                </div>
+
+                <div class="income-grid">
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Plant & Machinery Rent</h4>
+                            <span class="card-badge">Business Asset</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Rent from letting out plant/machinery</label>
+                            <div class="hint">
+                                When you rent out business equipment
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentPlant"
+                                    placeholder="e.g. 120000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >Related expenses (maintenance,
+                                insurance)</label
+                            >
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentPlantExp"
+                                    placeholder="e.g. 15000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Furniture & Fixtures Rent</h4>
+                            <span class="card-badge">Business Asset</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Rent from letting out furniture</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentFurniture"
+                                    placeholder="e.g. 60000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Related expenses</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentFurnitureExp"
+                                    placeholder="e.g. 5000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Vehicle Rent</h4>
+                            <span class="card-badge">Business Asset</span>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >Rent from letting out business vehicles</label
+                            >
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentVehicle"
+                                    placeholder="e.g. 90000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Related expenses</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="rentVehicleExp"
+                                    placeholder="e.g. 12000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. RECOVERY OF BAD DEBTS & DEDUCTIONS -->
+            <div class="income-category">
+                <div class="category-header">
+                    <span class="category-icon">🔄</span>
+                    <span class="category-title"
+                        >Recovery of Bad Debts & Deductions</span
+                    >
+                    <span class="category-sub">Sec 41(1) & 41(4)</span>
+                </div>
+
+                <div class="info-box gold" style="margin-bottom: 15px">
+                    <strong>⚠️ Important:</strong> If you claimed a deduction
+                    for bad debt or expense in an earlier year, and you recover
+                    it now, it becomes taxable in the year of recovery.
+                </div>
+
+                <div id="recoveriesContainer">
+                    <!-- Dynamic recovery items will be added here -->
+                </div>
+
+                <button class="add-btn" onclick="addRecoveryItem()">
+                    + Add Recovery Item
+                </button>
+
+                <div class="form-group" style="margin-top: 15px">
+                    <label>Any other recoveries</label>
+                    <div class="hint">
+                        Specify other recoveries of previously claimed
+                        deductions
+                    </div>
+                    <textarea
+                        id="otherRecoveries"
+                        placeholder="Describe other recoveries..."
+                        oninput="calculateOtherIncome()"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Amount for other recoveries</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input
+                            type="number"
+                            id="otherRecoveriesAmt"
+                            placeholder="e.g. 10000"
+                            oninput="calculateOtherIncome()"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. MISCELLANEOUS INCOME -->
+            <div class="income-category">
+                <div class="category-header">
+                    <span class="category-icon">📦</span>
+                    <span class="category-title"
+                        >Miscellaneous Business Income</span
+                    >
+                    <span class="category-sub">Other items</span>
+                </div>
+
+                <div class="income-grid">
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Cash Back & Incentives</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Cashback from suppliers/vendors</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="cashback"
+                                    placeholder="e.g. 15000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Insurance Claims</h4>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >Insurance claim received (business
+                                assets)</label
+                            >
+                            <div class="hint">Excess over WDV is taxable</div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="insuranceClaim"
+                                    placeholder="e.g. 50000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Sale of Scrap/Waste</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Sale proceeds of scrap material</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="scrapSale"
+                                    placeholder="e.g. 25000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Foreign Exchange Gain</h4>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >Net gain on foreign exchange (business
+                                transactions)</label
+                            >
+                            <div class="hint">
+                                From export/import transactions
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="forexGain"
+                                    placeholder="e.g. 20000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Grants & Subsidies</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Revenue grants/subsidies received</label>
+                            <div class="hint">Not capital in nature</div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="grants"
+                                    placeholder="e.g. 100000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type of grant/subsidy</label>
+                            <select
+                                id="grantType"
+                                onchange="calculateOtherIncome()"
+                            >
+                                <option value="revenue">
+                                    Revenue Grant (Taxable)
+                                </option>
+                                <option value="capital">
+                                    Capital Subsidy (Reduce from asset cost)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="card-title">
+                            <h4>Other Miscellaneous Income</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input
+                                type="text"
+                                id="miscDesc"
+                                placeholder="e.g., Prize, reward"
+                                oninput="calculateOtherIncome()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="miscAmount"
+                                    placeholder="e.g. 5000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. EXPENSES RELATED TO OTHER INCOME -->
+            <div class="income-category">
+                <div class="category-header">
+                    <span class="category-icon">📉</span>
+                    <span class="category-title"
+                        >Direct Expenses (Related to above income)</span
+                    >
+                </div>
+
+                <div class="income-grid">
+                    <div class="income-card">
+                        <div class="form-group">
+                            <label>Collection Charges</label>
+                            <div class="hint">
+                                Charges for collecting interest/rent
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="collectionCharges"
+                                    placeholder="e.g. 3000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="form-group">
+                            <label>Legal/Professional fees for recovery</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="recoveryFees"
+                                    placeholder="e.g. 5000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="income-card">
+                        <div class="form-group">
+                            <label>Other direct expenses</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input
+                                    type="number"
+                                    id="otherDirectExp"
+                                    placeholder="e.g. 2000"
+                                    oninput="calculateOtherIncome()"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculate Button -->
+            <button class="btn-calculate" onclick="calculateOtherIncome()">
+                Calculate Other Business Income
+            </button>
+
+            <!-- Results -->
+            <div class="result-box" id="resultBox" style="display: none">
+                <div class="result-row">
+                    <span class="result-label">Interest Income:</span>
+                    <span class="result-value" id="resultInterest">₹0</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Rental Income (Net):</span>
+                    <span class="result-value" id="resultRent">₹0</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Recovery of Bad Debts:</span>
+                    <span class="result-value" id="resultRecoveries">₹0</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Miscellaneous Income:</span>
+                    <span class="result-value" id="resultMisc">₹0</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Less: Direct Expenses:</span>
+                    <span class="result-value" id="resultExpenses">- ₹0</span>
+                </div>
+                <div class="result-row result-total">
+                    <span class="result-label"
+                        >Total Other Business Income:</span
+                    >
+                    <span class="result-value" id="resultTotal">₹0</span>
+                </div>
+            </div>
+
+            <!-- Note on Capital vs Revenue -->
+            <div class="note-box">
+                <strong>📌 Capital vs Revenue:</strong> This module is for
+                revenue income only. Capital receipts (like sale of asset,
+                capital subsidies) are not included here.
+            </div>
+
+            <div class="disclaimer">
+                * Other business income is added to your regular
+                business/profession income and taxed at applicable slab rates.
+                Consult a CA for proper classification of income items.
+            </div>
+        </div>
+
+        <script>
+            let recoveryItems = [];
+            let recoveryCounter = 0;
+
+            // Initialize with one recovery item
+            window.addEventListener("load", function () {
+                addRecoveryItem();
+            });
+
+            function addRecoveryItem() {
+                const id = ++recoveryCounter;
+                recoveryItems.push({
+                    id: id,
+                    description: "",
+                    year: "",
+                    amount: 0,
+                });
+                renderRecoveryItems();
+                calculateOtherIncome();
+            }
+
+            function removeRecoveryItem(id) {
+                recoveryItems = recoveryItems.filter((item) => item.id !== id);
+                renderRecoveryItems();
+                calculateOtherIncome();
+            }
+
+            function updateRecoveryItem(id, field, value) {
+                const item = recoveryItems.find((i) => i.id === id);
+                if (item) {
+                    if (field === "description") {
+                        item.description = value;
+                    } else if (field === "year") {
+                        item.year = value;
+                    } else if (field === "amount") {
+                        item.amount = parseFloat(value) || 0;
+                    }
+                }
+                calculateOtherIncome();
+            }
+
+            function renderRecoveryItems() {
+                const container = document.getElementById(
+                    "recoveriesContainer",
+                );
+                container.innerHTML = "";
+
+                recoveryItems.forEach((item) => {
+                    const div = document.createElement("div");
+                    div.className = "recovery-item";
+                    div.innerHTML = `
                     <div class="recovery-header">
                         <span class="recovery-title">Recovery Item ${item.id}</span>
                         <span class="remove-btn" onclick="removeRecoveryItem(${item.id})">✕</span>
@@ -838,102 +1024,202 @@
                         </div>
                     </div>
                 `;
-                container.appendChild(div);
-            });
-        }
-
-        function calculateOtherIncome() {
-            // 1. INTEREST INCOME
-            const interestBank = parseFloat(document.getElementById('interestBank').value) || 0;
-            const interestFD = parseFloat(document.getElementById('interestFD').value) || 0;
-            const interestLoans = parseFloat(document.getElementById('interestLoans').value) || 0;
-            const interestITRefund = parseFloat(document.getElementById('interestITRefund').value) || 0;
-            
-            const totalInterest = interestBank + interestFD + interestLoans + interestITRefund;
-
-            // 2. RENTAL INCOME (Net of expenses)
-            const rentPlant = parseFloat(document.getElementById('rentPlant').value) || 0;
-            const rentPlantExp = parseFloat(document.getElementById('rentPlantExp').value) || 0;
-            const rentFurniture = parseFloat(document.getElementById('rentFurniture').value) || 0;
-            const rentFurnitureExp = parseFloat(document.getElementById('rentFurnitureExp').value) || 0;
-            const rentVehicle = parseFloat(document.getElementById('rentVehicle').value) || 0;
-            const rentVehicleExp = parseFloat(document.getElementById('rentVehicleExp').value) || 0;
-
-            const totalRentGross = rentPlant + rentFurniture + rentVehicle;
-            const totalRentExp = rentPlantExp + rentFurnitureExp + rentVehicleExp;
-            const netRent = totalRentGross - totalRentExp;
-
-            // 3. RECOVERIES
-            const recoveryAmount = recoveryItems.reduce((sum, item) => sum + (item.amount || 0), 0);
-            const otherRecoveriesAmt = parseFloat(document.getElementById('otherRecoveriesAmt').value) || 0;
-            const totalRecoveries = recoveryAmount + otherRecoveriesAmt;
-
-            // 4. MISCELLANEOUS INCOME
-            const cashback = parseFloat(document.getElementById('cashback').value) || 0;
-            const insuranceClaim = parseFloat(document.getElementById('insuranceClaim').value) || 0;
-            const scrapSale = parseFloat(document.getElementById('scrapSale').value) || 0;
-            const forexGain = parseFloat(document.getElementById('forexGain').value) || 0;
-            
-            // Grants (only revenue grants are taxable)
-            const grants = parseFloat(document.getElementById('grants').value) || 0;
-            const grantType = document.getElementById('grantType').value;
-            const taxableGrants = grantType === 'revenue' ? grants : 0;
-            
-            const miscAmount = parseFloat(document.getElementById('miscAmount').value) || 0;
-
-            const totalMisc = cashback + insuranceClaim + scrapSale + forexGain + taxableGrants + miscAmount;
-
-            // 5. DIRECT EXPENSES
-            const collectionCharges = parseFloat(document.getElementById('collectionCharges').value) || 0;
-            const recoveryFees = parseFloat(document.getElementById('recoveryFees').value) || 0;
-            const otherDirectExp = parseFloat(document.getElementById('otherDirectExp').value) || 0;
-            
-            const totalDirectExp = collectionCharges + recoveryFees + otherDirectExp;
-
-            // TOTAL OTHER BUSINESS INCOME
-            const totalOtherIncome = totalInterest + netRent + totalRecoveries + totalMisc - totalDirectExp;
-
-            // Update summary stats
-            document.getElementById('totalInterest').textContent = '₹' + totalInterest.toLocaleString('en-IN');
-            document.getElementById('totalRent').textContent = '₹' + netRent.toLocaleString('en-IN');
-            document.getElementById('totalRecoveries').textContent = '₹' + totalRecoveries.toLocaleString('en-IN');
-            document.getElementById('totalMisc').textContent = '₹' + totalMisc.toLocaleString('en-IN');
-
-            // Update detailed results
-            document.getElementById('resultInterest').textContent = '₹' + totalInterest.toLocaleString('en-IN');
-            document.getElementById('resultRent').textContent = '₹' + netRent.toLocaleString('en-IN');
-            document.getElementById('resultRecoveries').textContent = '₹' + totalRecoveries.toLocaleString('en-IN');
-            document.getElementById('resultMisc').textContent = '₹' + totalMisc.toLocaleString('en-IN');
-            document.getElementById('resultExpenses').textContent = '- ₹' + totalDirectExp.toLocaleString('en-IN');
-            document.getElementById('resultTotal').textContent = '₹' + totalOtherIncome.toLocaleString('en-IN');
-
-            document.getElementById('resultBox').style.display = 'block';
-
-            // Send result to parent
-            if (window.parent !== window) {
-                window.parent.postMessage({
-                    type: 'PGBP_RESULT',
-                    moduleId: 'other-business',
-                    amount: totalOtherIncome
-                }, '*');
+                    container.appendChild(div);
+                });
             }
-        }
 
-        // Height adjustment for iframe
-        function sendHeight() {
-            if (window.parent !== window) {
-                window.parent.postMessage({
-                    type: 'setHeight',
-                    height: document.body.scrollHeight
-                }, '*');
+            function calculateOtherIncome() {
+                // 1. INTEREST INCOME
+                const interestBank =
+                    parseFloat(document.getElementById("interestBank").value) ||
+                    0;
+                const interestFD =
+                    parseFloat(document.getElementById("interestFD").value) ||
+                    0;
+                const interestLoans =
+                    parseFloat(
+                        document.getElementById("interestLoans").value,
+                    ) || 0;
+                const interestITRefund =
+                    parseFloat(
+                        document.getElementById("interestITRefund").value,
+                    ) || 0;
+
+                const totalInterest =
+                    interestBank +
+                    interestFD +
+                    interestLoans +
+                    interestITRefund;
+
+                // 2. RENTAL INCOME (Net of expenses)
+                const rentPlant =
+                    parseFloat(document.getElementById("rentPlant").value) || 0;
+                const rentPlantExp =
+                    parseFloat(document.getElementById("rentPlantExp").value) ||
+                    0;
+                const rentFurniture =
+                    parseFloat(
+                        document.getElementById("rentFurniture").value,
+                    ) || 0;
+                const rentFurnitureExp =
+                    parseFloat(
+                        document.getElementById("rentFurnitureExp").value,
+                    ) || 0;
+                const rentVehicle =
+                    parseFloat(document.getElementById("rentVehicle").value) ||
+                    0;
+                const rentVehicleExp =
+                    parseFloat(
+                        document.getElementById("rentVehicleExp").value,
+                    ) || 0;
+
+                const totalRentGross = rentPlant + rentFurniture + rentVehicle;
+                const totalRentExp =
+                    rentPlantExp + rentFurnitureExp + rentVehicleExp;
+                const netRent = totalRentGross - totalRentExp;
+
+                // 3. RECOVERIES
+                const recoveryAmount = recoveryItems.reduce(
+                    (sum, item) => sum + (item.amount || 0),
+                    0,
+                );
+                const otherRecoveriesAmt =
+                    parseFloat(
+                        document.getElementById("otherRecoveriesAmt").value,
+                    ) || 0;
+                const totalRecoveries = recoveryAmount + otherRecoveriesAmt;
+
+                // 4. MISCELLANEOUS INCOME
+                const cashback =
+                    parseFloat(document.getElementById("cashback").value) || 0;
+                const insuranceClaim =
+                    parseFloat(
+                        document.getElementById("insuranceClaim").value,
+                    ) || 0;
+                const scrapSale =
+                    parseFloat(document.getElementById("scrapSale").value) || 0;
+                const forexGain =
+                    parseFloat(document.getElementById("forexGain").value) || 0;
+
+                // Grants (only revenue grants are taxable)
+                const grants =
+                    parseFloat(document.getElementById("grants").value) || 0;
+                const grantType = document.getElementById("grantType").value;
+                const taxableGrants = grantType === "revenue" ? grants : 0;
+
+                const miscAmount =
+                    parseFloat(document.getElementById("miscAmount").value) ||
+                    0;
+
+                const totalMisc =
+                    cashback +
+                    insuranceClaim +
+                    scrapSale +
+                    forexGain +
+                    taxableGrants +
+                    miscAmount;
+
+                // 5. DIRECT EXPENSES
+                const collectionCharges =
+                    parseFloat(
+                        document.getElementById("collectionCharges").value,
+                    ) || 0;
+                const recoveryFees =
+                    parseFloat(document.getElementById("recoveryFees").value) ||
+                    0;
+                const otherDirectExp =
+                    parseFloat(
+                        document.getElementById("otherDirectExp").value,
+                    ) || 0;
+
+                const totalDirectExp =
+                    collectionCharges + recoveryFees + otherDirectExp;
+
+                // TOTAL OTHER BUSINESS INCOME
+                const totalOtherIncome =
+                    totalInterest +
+                    netRent +
+                    totalRecoveries +
+                    totalMisc -
+                    totalDirectExp;
+
+                // Update summary stats
+                document.getElementById("totalInterest").textContent =
+                    "₹" + totalInterest.toLocaleString("en-IN");
+                document.getElementById("totalRent").textContent =
+                    "₹" + netRent.toLocaleString("en-IN");
+                document.getElementById("totalRecoveries").textContent =
+                    "₹" + totalRecoveries.toLocaleString("en-IN");
+                document.getElementById("totalMisc").textContent =
+                    "₹" + totalMisc.toLocaleString("en-IN");
+
+                // Update detailed results
+                document.getElementById("resultInterest").textContent =
+                    "₹" + totalInterest.toLocaleString("en-IN");
+                document.getElementById("resultRent").textContent =
+                    "₹" + netRent.toLocaleString("en-IN");
+                document.getElementById("resultRecoveries").textContent =
+                    "₹" + totalRecoveries.toLocaleString("en-IN");
+                document.getElementById("resultMisc").textContent =
+                    "₹" + totalMisc.toLocaleString("en-IN");
+                document.getElementById("resultExpenses").textContent =
+                    "- ₹" + totalDirectExp.toLocaleString("en-IN");
+                document.getElementById("resultTotal").textContent =
+                    "₹" + totalOtherIncome.toLocaleString("en-IN");
+
+                document.getElementById("resultBox").style.display = "block";
+                saveResultToStorage();
+                // Send result to parent
+                if (window.parent !== window) {
+                    window.parent.postMessage(
+                        {
+                            type: "PGBP_RESULT",
+                            moduleId: "other-business",
+                            amount: totalOtherIncome,
+                        },
+                        "*",
+                    );
+                }
             }
-        }
-        
-        window.addEventListener('load', sendHeight);
-        window.addEventListener('resize', sendHeight);
-        
-        const observer = new ResizeObserver(sendHeight);
-        observer.observe(document.body);
-    </script>
-</body>
+
+            // Height adjustment for iframe
+            function sendHeight() {
+                if (window.parent !== window) {
+                    window.parent.postMessage(
+                        {
+                            type: "setHeight",
+                            height: document.body.scrollHeight,
+                        },
+                        "*",
+                    );
+                }
+            }
+
+            window.addEventListener("load", sendHeight);
+            window.addEventListener("resize", sendHeight);
+
+            const observer = new ResizeObserver(sendHeight);
+            observer.observe(document.body);
+
+            // After calculating netIncome, add this:
+            function saveResultToStorage() {
+                const results = JSON.parse(
+                    localStorage.getItem("pgbp_module_results") || "{}",
+                );
+                results["business-regular"] = netIncome; // or whatever module ID
+                localStorage.setItem(
+                    "pgbp_module_results",
+                    JSON.stringify(results),
+                );
+
+                // Also trigger storage event for summary page
+                window.dispatchEvent(
+                    new StorageEvent("storage", {
+                        key: "pgbp_module_results",
+                        newValue: JSON.stringify(results),
+                    }),
+                );
+            }
+        </script>
+    </body>
 </html>

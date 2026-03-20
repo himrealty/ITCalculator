@@ -59,6 +59,25 @@
                 border-radius: 12px;
                 color: #666;
             }
+
+            /* Summary card special styling */
+            .head-card.summary-card {
+                background: linear-gradient(135deg, #48bb78, #38a169);
+                color: white;
+                border: none;
+            }
+
+            .head-card.summary-card .head-icon {
+                font-size: 2rem;
+            }
+
+            .head-card.summary-card h4 {
+                color: white;
+            }
+
+            .head-card.summary-card p {
+                color: rgba(255, 255, 255, 0.9);
+            }
         </style>
     </head>
     <body>
@@ -90,6 +109,7 @@
                             expenses & depreciation
                         </p>
                     </div>
+
                     <div
                         class="head-card module-checkbox"
                         data-module="business-44ad"
@@ -98,6 +118,7 @@
                         <h4>Presumptive Business (44AD)</h4>
                         <p>Turnover based scheme for small businesses</p>
                     </div>
+
                     <div
                         class="head-card module-checkbox"
                         data-module="business-44ae"
@@ -148,6 +169,22 @@
                         <h4>Other Business Income</h4>
                         <p>Interest, rent from business assets, etc.</p>
                     </div>
+
+                    <!-- Summary Dashboard - Opens in new tab -->
+                    <a
+                        href="/pages/pgbp/summary.html"
+                        target="_blank"
+                        style="text-decoration: none"
+                    >
+                        <div class="head-card summary-card">
+                            <div class="head-icon">📊</div>
+                            <h4>PGBP Summary Dashboard</h4>
+                            <p>
+                                Consolidated view of all selected modules with
+                                tax comparison
+                            </p>
+                        </div>
+                    </a>
                 </div>
             </div>
 

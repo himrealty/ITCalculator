@@ -1,587 +1,1464 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capital Gains Tax Calculator · ITCalculator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
-  <style>
-    :root{
-      --bg:#f0f2f5;
-      --surface:#fff;
-      --border:#e2e6ea;
-      --accent:#7c3aed;
-      --accent2:#059669;
-      --accent3:#dc2626;
-      --accentOrange:#d97706;
-      --text:#111827;
-      --muted:#6b7280;
-      --light:#f3f4f6;
-      --serif:'Lora',serif;
-      --sans:'Outfit',sans-serif;
-      --sh:0 1px 10px rgba(0,0,0,.06);
-      --sh-lg:0 4px 24px rgba(0,0,0,.10);
-    }
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capital Gains Tax Calculator · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        --bg: #f0f2f5;
+        --surface: #fff;
+        --border: #e2e6ea;
+        --accent: #7c3aed;
+        --accent2: #059669;
+        --accent3: #dc2626;
+        --accentOrange: #d97706;
+        --text: #111827;
+        --muted: #6b7280;
+        --light: #f3f4f6;
+        --serif: "Lora", serif;
+        --sans: "Outfit", sans-serif;
+        --sh: 0 1px 10px rgba(0, 0, 0, 0.06);
+        --sh-lg: 0 4px 24px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+      }
 
-    /* HERO */
-    .hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);color:#fff;padding:44px 40px 40px;position:relative;overflow:hidden;}
-    .hero::before{content:'📈';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:10rem;opacity:.06;pointer-events:none;}
-    .hi{max-width:1160px;margin:0 auto;position:relative;z-index:1;}
-    .bc{font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:12px;}
-    .bc a{color:rgba(255,255,255,.5);text-decoration:none;}
-    .bc a:hover{color:#fff;}
-    .hero h1{font-family:var(--serif);font-size:2.5rem;font-weight:600;margin-bottom:10px;line-height:1.15;}
-    .hero p{color:rgba(255,255,255,.6);font-size:.96rem;max-width:560px;line-height:1.65;}
+      /* HERO */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #1e1b4b 0%,
+          #312e81 50%,
+          #4c1d95 100%
+        );
+        color: #fff;
+        padding: 44px 40px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "📈";
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10rem;
+        opacity: 0.06;
+        pointer-events: none;
+      }
+      .hi {
+        max-width: 1160px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .bc {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+      }
+      .bc a {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+      }
+      .bc a:hover {
+        color: #fff;
+      }
+      .hero h1 {
+        font-family: var(--serif);
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1.15;
+      }
+      .hero p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.96rem;
+        max-width: 560px;
+        line-height: 1.65;
+      }
 
-    /* REGIME SWITCHER */
-    .rs-wrap{display:flex;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap;}
-    .rs-info{font-size:.78rem;color:rgba(255,255,255,.4);margin-right:4px;}
-    .rs-btn{padding:7px 18px;border-radius:20px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.65);font-family:var(--sans);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
-    .rs-btn:hover{border-color:rgba(255,255,255,.6);color:#fff;}
-    .rs-btn.on{background:#fff;color:var(--text);border-color:#fff;}
+      /* REGIME SWITCHER */
+      .rs-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .rs-info {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-right: 4px;
+      }
+      .rs-btn {
+        padding: 7px 18px;
+        border-radius: 20px;
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.65);
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .rs-btn:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        color: #fff;
+      }
+      .rs-btn.on {
+        background: #fff;
+        color: var(--text);
+        border-color: #fff;
+      }
 
-    /* IMPORTANT NOTICE */
-    .notice-bar{background:#fef3c7;border-bottom:1px solid #fde68a;padding:10px 40px;}
-    .notice-inner{max-width:1160px;margin:0 auto;font-size:.82rem;color:#92400e;line-height:1.5;}
+      /* IMPORTANT NOTICE */
+      .notice-bar {
+        background: #fef3c7;
+        border-bottom: 1px solid #fde68a;
+        padding: 10px 40px;
+      }
+      .notice-inner {
+        max-width: 1160px;
+        margin: 0 auto;
+        font-size: 0.82rem;
+        color: #92400e;
+        line-height: 1.5;
+      }
 
-    /* LAYOUT */
-    .wrap{max-width:1160px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:start;}
+      /* LAYOUT */
+      .wrap {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 28px 24px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 22px;
+        align-items: start;
+      }
 
-    /* ASSET SELECTOR */
-    .asset-selector{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:var(--sh);}
-    .as-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;}
-    .as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
-    .as-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;user-select:none;}
-    .as-item:hover{border-color:var(--accent);background:#f5f3ff;}
-    .as-item.on{border-color:var(--accent);background:#f5f3ff;}
-    .as-chk{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:.7rem;}
-    .as-item.on .as-chk{background:var(--accent);border-color:var(--accent);color:#fff;}
-    .as-icon{font-size:1.1rem;}
-    .as-label{font-size:.83rem;font-weight:600;color:var(--text);}
-    .as-sub{font-size:.7rem;color:var(--muted);}
+      /* ASSET SELECTOR */
+      .asset-selector {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: var(--sh);
+      }
+      .as-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .as-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 10px;
+      }
+      .as-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+        user-select: none;
+      }
+      .as-item:hover {
+        border-color: var(--accent);
+        background: #f5f3ff;
+      }
+      .as-item.on {
+        border-color: var(--accent);
+        background: #f5f3ff;
+      }
+      .as-chk {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.15s;
+        font-size: 0.7rem;
+      }
+      .as-item.on .as-chk {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .as-icon {
+        font-size: 1.1rem;
+      }
+      .as-label {
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .as-sub {
+        font-size: 0.7rem;
+        color: var(--muted);
+      }
 
-    /* SECTION CARDS */
-    .sc{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;box-shadow:var(--sh);overflow:hidden;}
-    .sc-h{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:border-color .2s;}
-    .sc.open .sc-h{border-bottom-color:var(--border);}
-    .sc-icon{font-size:1.2rem;flex-shrink:0;}
-    .sc-titles{flex:1;}
-    .sc-title{font-size:.92rem;font-weight:700;}
-    .sc-sub{font-size:.73rem;color:var(--muted);margin-top:2px;}
-    .sc-tag{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
-    .tag-both{background:#f3f4f6;color:var(--muted);}
-    .tag-old{background:#fef3c7;color:#92400e;}
-    .sc-total{font-size:.83rem;font-weight:700;white-space:nowrap;}
-    .sc-total.income{color:var(--accent2);}
-    .sc-total.loss{color:var(--accent3);}
-    .sc-chev{color:var(--muted);font-size:.72rem;transition:transform .2s;flex-shrink:0;}
-    .sc.open .sc-chev{transform:rotate(180deg);}
-    .sc-body{display:none;padding:20px;}
-    .sc.open .sc-body{display:block;}
+      /* SECTION CARDS */
+      .sc {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 14px;
+        box-shadow: var(--sh);
+        overflow: hidden;
+      }
+      .sc-h {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .sc.open .sc-h {
+        border-bottom-color: var(--border);
+      }
+      .sc-icon {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+      .sc-titles {
+        flex: 1;
+      }
+      .sc-title {
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+      .sc-sub {
+        font-size: 0.73rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .sc-tag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      .tag-both {
+        background: #f3f4f6;
+        color: var(--muted);
+      }
+      .tag-old {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .sc-total {
+        font-size: 0.83rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .sc-total.income {
+        color: var(--accent2);
+      }
+      .sc-total.loss {
+        color: var(--accent3);
+      }
+      .sc-chev {
+        color: var(--muted);
+        font-size: 0.72rem;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+      .sc.open .sc-chev {
+        transform: rotate(180deg);
+      }
+      .sc-body {
+        display: none;
+        padding: 20px;
+      }
+      .sc.open .sc-body {
+        display: block;
+      }
 
-    /* TRANSACTION ITEMS */
-    .txn-list{margin-bottom:12px;}
-    .txn-item{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;position:relative;}
-    .txn-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .txn-num{background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;}
-    .txn-result{font-size:.8rem;font-weight:700;}
-    .txn-result.gain{color:var(--accent2);}
-    .txn-result.loss{color:var(--accent3);}
-    .txn-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:4px;border-radius:4px;transition:all .15s;}
-    .txn-del:hover{color:var(--accent3);background:#fee2e2;}
+      /* TRANSACTION ITEMS */
+      .txn-list {
+        margin-bottom: 12px;
+      }
+      .txn-item {
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+      .txn-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .txn-num {
+        background: var(--accent);
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .txn-result {
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .txn-result.gain {
+        color: var(--accent2);
+      }
+      .txn-result.loss {
+        color: var(--accent3);
+      }
+      .txn-del {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 0.9rem;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.15s;
+      }
+      .txn-del:hover {
+        color: var(--accent3);
+        background: #fee2e2;
+      }
 
-    .add-txn{width:100%;padding:10px;border:1.5px dashed var(--border);border-radius:8px;background:transparent;font-family:var(--sans);font-size:.83rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;margin-top:4px;}
-    .add-txn:hover{border-color:var(--accent);color:var(--accent);background:#f5f3ff;}
+      .add-txn {
+        width: 100%;
+        padding: 10px;
+        border: 1.5px dashed var(--border);
+        border-radius: 8px;
+        background: transparent;
+        font-family: var(--sans);
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 4px;
+      }
+      .add-txn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: #f5f3ff;
+      }
 
-    /* FORM */
-    .sl{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);}
-    .fg{margin-bottom:14px;}
-    .fl{display:block;font-size:.83rem;font-weight:600;color:var(--text);margin-bottom:3px;}
-    .fh{font-size:.73rem;color:var(--muted);margin-bottom:5px;line-height:1.4;}
-    .fh.eg{background:#fff;border-left:3px solid var(--accent2);padding:5px 9px;border-radius:0 5px 5px 0;font-style:italic;margin-top:3px;}
-    .iw{position:relative;}
-    .ipfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600;font-size:.83rem;pointer-events:none;}
-    .fi{width:100%;padding:9px 10px 9px 24px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--sans);font-size:.88rem;color:var(--text);background:#fff;transition:border-color .15s,box-shadow .15s;-moz-appearance:textfield;}
-    .fi::-webkit-outer-spin-button,.fi::-webkit-inner-spin-button{-webkit-appearance:none;}
-    .fi:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.08);}
-    .fi.np{padding-left:10px;}
-    .fsel{width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--sans);font-size:.88rem;color:var(--text);background:#fff;cursor:pointer;}
-    .fsel:focus{outline:none;border-color:var(--accent);}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-    .tg{display:flex;gap:7px;flex-wrap:wrap;}
-    .tb{padding:6px 13px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-family:var(--sans);font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
-    .tb:hover{border-color:var(--accent);color:var(--accent);}
-    .tb.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-    .cb{display:none;background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px;margin-top:8px;}
-    .cb.show{display:block;}
+      /* FORM */
+      .sl {
+        font-size: 0.67rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--border);
+      }
+      .fg {
+        margin-bottom: 14px;
+      }
+      .fl {
+        display: block;
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .fh {
+        font-size: 0.73rem;
+        color: var(--muted);
+        margin-bottom: 5px;
+        line-height: 1.4;
+      }
+      .fh.eg {
+        background: #fff;
+        border-left: 3px solid var(--accent2);
+        padding: 5px 9px;
+        border-radius: 0 5px 5px 0;
+        font-style: italic;
+        margin-top: 3px;
+      }
+      .iw {
+        position: relative;
+      }
+      .ipfx {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.83rem;
+        pointer-events: none;
+      }
+      .fi {
+        width: 100%;
+        padding: 9px 10px 9px 24px;
+        border: 1.5px solid var(--border);
+        border-radius: 7px;
+        font-family: var(--sans);
+        font-size: 0.88rem;
+        color: var(--text);
+        background: #fff;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        -moz-appearance: textfield;
+      }
+      .fi::-webkit-outer-spin-button,
+      .fi::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .fi:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+      }
+      .fi.np {
+        padding-left: 10px;
+      }
+      .fsel {
+        width: 100%;
+        padding: 9px 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 7px;
+        font-family: var(--sans);
+        font-size: 0.88rem;
+        color: var(--text);
+        background: #fff;
+        cursor: pointer;
+      }
+      .fsel:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .three {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      .tg {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+      }
+      .tb {
+        padding: 6px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tb:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tb.on {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .cb {
+        display: none;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 13px;
+        margin-top: 8px;
+      }
+      .cb.show {
+        display: block;
+      }
 
-    .ibox{border-radius:7px;padding:9px 12px;font-size:.77rem;line-height:1.5;margin-bottom:12px;}
-    .ibox.green{background:#f0fdf4;border:1px solid #86efac;color:#15803d;}
-    .ibox.yellow{background:#fefce8;border:1px solid #fde047;color:#854d0e;}
-    .ibox.blue{background:#f5f3ff;border:1px solid #c4b5fd;color:#5b21b6;}
-    .ibox.orange{background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;}
+      .ibox {
+        border-radius: 7px;
+        padding: 9px 12px;
+        font-size: 0.77rem;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+      .ibox.green {
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        color: #15803d;
+      }
+      .ibox.yellow {
+        background: #fefce8;
+        border: 1px solid #fde047;
+        color: #854d0e;
+      }
+      .ibox.blue {
+        background: #f5f3ff;
+        border: 1px solid #c4b5fd;
+        color: #5b21b6;
+      }
+      .ibox.orange {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #c2410c;
+      }
 
-    /* PROPERTY SPECIAL */
-    .indexation-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
-    .idx-card{background:#1e1b4b;border-radius:8px;padding:12px 14px;color:#fff;}
-    .idx-title{font-size:.67rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:6px;}
-    .idx-rate{font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:4px;}
-    .idx-tax{font-size:1rem;font-weight:700;color:#86efac;}
-    .idx-recommended{border:2px solid #a78bfa;}
-    .idx-rec-label{font-size:.65rem;background:#a78bfa;color:#fff;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:6px;}
+      /* PROPERTY SPECIAL */
+      .indexation-compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .idx-card {
+        background: #1e1b4b;
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: #fff;
+      }
+      .idx-title {
+        font-size: 0.67rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 6px;
+      }
+      .idx-rate {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 4px;
+      }
+      .idx-tax {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #86efac;
+      }
+      .idx-recommended {
+        border: 2px solid #a78bfa;
+      }
+      .idx-rec-label {
+        font-size: 0.65rem;
+        background: #a78bfa;
+        color: #fff;
+        padding: 2px 7px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 6px;
+      }
 
-    /* RESULTS PANEL */
-    .rp{position:sticky;top:24px;}
-    .rc{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:16px;padding:24px;box-shadow:var(--sh-lg);}
-    .rc-title{font-family:var(--serif);font-size:1.2rem;font-weight:600;margin-bottom:4px;}
-    .rc-fy{font-size:.67rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;}
+      /* RESULTS PANEL */
+      .rp {
+        position: sticky;
+        top: 24px;
+      }
+      .rc {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        color: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: var(--sh-lg);
+      }
+      .rc-title {
+        font-family: var(--serif);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .rc-fy {
+        font-size: 0.67rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 18px;
+      }
 
-    .rrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.81rem;}
-    .rrow:last-child{border-bottom:none;}
-    .rl{color:rgba(255,255,255,.55);}
-    .rv{font-weight:700;}
-    .rrow.ded .rv{color:#fca5a5;}
-    .rrow.gain .rv{color:#86efac;}
-    .rrow.loss .rv{color:#fcd34d;}
-    .rrow.total{border-top:1px solid rgba(255,255,255,.15);border-bottom:none;padding-top:10px;margin-top:4px;}
-    .rrow.total .rl{color:#fff;font-weight:600;font-size:.86rem;}
-    .rrow.total .rv{font-size:.95rem;}
+      .rrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        font-size: 0.81rem;
+      }
+      .rrow:last-child {
+        border-bottom: none;
+      }
+      .rl {
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .rv {
+        font-weight: 700;
+      }
+      .rrow.ded .rv {
+        color: #fca5a5;
+      }
+      .rrow.gain .rv {
+        color: #86efac;
+      }
+      .rrow.loss .rv {
+        color: #fcd34d;
+      }
+      .rrow.total {
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: none;
+        padding-top: 10px;
+        margin-top: 4px;
+      }
+      .rrow.total .rl {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.86rem;
+      }
+      .rrow.total .rv {
+        font-size: 0.95rem;
+      }
 
-    .asset-summary{background:rgba(255,255,255,.05);border-radius:9px;padding:13px;margin-top:14px;}
-    .as-sum-title{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:10px;}
-    .as-sum-row{display:flex;justify-content:space-between;font-size:.8rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);}
-    .as-sum-row:last-child{border-bottom:none;}
-    .as-sum-label{color:rgba(255,255,255,.5);}
-    .as-sum-val{font-weight:600;}
+      .asset-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 9px;
+        padding: 13px;
+        margin-top: 14px;
+      }
+      .as-sum-title {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 10px;
+      }
+      .as-sum-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .as-sum-row:last-child {
+        border-bottom: none;
+      }
+      .as-sum-label {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .as-sum-val {
+        font-weight: 600;
+      }
 
-    .tax-block{background:rgba(255,255,255,.04);border-radius:9px;padding:13px;margin-top:12px;}
-    .tb-title{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:9px;}
-    .tb-row{display:flex;justify-content:space-between;font-size:.79rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);}
-    .tb-row:last-child{border-bottom:none;}
-    .tb-l{color:rgba(255,255,255,.45);}
-    .tb-v{font-weight:600;}
+      .tax-block {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 9px;
+        padding: 13px;
+        margin-top: 12px;
+      }
+      .tb-title {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 9px;
+      }
+      .tb-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.79rem;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .tb-row:last-child {
+        border-bottom: none;
+      }
+      .tb-l {
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .tb-v {
+        font-weight: 600;
+      }
 
-    .empty-rp{text-align:center;padding:14px 0;color:rgba(255,255,255,.25);font-size:.82rem;line-height:1.6;}
-    .empty-rp span{display:block;font-size:2rem;margin-bottom:8px;}
+      .empty-rp {
+        text-align: center;
+        padding: 14px 0;
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.82rem;
+        line-height: 1.6;
+      }
+      .empty-rp span {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
 
-    .calc-btn{width:100%;background:#7c3aed;color:#fff;border:none;padding:13px;border-radius:10px;font-family:var(--sans);font-weight:700;font-size:.9rem;cursor:pointer;margin-top:16px;transition:all .2s;}
-    .calc-btn:hover{background:#6d28d9;transform:translateY(-1px);}
-    .reset-btn{width:100%;background:transparent;color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1);padding:9px;border-radius:10px;font-family:var(--sans);font-size:.78rem;cursor:pointer;margin-top:8px;transition:all .2s;}
-    .reset-btn:hover{color:#fff;border-color:rgba(255,255,255,.3);}
+      .calc-btn {
+        width: 100%;
+        background: #7c3aed;
+        color: #fff;
+        border: none;
+        padding: 13px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: all 0.2s;
+      }
+      .calc-btn:hover {
+        background: #6d28d9;
+        transform: translateY(-1px);
+      }
+      .reset-btn {
+        width: 100%;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 9px;
+        border-radius: 10px;
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: all 0.2s;
+      }
+      .reset-btn:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
 
-    @media(max-width:860px){
-      .wrap{grid-template-columns:1fr;padding:14px;}
-      .rp{position:static;}
-      .hero{padding:28px 20px;}
-      .hero h1{font-size:1.9rem;}
-      .notice-bar{padding:10px 20px;}
-      .two,.three{grid-template-columns:1fr;}
-      .indexation-compare{grid-template-columns:1fr;}
-    }
-  </style>
-</head>
-<body>
-<div id="header"></div>
+      @media (max-width: 860px) {
+        .wrap {
+          grid-template-columns: 1fr;
+          padding: 14px;
+        }
+        .rp {
+          position: static;
+        }
+        .hero {
+          padding: 28px 20px;
+        }
+        .hero h1 {
+          font-size: 1.9rem;
+        }
+        .notice-bar {
+          padding: 10px 20px;
+        }
+        .two,
+        .three {
+          grid-template-columns: 1fr;
+        }
+        .indexation-compare {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hi">
-    <div class="bc"><a href="/">Home</a> › Capital Gains</div>
-    <h1>Capital Gains<br>Tax Calculator</h1>
-    <p>Sold shares, property, gold or mutual funds? Choose what you sold, enter the numbers, and we'll calculate your exact tax — including all Budget 2024 changes.</p>
-    <div class="rs-wrap">
-      <span class="rs-info">Slab rate for:</span>
-      <button class="rs-btn on" id="rs-old" onclick="setSlabRegime('old')">Old Regime</button>
-      <button class="rs-btn" id="rs-new" onclick="setSlabRegime('new')">New Regime</button>
-    </div>
-  </div>
-</div>
-
-<!-- NOTICE -->
-<div class="notice-bar">
-  <div class="notice-inner">
-    ⚡ <strong>Budget 2024 changes apply from 23 July 2024:</strong> STCG on listed equity increased to 20% (was 15%) · LTCG on equity/MF increased to 12.5% (was 10%) · Exemption limit raised to ₹1.25L · Indexation removed for most assets
-  </div>
-</div>
-
-<div class="wrap">
-  <div>
-
-    <!-- ASSET SELECTOR -->
-    <div class="asset-selector">
-      <div class="as-title">What did you sell? Select all that apply</div>
-      <div class="as-grid">
-        <div class="as-item" id="sel-equity" onclick="toggleAsset('equity')">
-          <div class="as-chk"></div><span class="as-icon">📊</span>
-          <div><div class="as-label">Stocks / Equity MF</div><div class="as-sub">Listed shares, equity mutual funds</div></div>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hi">
+        <div class="bc"><a href="/">Home</a> › Capital Gains</div>
+        <h1>Capital Gains<br />Tax Calculator</h1>
+        <p>
+          Sold shares, property, gold or mutual funds? Choose what you sold,
+          enter the numbers, and we'll calculate your exact tax — including all
+          Budget 2024 changes.
+        </p>
+        <div class="rs-wrap">
+          <span class="rs-info">Slab rate for:</span>
+          <button class="rs-btn on" id="rs-old" onclick="setSlabRegime('old')">
+            Old Regime
+          </button>
+          <button class="rs-btn" id="rs-new" onclick="setSlabRegime('new')">
+            New Regime
+          </button>
         </div>
-        <div class="as-item" id="sel-property" onclick="toggleAsset('property')">
-          <div class="as-chk"></div><span class="as-icon">🏠</span>
-          <div><div class="as-label">Property</div><div class="as-sub">Land, house, flat, building</div></div>
-        </div>
-        <div class="as-item" id="sel-gold" onclick="toggleAsset('gold')">
-          <div class="as-chk"></div><span class="as-icon">🥇</span>
-          <div><div class="as-label">Gold / Jewellery</div><div class="as-sub">Physical gold, jewellery, gold ETF</div></div>
-        </div>
-        <div class="as-item" id="sel-debt" onclick="toggleAsset('debt')">
-          <div class="as-chk"></div><span class="as-icon">📄</span>
-          <div><div class="as-label">Debt MF / Bonds</div><div class="as-sub">Debt funds, bonds, debentures</div></div>
-        </div>
-        <div class="as-item" id="sel-unlisted" onclick="toggleAsset('unlisted')">
-          <div class="as-chk"></div><span class="as-icon">🏢</span>
-          <div><div class="as-label">Unlisted Shares</div><div class="as-sub">Private company shares</div></div>
-        </div>
-        <div class="as-item" id="sel-other" onclick="toggleAsset('other')">
-          <div class="as-chk"></div><span class="as-icon">💎</span>
-          <div><div class="as-label">Other Assets</div><div class="as-sub">Crypto, art, patents etc</div></div>
-        </div>
       </div>
     </div>
 
-    <!-- EQUITY SECTION -->
-    <div class="sc" id="card-equity" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">📊</span>
-        <div class="sc-titles"><div class="sc-title">Stocks & Equity Mutual Funds</div><div class="sc-sub">Listed shares, equity MF, ELSS — Budget 2024 rates apply</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-equity">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox blue">💡 For stocks and equity mutual funds, tax depends on <strong>how long you held them</strong>. Held more than 12 months = Long Term (12.5%). Held 12 months or less = Short Term (20%). These rates apply from 23 July 2024.</div>
-        <div class="txn-list" id="txns-equity"></div>
-        <button class="add-txn" onclick="addTxn('equity')">+ Add another sale</button>
+    <!-- NOTICE -->
+    <div class="notice-bar">
+      <div class="notice-inner">
+        ⚡ <strong>Budget 2024 changes apply from 23 July 2024:</strong> STCG on
+        listed equity increased to 20% (was 15%) · LTCG on equity/MF increased
+        to 12.5% (was 10%) · Exemption limit raised to ₹1.25L · Indexation
+        removed for most assets
       </div>
     </div>
 
-    <!-- PROPERTY SECTION -->
-    <div class="sc" id="card-property" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">🏠</span>
-        <div class="sc-titles"><div class="sc-title">Property (Land / House / Flat)</div><div class="sc-sub">Special indexation choice for pre-23 Jul 2024 purchases</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-property">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox orange">🏠 Property held more than <strong>24 months</strong> = Long Term. If you bought it <strong>before 23 July 2024</strong>, you get to <strong>choose</strong> between 12.5% without indexation OR 20% with indexation — we'll show you which is better.</div>
-        <div class="txn-list" id="txns-property"></div>
-        <button class="add-txn" onclick="addTxn('property')">+ Add another property sale</button>
-      </div>
-    </div>
-
-    <!-- GOLD SECTION -->
-    <div class="sc" id="card-gold" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">🥇</span>
-        <div class="sc-titles"><div class="sc-title">Gold & Jewellery</div><div class="sc-sub">Physical gold, jewellery, gold ETF/funds</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-gold">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox yellow">💛 Gold held more than <strong>24 months</strong> = Long Term at 12.5%. Held less = Short Term at slab rate. Note: Gold ETF listed on exchange qualifies as long term after <strong>12 months</strong> (from Apr 2025 onwards).</div>
-        <div class="txn-list" id="txns-gold"></div>
-        <button class="add-txn" onclick="addTxn('gold')">+ Add another gold sale</button>
-      </div>
-    </div>
-
-    <!-- DEBT MF SECTION -->
-    <div class="sc" id="card-debt" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">📄</span>
-        <div class="sc-titles"><div class="sc-title">Debt Mutual Funds & Bonds</div><div class="sc-sub">Always taxed at slab rate — no LTCG benefit</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-debt">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox yellow">⚠️ Debt mutual funds, bonds and debentures are <strong>always taxed at your income slab rate</strong> — regardless of how long you held them. There is no Long Term benefit here after the 2023 changes.</div>
-        <div class="txn-list" id="txns-debt"></div>
-        <button class="add-txn" onclick="addTxn('debt')">+ Add another debt MF/bond sale</button>
-      </div>
-    </div>
-
-    <!-- UNLISTED SHARES -->
-    <div class="sc" id="card-unlisted" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">🏢</span>
-        <div class="sc-titles"><div class="sc-title">Unlisted Shares</div><div class="sc-sub">Private company, startup shares — 24 month rule</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-unlisted">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox blue">💡 Unlisted (private company) shares held more than <strong>24 months</strong> = Long Term at 12.5%. Held less = Short Term at your slab rate.</div>
-        <div class="txn-list" id="txns-unlisted"></div>
-        <button class="add-txn" onclick="addTxn('unlisted')">+ Add another unlisted share sale</button>
-      </div>
-    </div>
-
-    <!-- OTHER ASSETS -->
-    <div class="sc" id="card-other" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">💎</span>
-        <div class="sc-titles"><div class="sc-title">Other Capital Assets</div><div class="sc-sub">Crypto treated as VDA (30%), art, patents, trademarks</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total" id="total-other">₹0</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox orange">⚠️ <strong>Crypto / VDA (Virtual Digital Assets):</strong> Always taxed at flat 30% regardless of holding period. No deduction, no set-off against other losses.<br><strong>Other assets</strong> (art, patents): 24 month rule applies — LTCG at 12.5%, STCG at slab rate.</div>
-        <div class="txn-list" id="txns-other"></div>
-        <button class="add-txn" onclick="addTxn('other')">+ Add another asset sale</button>
-      </div>
-    </div>
-
-    <!-- EXEMPTIONS SECTION -->
-    <div class="sc" id="card-exemptions" style="display:none;">
-      <div class="sc-h" onclick="this.parentElement.classList.toggle('open')">
-        <span class="sc-icon">🛡️</span>
-        <div class="sc-titles"><div class="sc-title">Tax Exemptions on Capital Gains</div><div class="sc-sub">Sec 54, 54EC, 54F — reinvest to save tax</div></div>
-        <span class="sc-tag tag-both">Both Regimes</span>
-        <span class="sc-total income" id="total-exemptions">₹0 saved</span>
-        <span class="sc-chev">▼</span>
-      </div>
-      <div class="sc-body">
-        <div class="ibox green">✅ If you reinvest your capital gains, you may not have to pay tax on them at all. These exemptions work in both regimes.</div>
-        <div class="fg">
-          <label class="fl">Section 54 — Sold a house and buying a new one?</label>
-          <div class="fh">Buy/construct a new residential house within 2 years (or 3 years if constructing). LTCG exempt up to ₹10 crore.</div>
-          <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="sec54" placeholder="Amount reinvested in new house" oninput="calcAll()"/></div>
-        </div>
-        <div class="fg">
-          <label class="fl">Section 54EC — Investing in Capital Gain Bonds (NHAI/REC)?</label>
-          <div class="fh">Invest within 6 months of sale. Max ₹50 lakh. 5-year lock-in. Only for land/building LTCG.</div>
-          <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="sec54ec" placeholder="Amount invested in 54EC bonds" oninput="calcAll()"/></div>
-        </div>
-        <div class="fg">
-          <label class="fl">Section 54F — Sold any asset (not a house) and buying a residential house?</label>
-          <div class="fh">Invest NET SALE PROCEEDS (not just gain) in a new house within 2 years. Proportional exemption if partial investment.</div>
-          <div class="two">
-            <div>
-              <div class="fh">Net sale proceeds</div>
-              <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="sec54f-proceeds" placeholder="Total sale amount" oninput="calcAll()"/></div>
+    <div class="wrap">
+      <div>
+        <!-- ASSET SELECTOR -->
+        <div class="asset-selector">
+          <div class="as-title">What did you sell? Select all that apply</div>
+          <div class="as-grid">
+            <div
+              class="as-item"
+              id="sel-equity"
+              onclick="toggleAsset('equity')"
+            >
+              <div class="as-chk"></div>
+              <span class="as-icon">📊</span>
+              <div>
+                <div class="as-label">Stocks / Equity MF</div>
+                <div class="as-sub">Listed shares, equity mutual funds</div>
+              </div>
             </div>
-            <div>
-              <div class="fh">Amount invested in new house</div>
-              <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="sec54f-invested" placeholder="Amount reinvested" oninput="calcAll()"/></div>
+            <div
+              class="as-item"
+              id="sel-property"
+              onclick="toggleAsset('property')"
+            >
+              <div class="as-chk"></div>
+              <span class="as-icon">🏠</span>
+              <div>
+                <div class="as-label">Property</div>
+                <div class="as-sub">Land, house, flat, building</div>
+              </div>
+            </div>
+            <div class="as-item" id="sel-gold" onclick="toggleAsset('gold')">
+              <div class="as-chk"></div>
+              <span class="as-icon">🥇</span>
+              <div>
+                <div class="as-label">Gold / Jewellery</div>
+                <div class="as-sub">Physical gold, jewellery, gold ETF</div>
+              </div>
+            </div>
+            <div class="as-item" id="sel-debt" onclick="toggleAsset('debt')">
+              <div class="as-chk"></div>
+              <span class="as-icon">📄</span>
+              <div>
+                <div class="as-label">Debt MF / Bonds</div>
+                <div class="as-sub">Debt funds, bonds, debentures</div>
+              </div>
+            </div>
+            <div
+              class="as-item"
+              id="sel-unlisted"
+              onclick="toggleAsset('unlisted')"
+            >
+              <div class="as-chk"></div>
+              <span class="as-icon">🏢</span>
+              <div>
+                <div class="as-label">Unlisted Shares</div>
+                <div class="as-sub">Private company shares</div>
+              </div>
+            </div>
+            <div class="as-item" id="sel-other" onclick="toggleAsset('other')">
+              <div class="as-chk"></div>
+              <span class="as-icon">💎</span>
+              <div>
+                <div class="as-label">Other Assets</div>
+                <div class="as-sub">Crypto, art, patents etc</div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="fg">
-          <label class="fl">Section 54B — Sold agricultural land and buying new agri land?</label>
-          <div class="fh">Buy new agricultural land within 2 years. Gain exempt up to reinvestment amount.</div>
-          <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="sec54b" placeholder="Amount reinvested in agricultural land" oninput="calcAll()"/></div>
+
+        <!-- EQUITY SECTION -->
+        <div class="sc" id="card-equity" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">📊</span>
+            <div class="sc-titles">
+              <div class="sc-title">Stocks & Equity Mutual Funds</div>
+              <div class="sc-sub">
+                Listed shares, equity MF, ELSS — Budget 2024 rates apply
+              </div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-equity">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 For stocks and equity mutual funds, tax depends on
+              <strong>how long you held them</strong>. Held more than 12 months
+              = Long Term (12.5%). Held 12 months or less = Short Term (20%).
+              These rates apply from 23 July 2024.
+            </div>
+            <div class="txn-list" id="txns-equity"></div>
+            <button class="add-txn" onclick="addTxn('equity')">
+              + Add another sale
+            </button>
+          </div>
+        </div>
+
+        <!-- PROPERTY SECTION -->
+        <div class="sc" id="card-property" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🏠</span>
+            <div class="sc-titles">
+              <div class="sc-title">Property (Land / House / Flat)</div>
+              <div class="sc-sub">
+                Special indexation choice for pre-23 Jul 2024 purchases
+              </div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-property">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox orange">
+              🏠 Property held more than <strong>24 months</strong> = Long Term.
+              If you bought it <strong>before 23 July 2024</strong>, you get to
+              <strong>choose</strong> between 12.5% without indexation OR 20%
+              with indexation — we'll show you which is better.
+            </div>
+            <div class="txn-list" id="txns-property"></div>
+            <button class="add-txn" onclick="addTxn('property')">
+              + Add another property sale
+            </button>
+          </div>
+        </div>
+
+        <!-- GOLD SECTION -->
+        <div class="sc" id="card-gold" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🥇</span>
+            <div class="sc-titles">
+              <div class="sc-title">Gold & Jewellery</div>
+              <div class="sc-sub">Physical gold, jewellery, gold ETF/funds</div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-gold">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox yellow">
+              💛 Gold held more than <strong>24 months</strong> = Long Term at
+              12.5%. Held less = Short Term at slab rate. Note: Gold ETF listed
+              on exchange qualifies as long term after
+              <strong>12 months</strong> (from Apr 2025 onwards).
+            </div>
+            <div class="txn-list" id="txns-gold"></div>
+            <button class="add-txn" onclick="addTxn('gold')">
+              + Add another gold sale
+            </button>
+          </div>
+        </div>
+
+        <!-- DEBT MF SECTION -->
+        <div class="sc" id="card-debt" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">📄</span>
+            <div class="sc-titles">
+              <div class="sc-title">Debt Mutual Funds & Bonds</div>
+              <div class="sc-sub">
+                Always taxed at slab rate — no LTCG benefit
+              </div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-debt">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox yellow">
+              ⚠️ Debt mutual funds, bonds and debentures are
+              <strong>always taxed at your income slab rate</strong> —
+              regardless of how long you held them. There is no Long Term
+              benefit here after the 2023 changes.
+            </div>
+            <div class="txn-list" id="txns-debt"></div>
+            <button class="add-txn" onclick="addTxn('debt')">
+              + Add another debt MF/bond sale
+            </button>
+          </div>
+        </div>
+
+        <!-- UNLISTED SHARES -->
+        <div class="sc" id="card-unlisted" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🏢</span>
+            <div class="sc-titles">
+              <div class="sc-title">Unlisted Shares</div>
+              <div class="sc-sub">
+                Private company, startup shares — 24 month rule
+              </div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-unlisted">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox blue">
+              💡 Unlisted (private company) shares held more than
+              <strong>24 months</strong> = Long Term at 12.5%. Held less = Short
+              Term at your slab rate.
+            </div>
+            <div class="txn-list" id="txns-unlisted"></div>
+            <button class="add-txn" onclick="addTxn('unlisted')">
+              + Add another unlisted share sale
+            </button>
+          </div>
+        </div>
+
+        <!-- OTHER ASSETS -->
+        <div class="sc" id="card-other" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">💎</span>
+            <div class="sc-titles">
+              <div class="sc-title">Other Capital Assets</div>
+              <div class="sc-sub">
+                Crypto treated as VDA (30%), art, patents, trademarks
+              </div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total" id="total-other">₹0</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox orange">
+              ⚠️ <strong>Crypto / VDA (Virtual Digital Assets):</strong> Always
+              taxed at flat 30% regardless of holding period. No deduction, no
+              set-off against other losses.<br /><strong>Other assets</strong>
+              (art, patents): 24 month rule applies — LTCG at 12.5%, STCG at
+              slab rate.
+            </div>
+            <div class="txn-list" id="txns-other"></div>
+            <button class="add-txn" onclick="addTxn('other')">
+              + Add another asset sale
+            </button>
+          </div>
+        </div>
+
+        <!-- EXEMPTIONS SECTION -->
+        <div class="sc" id="card-exemptions" style="display: none">
+          <div
+            class="sc-h"
+            onclick="this.parentElement.classList.toggle('open')"
+          >
+            <span class="sc-icon">🛡️</span>
+            <div class="sc-titles">
+              <div class="sc-title">Tax Exemptions on Capital Gains</div>
+              <div class="sc-sub">Sec 54, 54EC, 54F — reinvest to save tax</div>
+            </div>
+            <span class="sc-tag tag-both">Both Regimes</span>
+            <span class="sc-total income" id="total-exemptions">₹0 saved</span>
+            <span class="sc-chev">▼</span>
+          </div>
+          <div class="sc-body">
+            <div class="ibox green">
+              ✅ If you reinvest your capital gains, you may not have to pay tax
+              on them at all. These exemptions work in both regimes.
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Section 54 — Sold a house and buying a new one?</label
+              >
+              <div class="fh">
+                Buy/construct a new residential house within 2 years (or 3 years
+                if constructing). LTCG exempt up to ₹10 crore.
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="sec54"
+                  placeholder="Amount reinvested in new house"
+                  oninput="calcAll()"
+                />
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Section 54EC — Investing in Capital Gain Bonds
+                (NHAI/REC)?</label
+              >
+              <div class="fh">
+                Invest within 6 months of sale. Max ₹50 lakh. 5-year lock-in.
+                Only for land/building LTCG.
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="sec54ec"
+                  placeholder="Amount invested in 54EC bonds"
+                  oninput="calcAll()"
+                />
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Section 54F — Sold any asset (not a house) and buying a
+                residential house?</label
+              >
+              <div class="fh">
+                Invest NET SALE PROCEEDS (not just gain) in a new house within 2
+                years. Proportional exemption if partial investment.
+              </div>
+              <div class="two">
+                <div>
+                  <div class="fh">Net sale proceeds</div>
+                  <div class="iw">
+                    <span class="ipfx">₹</span
+                    ><input
+                      type="number"
+                      class="fi"
+                      id="sec54f-proceeds"
+                      placeholder="Total sale amount"
+                      oninput="calcAll()"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div class="fh">Amount invested in new house</div>
+                  <div class="iw">
+                    <span class="ipfx">₹</span
+                    ><input
+                      type="number"
+                      class="fi"
+                      id="sec54f-invested"
+                      placeholder="Amount reinvested"
+                      oninput="calcAll()"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl"
+                >Section 54B — Sold agricultural land and buying new agri
+                land?</label
+              >
+              <div class="fh">
+                Buy new agricultural land within 2 years. Gain exempt up to
+                reinvestment amount.
+              </div>
+              <div class="iw">
+                <span class="ipfx">₹</span
+                ><input
+                  type="number"
+                  class="fi"
+                  id="sec54b"
+                  placeholder="Amount reinvested in agricultural land"
+                  oninput="calcAll()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div class="rp">
+        <div class="rc">
+          <div class="rc-title">Capital Gains Summary</div>
+          <div class="rc-fy">FY 2024-25 · AY 2025-26</div>
+
+          <div id="rp-empty" class="empty-rp">
+            <span>📈</span>
+            Select what you sold on the left to see your capital gains tax here.
+          </div>
+
+          <div id="rp-content" style="display: none">
+            <div class="asset-summary" id="asset-summary-block"></div>
+
+            <div
+              style="
+                margin-top: 14px;
+                padding-top: 14px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              <div class="rrow gain">
+                <span class="rl">Total STCG (Short Term)</span>
+                <span class="rv" id="r-stcg">₹0</span>
+              </div>
+              <div class="rrow gain">
+                <span class="rl">Total LTCG (Long Term)</span>
+                <span class="rv" id="r-ltcg">₹0</span>
+              </div>
+              <div class="rrow">
+                <span class="rl">Slab-Rate Gains</span>
+                <span class="rv" id="r-slab">₹0</span>
+              </div>
+              <div class="rrow ded">
+                <span class="rl">Less: Exemptions (54/54EC/54F)</span>
+                <span class="rv" id="r-exempt">- ₹0</span>
+              </div>
+              <div class="rrow total gain">
+                <span class="rl">Net Taxable Capital Gains</span>
+                <span class="rv" id="r-netGain">₹0</span>
+              </div>
+            </div>
+
+            <div class="tax-block">
+              <div class="tb-title">Tax Breakdown</div>
+              <div class="tb-row">
+                <span class="tb-l">STCG Tax @ 20% (Sec 111A)</span>
+                <span class="tb-v" id="r-stcgTax">₹0</span>
+              </div>
+              <div class="tb-row">
+                <span class="tb-l">LTCG Tax @ 12.5%</span>
+                <span class="tb-v" id="r-ltcgTax">₹0</span>
+              </div>
+              <div class="tb-row">
+                <span class="tb-l">Slab Rate Gains Tax</span>
+                <span class="tb-v" id="r-slabTax">₹0</span>
+              </div>
+              <div class="tb-row">
+                <span class="tb-l">Crypto / VDA Tax @ 30%</span>
+                <span class="tb-v" id="r-cryptoTax">₹0</span>
+              </div>
+              <div
+                class="tb-row"
+                style="
+                  border-top: 1px solid rgba(255, 255, 255, 0.1);
+                  padding-top: 6px;
+                  margin-top: 4px;
+                "
+              >
+                <span class="tb-l">Subtotal Tax</span>
+                <span class="tb-v" id="r-subtotal">₹0</span>
+              </div>
+              <div class="tb-row">
+                <span class="tb-l">+ Cess @ 4%</span>
+                <span class="tb-v" id="r-cess">₹0</span>
+              </div>
+              <div class="tb-row" style="font-weight: 700">
+                <span class="tb-l" style="color: #fff"
+                  >Total Capital Gains Tax</span
+                >
+                <span class="tb-v" style="color: #fca5a5" id="r-total">₹0</span>
+              </div>
+            </div>
+
+            <div class="tax-block" id="setoff-block" style="display: none">
+              <div class="tb-title">Loss Set-Off Rules</div>
+              <div id="setoff-content"></div>
+            </div>
+          </div>
+
+          <button class="calc-btn" onclick="calcAll()">Calculate Tax</button>
+          <button class="reset-btn" onclick="resetAll()">↺ Start Over</button>
         </div>
       </div>
     </div>
 
-  </div>
+    <div id="footer"></div>
+    <script src="/js/formula.js"></script>
+    <script>
+      // ── STATE ──────────────────────────────────────────────────────────────
+      let slabRegime = "old";
+      let txnCounters = {
+        equity: 0,
+        property: 0,
+        gold: 0,
+        debt: 0,
+        unlisted: 0,
+        other: 0,
+      };
+      let activeAssets = new Set();
 
-  <!-- RESULTS PANEL -->
-  <div class="rp">
-    <div class="rc">
-      <div class="rc-title">Capital Gains Summary</div>
-      <div class="rc-fy">FY 2024-25 · AY 2025-26</div>
+      // CII values for indexation
+      const CII = {
+        "2001-02": 100,
+        "2002-03": 105,
+        "2003-04": 109,
+        "2004-05": 113,
+        "2005-06": 117,
+        "2006-07": 122,
+        "2007-08": 129,
+        "2008-09": 137,
+        "2009-10": 148,
+        "2010-11": 167,
+        "2011-12": 184,
+        "2012-13": 200,
+        "2013-14": 220,
+        "2014-15": 240,
+        "2015-16": 254,
+        "2016-17": 264,
+        "2017-18": 272,
+        "2018-19": 280,
+        "2019-20": 289,
+        "2020-21": 301,
+        "2021-22": 317,
+        "2022-23": 331,
+        "2023-24": 348,
+        "2024-25": 363,
+      };
 
-      <div id="rp-empty" class="empty-rp">
-        <span>📈</span>
-        Select what you sold on the left to see your capital gains tax here.
-      </div>
+      // Slab tax rates
+      const SLABS_OLD = [
+        { min: 0, max: 250000, rate: 0 },
+        { min: 250000, max: 500000, rate: 5 },
+        { min: 500000, max: 1000000, rate: 20 },
+        { min: 1000000, max: Infinity, rate: 30 },
+      ];
+      const SLABS_NEW = [
+        { min: 0, max: 300000, rate: 0 },
+        { min: 300000, max: 600000, rate: 5 },
+        { min: 600000, max: 900000, rate: 10 },
+        { min: 900000, max: 1200000, rate: 15 },
+        { min: 1200000, max: 1500000, rate: 20 },
+        { min: 1500000, max: Infinity, rate: 30 },
+      ];
 
-      <div id="rp-content" style="display:none;">
-        <div class="asset-summary" id="asset-summary-block"></div>
+      // ── INIT ───────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/components/header.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("header").innerHTML = d));
+        fetch("/components/footer.html")
+          .then((r) => r.text())
+          .then((d) => (document.getElementById("footer").innerHTML = d));
+      });
 
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);">
-          <div class="rrow gain">
-            <span class="rl">Total STCG (Short Term)</span>
-            <span class="rv" id="r-stcg">₹0</span>
-          </div>
-          <div class="rrow gain">
-            <span class="rl">Total LTCG (Long Term)</span>
-            <span class="rv" id="r-ltcg">₹0</span>
-          </div>
-          <div class="rrow">
-            <span class="rl">Slab-Rate Gains</span>
-            <span class="rv" id="r-slab">₹0</span>
-          </div>
-          <div class="rrow ded">
-            <span class="rl">Less: Exemptions (54/54EC/54F)</span>
-            <span class="rv" id="r-exempt">- ₹0</span>
-          </div>
-          <div class="rrow total gain">
-            <span class="rl">Net Taxable Capital Gains</span>
-            <span class="rv" id="r-netGain">₹0</span>
-          </div>
-        </div>
+      // ── HELPERS ────────────────────────────────────────────────────────────
+      function gv(id) {
+        return parseFloat(document.getElementById(id)?.value) || 0;
+      }
+      function fmt(n) {
+        if (!n || isNaN(n)) return "₹0";
+        return (
+          (n < 0 ? "- ₹" : "₹") +
+          Math.abs(Math.round(n)).toLocaleString("en-IN")
+        );
+      }
+      function fmtL(n) {
+        const a = Math.abs(n);
+        if (a >= 10000000)
+          return (n < 0 ? "- " : "") + "₹" + (a / 10000000).toFixed(2) + " Cr";
+        if (a >= 100000)
+          return (n < 0 ? "- " : "") + "₹" + (a / 100000).toFixed(2) + " L";
+        return fmt(n);
+      }
+      function slabTax(income, regime) {
+        const slabs = regime === "new" ? SLABS_NEW : SLABS_OLD;
+        return slabs.reduce((t, s) => {
+          if (income <= s.min) return t;
+          return t + ((Math.min(income, s.max) - s.min) * s.rate) / 100;
+        }, 0);
+      }
 
-        <div class="tax-block">
-          <div class="tb-title">Tax Breakdown</div>
-          <div class="tb-row">
-            <span class="tb-l">STCG Tax @ 20% (Sec 111A)</span>
-            <span class="tb-v" id="r-stcgTax">₹0</span>
-          </div>
-          <div class="tb-row">
-            <span class="tb-l">LTCG Tax @ 12.5%</span>
-            <span class="tb-v" id="r-ltcgTax">₹0</span>
-          </div>
-          <div class="tb-row">
-            <span class="tb-l">Slab Rate Gains Tax</span>
-            <span class="tb-v" id="r-slabTax">₹0</span>
-          </div>
-          <div class="tb-row">
-            <span class="tb-l">Crypto / VDA Tax @ 30%</span>
-            <span class="tb-v" id="r-cryptoTax">₹0</span>
-          </div>
-          <div class="tb-row" style="border-top:1px solid rgba(255,255,255,.1);padding-top:6px;margin-top:4px;">
-            <span class="tb-l">Subtotal Tax</span>
-            <span class="tb-v" id="r-subtotal">₹0</span>
-          </div>
-          <div class="tb-row">
-            <span class="tb-l">+ Cess @ 4%</span>
-            <span class="tb-v" id="r-cess">₹0</span>
-          </div>
-          <div class="tb-row" style="font-weight:700;">
-            <span class="tb-l" style="color:#fff;">Total Capital Gains Tax</span>
-            <span class="tb-v" style="color:#fca5a5;" id="r-total">₹0</span>
-          </div>
-        </div>
+      // ── REGIME ─────────────────────────────────────────────────────────────
+      function setSlabRegime(r) {
+        slabRegime = r;
+        ["old", "new"].forEach((x) =>
+          document.getElementById("rs-" + x).classList.toggle("on", x === r),
+        );
+        calcAll();
+      }
 
-        <div class="tax-block" id="setoff-block" style="display:none;">
-          <div class="tb-title">Loss Set-Off Rules</div>
-          <div id="setoff-content"></div>
-        </div>
+      // ── ASSET TOGGLE ───────────────────────────────────────────────────────
+      function toggleAsset(key) {
+        const isOn = activeAssets.has(key);
+        const item = document.getElementById("sel-" + key);
+        const card = document.getElementById("card-" + key);
+        if (isOn) {
+          activeAssets.delete(key);
+          item.classList.remove("on");
+          item.querySelector(".as-chk").textContent = "";
+          card.style.display = "none";
+        } else {
+          activeAssets.add(key);
+          item.classList.add("on");
+          item.querySelector(".as-chk").textContent = "✓";
+          card.style.display = "block";
+          card.classList.add("open");
+          if (txnCounters[key] === 0) addTxn(key);
+          // Show exemptions card whenever any asset is active
+          document.getElementById("card-exemptions").style.display = "block";
+        }
+        calcAll();
+      }
 
-      </div>
+      // ── ADD TRANSACTION ────────────────────────────────────────────────────
+      function addTxn(assetType) {
+        const id = ++txnCounters[assetType];
+        const uid = `${assetType}-${id}`;
+        const container = document.getElementById(`txns-${assetType}`);
+        const div = document.createElement("div");
+        div.className = "txn-item";
+        div.id = `txn-${uid}`;
+        div.innerHTML = txnHTML(assetType, uid, id);
+        container.appendChild(div);
+        calcAll();
+      }
 
-      <button class="calc-btn" onclick="calcAll()">Calculate Tax</button>
-      <button class="reset-btn" onclick="resetAll()">↺ Start Over</button>
-    </div>
-  </div>
-
-</div>
-
-<div id="footer"></div>
-<script src="/js/formula.js"></script>
-<script>
-// ── STATE ──────────────────────────────────────────────────────────────
-let slabRegime = 'old';
-let txnCounters = { equity:0, property:0, gold:0, debt:0, unlisted:0, other:0 };
-let activeAssets = new Set();
-
-// CII values for indexation
-const CII = {
-  '2001-02':100,'2002-03':105,'2003-04':109,'2004-05':113,'2005-06':117,
-  '2006-07':122,'2007-08':129,'2008-09':137,'2009-10':148,'2010-11':167,
-  '2011-12':184,'2012-13':200,'2013-14':220,'2014-15':240,'2015-16':254,
-  '2016-17':264,'2017-18':272,'2018-19':280,'2019-20':289,'2020-21':301,
-  '2021-22':317,'2022-23':331,'2023-24':348,'2024-25':363
-};
-
-// Slab tax rates
-const SLABS_OLD = [
-  {min:0,max:250000,rate:0},{min:250000,max:500000,rate:5},
-  {min:500000,max:1000000,rate:20},{min:1000000,max:Infinity,rate:30}
-];
-const SLABS_NEW = [
-  {min:0,max:300000,rate:0},{min:300000,max:600000,rate:5},
-  {min:600000,max:900000,rate:10},{min:900000,max:1200000,rate:15},
-  {min:1200000,max:1500000,rate:20},{min:1500000,max:Infinity,rate:30}
-];
-
-// ── INIT ───────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('/components/header.html').then(r=>r.text()).then(d=>document.getElementById('header').innerHTML=d);
-  fetch('/components/footer.html').then(r=>r.text()).then(d=>document.getElementById('footer').innerHTML=d);
-});
-
-// ── HELPERS ────────────────────────────────────────────────────────────
-function gv(id){ return parseFloat(document.getElementById(id)?.value)||0; }
-function fmt(n){
-  if(!n||isNaN(n)) return '₹0';
-  return (n<0?'- ₹':'₹')+Math.abs(Math.round(n)).toLocaleString('en-IN');
-}
-function fmtL(n){
-  const a=Math.abs(n);
-  if(a>=10000000) return (n<0?'- ':'')+'₹'+(a/10000000).toFixed(2)+' Cr';
-  if(a>=100000)   return (n<0?'- ':'')+'₹'+(a/100000).toFixed(2)+' L';
-  return fmt(n);
-}
-function slabTax(income, regime){
-  const slabs = regime==='new' ? SLABS_NEW : SLABS_OLD;
-  return slabs.reduce((t,s)=>{
-    if(income<=s.min) return t;
-    return t + (Math.min(income,s.max)-s.min)*s.rate/100;
-  },0);
-}
-
-// ── REGIME ─────────────────────────────────────────────────────────────
-function setSlabRegime(r){
-  slabRegime = r;
-  ['old','new'].forEach(x=>document.getElementById('rs-'+x).classList.toggle('on',x===r));
-  calcAll();
-}
-
-// ── ASSET TOGGLE ───────────────────────────────────────────────────────
-function toggleAsset(key){
-  const isOn = activeAssets.has(key);
-  const item = document.getElementById('sel-'+key);
-  const card = document.getElementById('card-'+key);
-  if(isOn){
-    activeAssets.delete(key);
-    item.classList.remove('on');
-    item.querySelector('.as-chk').textContent='';
-    card.style.display='none';
-  } else {
-    activeAssets.add(key);
-    item.classList.add('on');
-    item.querySelector('.as-chk').textContent='✓';
-    card.style.display='block';
-    card.classList.add('open');
-    if(txnCounters[key]===0) addTxn(key);
-    // Show exemptions card whenever any asset is active
-    document.getElementById('card-exemptions').style.display='block';
-  }
-  calcAll();
-}
-
-// ── ADD TRANSACTION ────────────────────────────────────────────────────
-function addTxn(assetType){
-  const id = ++txnCounters[assetType];
-  const uid = `${assetType}-${id}`;
-  const container = document.getElementById(`txns-${assetType}`);
-  const div = document.createElement('div');
-  div.className = 'txn-item';
-  div.id = `txn-${uid}`;
-  div.innerHTML = txnHTML(assetType, uid, id);
-  container.appendChild(div);
-  calcAll();
-}
-
-function txnHTML(type, uid, num){
-  const base = `
+      function txnHTML(type, uid, num) {
+        const base = `
     <div class="txn-header">
       <span class="txn-num">${num}</span>
       <span class="txn-result" id="res-${uid}">Enter details below</span>
       <button class="txn-del" onclick="delTxn('${uid}')" title="Remove">✕</button>
     </div>`;
 
-  if(type==='equity') return base + equityTxn(uid);
-  if(type==='property') return base + propertyTxn(uid);
-  if(type==='gold') return base + goldTxn(uid);
-  if(type==='debt') return base + debtTxn(uid);
-  if(type==='unlisted') return base + unlistedTxn(uid);
-  if(type==='other') return base + otherTxn(uid);
-  return base;
-}
+        if (type === "equity") return base + equityTxn(uid);
+        if (type === "property") return base + propertyTxn(uid);
+        if (type === "gold") return base + goldTxn(uid);
+        if (type === "debt") return base + debtTxn(uid);
+        if (type === "unlisted") return base + unlistedTxn(uid);
+        if (type === "other") return base + otherTxn(uid);
+        return base;
+      }
 
-function equityTxn(uid){ return `
+      function equityTxn(uid) {
+        return `
   <div class="two">
     <div class="fg"><label class="fl">Sale Price</label>
       <div class="fh">Total amount you received</div>
@@ -599,9 +1476,11 @@ function equityTxn(uid){ return `
   <div class="fg"><label class="fl">Brokerage / Transaction charges</label>
     <div class="fh">STT, brokerage and other charges paid</div>
     <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="${uid}-charges" placeholder="e.g. 500" oninput="calcAll()"/></div></div>
-`;}
+`;
+      }
 
-function propertyTxn(uid){ return `
+      function propertyTxn(uid) {
+        return `
   <div class="two">
     <div class="fg"><label class="fl">Sale Price</label>
       <div class="fh">Amount you received from buyer</div>
@@ -628,13 +1507,18 @@ function propertyTxn(uid){ return `
     <label class="fl">When did you buy this property?</label>
     <div class="fh">This matters for the indexation choice — if bought before 23 July 2024, you can choose indexation</div>
     <select class="fsel" id="${uid}-purchaseYear" onchange="calcAll()">
-      ${Object.keys(CII).reverse().map(y=>`<option value="${y}">${y}</option>`).join('')}
+      ${Object.keys(CII)
+        .reverse()
+        .map((y) => `<option value="${y}">${y}</option>`)
+        .join("")}
     </select>
   </div>
   <div id="${uid}-indexation-result"></div>
-`;}
+`;
+      }
 
-function goldTxn(uid){ return `
+      function goldTxn(uid) {
+        return `
   <div class="two">
     <div class="fg"><label class="fl">Sale Price</label>
       <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="${uid}-sale" placeholder="e.g. 600000" oninput="calcAll()"/></div></div>
@@ -654,9 +1538,11 @@ function goldTxn(uid){ return `
       <option value="fof">Gold Fund of Funds (24 month rule)</option>
     </select>
   </div>
-`;}
+`;
+      }
 
-function debtTxn(uid){ return `
+      function debtTxn(uid) {
+        return `
   <div class="ibox yellow" style="margin-bottom:10px;">⚠️ Debt MF gains are always taxed at slab rate — regardless of holding period.</div>
   <div class="two">
     <div class="fg"><label class="fl">Sale / Redemption Amount</label>
@@ -664,9 +1550,11 @@ function debtTxn(uid){ return `
     <div class="fg"><label class="fl">Purchase / Investment Amount</label>
       <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="${uid}-cost" placeholder="e.g. 500000" oninput="calcAll()"/></div></div>
   </div>
-`;}
+`;
+      }
 
-function unlistedTxn(uid){ return `
+      function unlistedTxn(uid) {
+        return `
   <div class="two">
     <div class="fg"><label class="fl">Sale Price</label>
       <div class="iw"><span class="ipfx">₹</span><input type="number" class="fi" id="${uid}-sale" placeholder="e.g. 500000" oninput="calcAll()"/></div></div>
@@ -679,9 +1567,11 @@ function unlistedTxn(uid){ return `
       <button class="tb" id="${uid}-st" onclick="setHolding('${uid}','short',this)">24 months or less (Short Term @ slab rate)</button>
     </div>
   </div>
-`;}
+`;
+      }
 
-function otherTxn(uid){ return `
+      function otherTxn(uid) {
+        return `
   <div class="fg"><label class="fl">Asset Type</label>
     <select class="fsel" id="${uid}-assettype" onchange="calcAll()">
       <option value="crypto">Crypto / VDA (flat 30% always)</option>
@@ -701,242 +1591,314 @@ function otherTxn(uid){ return `
       <button class="tb" id="${uid}-st" onclick="setHolding('${uid}','short',this)">24 months or less (Short Term)</button>
     </div>
   </div>
-`;}
+`;
+      }
 
-function delTxn(uid){ document.getElementById(`txn-${uid}`)?.remove(); calcAll(); }
+      function delTxn(uid) {
+        document.getElementById(`txn-${uid}`)?.remove();
+        calcAll();
+      }
 
-function setHolding(uid, type, btn){
-  btn.closest('.tg').querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  calcAll();
-}
+      function setHolding(uid, type, btn) {
+        btn
+          .closest(".tg")
+          .querySelectorAll(".tb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        calcAll();
+      }
 
-function isLong(uid){
-  const btn = document.getElementById(`${uid}-lt`);
-  return btn?.classList.contains('on') ?? true;
-}
+      function isLong(uid) {
+        const btn = document.getElementById(`${uid}-lt`);
+        return btn?.classList.contains("on") ?? true;
+      }
 
-// ── CALC ONE TXN ───────────────────────────────────────────────────────
-function calcTxn(uid, type){
-  const sale    = gv(`${uid}-sale`);
-  const cost    = gv(`${uid}-cost`);
-  const charges = gv(`${uid}-charges`) || 0;
-  const improve = gv(`${uid}-improve`) || 0;
-  if(!sale || !cost) return { gain:0, stcg:0, ltcg:0, slab:0, crypto:0, taxOpt:'', type };
+      // ── CALC ONE TXN ───────────────────────────────────────────────────────
+      function calcTxn(uid, type) {
+        const sale = gv(`${uid}-sale`);
+        const cost = gv(`${uid}-cost`);
+        const charges = gv(`${uid}-charges`) || 0;
+        const improve = gv(`${uid}-improve`) || 0;
+        if (!sale || !cost)
+          return {
+            gain: 0,
+            stcg: 0,
+            ltcg: 0,
+            slab: 0,
+            crypto: 0,
+            taxOpt: "",
+            type,
+          };
 
-  let gain = 0, stcg = 0, ltcg = 0, slabGain = 0, cryptoGain = 0;
-  const netSale = sale - charges;
+        let gain = 0,
+          stcg = 0,
+          ltcg = 0,
+          slabGain = 0,
+          cryptoGain = 0;
+        const netSale = sale - charges;
 
-  if(type === 'equity'){
-    gain = netSale - cost;
-    if(isLong(uid)){
-      // LTCG Sec 112A — exempt up to ₹1.25L (applied at summary level)
-      ltcg = Math.max(0, gain);
-    } else {
-      // STCG Sec 111A — 20%
-      stcg = Math.max(0, gain);
-    }
+        if (type === "equity") {
+          gain = netSale - cost;
+          if (isLong(uid)) {
+            // LTCG Sec 112A — exempt up to ₹1.25L (applied at summary level)
+            ltcg = Math.max(0, gain);
+          } else {
+            // STCG Sec 111A — 20%
+            stcg = Math.max(0, gain);
+          }
+        } else if (type === "property") {
+          const purchaseYear =
+            document.getElementById(`${uid}-purchaseYear`)?.value || "2015-16";
+          const totalCost = cost + improve;
+          const netGain = netSale - totalCost;
 
-  } else if(type === 'property'){
-    const purchaseYear = document.getElementById(`${uid}-purchaseYear`)?.value || '2015-16';
-    const totalCost    = cost + improve;
-    const netGain      = netSale - totalCost;
+          if (isLong(uid)) {
+            // Check if bought before 23 Jul 2024 (i.e. FY 2023-24 or earlier)
+            const years = Object.keys(CII);
+            const purchaseIdx = years.indexOf(purchaseYear);
+            const cutoffIdx = years.indexOf("2023-24");
+            const boughtBefore = purchaseIdx <= cutoffIdx;
 
-    if(isLong(uid)){
-      // Check if bought before 23 Jul 2024 (i.e. FY 2023-24 or earlier)
-      const years = Object.keys(CII);
-      const purchaseIdx = years.indexOf(purchaseYear);
-      const cutoffIdx   = years.indexOf('2023-24');
-      const boughtBefore = purchaseIdx <= cutoffIdx;
+            if (boughtBefore) {
+              // Option: 12.5% without indexation OR 20% with indexation — show both
+              const ciiPurchase = CII[purchaseYear] || 100;
+              const ciiCurrent = CII["2024-25"];
+              const indexedCost = totalCost * (ciiCurrent / ciiPurchase);
+              const gainWithIdx = Math.max(0, netSale - indexedCost);
+              const gainNoIdx = Math.max(0, netGain);
+              const taxWithIdx = gainWithIdx * 0.2;
+              const taxNoIdx = gainNoIdx * 0.125;
+              const useBetter = taxWithIdx < taxNoIdx;
 
-      if(boughtBefore){
-        // Option: 12.5% without indexation OR 20% with indexation — show both
-        const ciiPurchase = CII[purchaseYear] || 100;
-        const ciiCurrent  = CII['2024-25'];
-        const indexedCost = totalCost * (ciiCurrent / ciiPurchase);
-        const gainWithIdx = Math.max(0, netSale - indexedCost);
-        const gainNoIdx   = Math.max(0, netGain);
-        const taxWithIdx  = gainWithIdx * 0.20;
-        const taxNoIdx    = gainNoIdx * 0.125;
-        const useBetter   = taxWithIdx < taxNoIdx;
-
-        // Show comparison
-        const el = document.getElementById(`${uid}-indexation-result`);
-        if(el){
-          el.innerHTML = `
+              // Show comparison
+              const el = document.getElementById(`${uid}-indexation-result`);
+              if (el) {
+                el.innerHTML = `
             <div class="indexation-compare">
-              <div class="idx-card ${useBetter?'idx-recommended':''}">
-                ${useBetter?'<div class="idx-rec-label">✓ Better for you</div>':''}
+              <div class="idx-card ${useBetter ? "idx-recommended" : ""}">
+                ${useBetter ? '<div class="idx-rec-label">✓ Better for you</div>' : ""}
                 <div class="idx-title">With Indexation</div>
                 <div class="idx-rate">Gain: ${fmtL(gainWithIdx)} @ 20%</div>
                 <div class="idx-tax">${fmtL(taxWithIdx)}</div>
               </div>
-              <div class="idx-card ${!useBetter?'idx-recommended':''}">
-                ${!useBetter?'<div class="idx-rec-label">✓ Better for you</div>':''}
+              <div class="idx-card ${!useBetter ? "idx-recommended" : ""}">
+                ${!useBetter ? '<div class="idx-rec-label">✓ Better for you</div>' : ""}
                 <div class="idx-title">Without Indexation</div>
                 <div class="idx-rate">Gain: ${fmtL(gainNoIdx)} @ 12.5%</div>
                 <div class="idx-tax">${fmtL(taxNoIdx)}</div>
               </div>
             </div>`;
+              }
+
+              ltcg = useBetter ? gainWithIdx : gainNoIdx;
+            } else {
+              // Bought after 23 Jul 2024 — only 12.5% without indexation
+              ltcg = Math.max(0, netGain);
+              const el = document.getElementById(`${uid}-indexation-result`);
+              if (el)
+                el.innerHTML = `<div class="ibox blue" style="margin-top:8px;">Property bought after 23 July 2024 — 12.5% LTCG without indexation applies.</div>`;
+            }
+          } else {
+            slabGain = Math.max(0, netGain); // STCG at slab rate
+          }
+        } else if (type === "gold") {
+          gain = netSale - cost;
+          if (isLong(uid)) ltcg = Math.max(0, gain);
+          else slabGain = Math.max(0, gain);
+        } else if (type === "debt") {
+          gain = sale - cost;
+          slabGain = Math.max(0, gain); // always slab rate
+        } else if (type === "unlisted") {
+          gain = netSale - cost;
+          if (isLong(uid)) ltcg = Math.max(0, gain);
+          else slabGain = Math.max(0, gain);
+        } else if (type === "other") {
+          gain = sale - cost;
+          const assetType = document.getElementById(`${uid}-assettype`)?.value;
+          if (assetType === "crypto") {
+            cryptoGain = Math.max(0, gain); // 30% flat always
+          } else {
+            if (isLong(uid)) ltcg = Math.max(0, gain);
+            else slabGain = Math.max(0, gain);
+          }
         }
 
-        ltcg = useBetter ? gainWithIdx : gainNoIdx;
-      } else {
-        // Bought after 23 Jul 2024 — only 12.5% without indexation
-        ltcg = Math.max(0, netGain);
-        const el = document.getElementById(`${uid}-indexation-result`);
-        if(el) el.innerHTML = `<div class="ibox blue" style="margin-top:8px;">Property bought after 23 July 2024 — 12.5% LTCG without indexation applies.</div>`;
+        // Update inline result
+        const resEl = document.getElementById(`res-${uid}`);
+        if (resEl) {
+          const total =
+            (stcg || 0) + (ltcg || 0) + (slabGain || 0) + (cryptoGain || 0);
+          const rawGain = sale - cost - charges - improve;
+          if (rawGain > 0) {
+            resEl.className = "txn-result gain";
+            resEl.textContent = `Gain: ${fmtL(rawGain)}`;
+          } else if (rawGain < 0) {
+            resEl.className = "txn-result loss";
+            resEl.textContent = `Loss: ${fmtL(Math.abs(rawGain))}`;
+          } else {
+            resEl.className = "txn-result";
+            resEl.textContent = "Enter details below";
+          }
+        }
+
+        return { gain, stcg, ltcg, slab: slabGain, crypto: cryptoGain, type };
       }
-    } else {
-      slabGain = Math.max(0, netGain); // STCG at slab rate
-    }
 
-  } else if(type === 'gold'){
-    gain = netSale - cost;
-    if(isLong(uid)) ltcg = Math.max(0, gain);
-    else slabGain = Math.max(0, gain);
+      // ── CALC ALL ───────────────────────────────────────────────────────────
+      function calcAll() {
+        let totalSTCG = 0,
+          totalLTCG = 0,
+          totalSlab = 0,
+          totalCrypto = 0;
+        const assetTotals = {};
 
-  } else if(type === 'debt'){
-    gain = sale - cost;
-    slabGain = Math.max(0, gain); // always slab rate
+        activeAssets.forEach((assetType) => {
+          let assetTotal = 0;
+          const container = document.getElementById(`txns-${assetType}`);
+          if (!container) return;
+          container.querySelectorAll(".txn-item").forEach((item) => {
+            const uid = item.id.replace("txn-", "");
+            const r = calcTxn(uid, assetType);
+            totalSTCG += r.stcg;
+            totalLTCG += r.ltcg;
+            totalSlab += r.slab;
+            totalCrypto += r.crypto;
+            assetTotal += r.stcg + r.ltcg + r.slab + r.crypto;
+          });
+          assetTotals[assetType] = assetTotal;
 
-  } else if(type === 'unlisted'){
-    gain = netSale - cost;
-    if(isLong(uid)) ltcg = Math.max(0, gain);
-    else slabGain = Math.max(0, gain);
+          // Update section total
+          const totalEl = document.getElementById(`total-${assetType}`);
+          if (totalEl) {
+            totalEl.textContent = fmtL(assetTotal);
+            totalEl.className = `sc-total ${assetTotal >= 0 ? "income" : "loss"}`;
+          }
+        });
 
-  } else if(type === 'other'){
-    gain = sale - cost;
-    const assetType = document.getElementById(`${uid}-assettype`)?.value;
-    if(assetType === 'crypto'){
-      cryptoGain = Math.max(0, gain); // 30% flat always
-    } else {
-      if(isLong(uid)) ltcg = Math.max(0, gain);
-      else slabGain = Math.max(0, gain);
-    }
-  }
+        // LTCG equity exemption of ₹1.25L
+        const ltcgEquityExempt = Math.min(totalLTCG, 125000);
+        const taxableLTCG = Math.max(0, totalLTCG - ltcgEquityExempt);
 
-  // Update inline result
-  const resEl = document.getElementById(`res-${uid}`);
-  if(resEl){
-    const total = (stcg||0)+(ltcg||0)+(slabGain||0)+(cryptoGain||0);
-    const rawGain = sale - cost - charges - improve;
-    if(rawGain > 0){
-      resEl.className = 'txn-result gain';
-      resEl.textContent = `Gain: ${fmtL(rawGain)}`;
-    } else if(rawGain < 0){
-      resEl.className = 'txn-result loss';
-      resEl.textContent = `Loss: ${fmtL(Math.abs(rawGain))}`;
-    } else {
-      resEl.className = 'txn-result';
-      resEl.textContent = 'Enter details below';
-    }
-  }
+        // Exemptions
+        const sec54 = gv("sec54");
+        const sec54ec = Math.min(gv("sec54ec"), 5000000); // max 50L
+        const proceeds = gv("sec54f-proceeds");
+        const invested = gv("sec54f-invested");
+        const sec54f = proceeds > 0 ? totalLTCG * (invested / proceeds) : 0;
+        const sec54b = gv("sec54b");
+        const totalExempt = Math.min(
+          sec54 + sec54ec + sec54f + sec54b,
+          taxableLTCG,
+        );
+        const netLTCG = Math.max(0, taxableLTCG - totalExempt);
 
-  return { gain, stcg, ltcg, slab: slabGain, crypto: cryptoGain, type };
-}
+        // TAXES
+        const stcgTax = totalSTCG * 0.2; // Sec 111A
+        const ltcgTax = netLTCG * 0.125; // Sec 112 / 112A
+        const slabTaxAmt = slabTax(totalSlab, slabRegime);
+        const cryptoTax = totalCrypto * 0.3;
 
-// ── CALC ALL ───────────────────────────────────────────────────────────
-function calcAll(){
-  let totalSTCG=0, totalLTCG=0, totalSlab=0, totalCrypto=0;
-  const assetTotals = {};
+        const subtotal = stcgTax + ltcgTax + slabTaxAmt + cryptoTax;
+        const cess = subtotal * 0.04;
+        const total = subtotal + cess;
 
-  activeAssets.forEach(assetType => {
-    let assetTotal = 0;
-    const container = document.getElementById(`txns-${assetType}`);
-    if(!container) return;
-    container.querySelectorAll('.txn-item').forEach(item => {
-      const uid = item.id.replace('txn-','');
-      const r = calcTxn(uid, assetType);
-      totalSTCG   += r.stcg;
-      totalLTCG   += r.ltcg;
-      totalSlab   += r.slab;
-      totalCrypto += r.crypto;
-      assetTotal  += (r.stcg + r.ltcg + r.slab + r.crypto);
-    });
-    assetTotals[assetType] = assetTotal;
+        const netGain = totalSTCG + netLTCG + totalSlab + totalCrypto;
 
-    // Update section total
-    const totalEl = document.getElementById(`total-${assetType}`);
-    if(totalEl){
-      totalEl.textContent = fmtL(assetTotal);
-      totalEl.className   = `sc-total ${assetTotal >= 0 ? 'income' : 'loss'}`;
-    }
-  });
+        // UPDATE UI
+        const hasData = activeAssets.size > 0;
+        document.getElementById("rp-empty").style.display = hasData
+          ? "none"
+          : "block";
+        document.getElementById("rp-content").style.display = hasData
+          ? "block"
+          : "none";
 
-  // LTCG equity exemption of ₹1.25L
-  const ltcgEquityExempt = Math.min(totalLTCG, 125000);
-  const taxableLTCG      = Math.max(0, totalLTCG - ltcgEquityExempt);
+        if (hasData) {
+          // Asset summary
+          let sumHtml = '<div class="as-sum-title">By Asset Type</div>';
+          Object.entries(assetTotals).forEach(([k, v]) => {
+            const labels = {
+              equity: "Stocks/Equity MF",
+              property: "Property",
+              gold: "Gold",
+              debt: "Debt MF",
+              unlisted: "Unlisted Shares",
+              other: "Other",
+            };
+            sumHtml += `<div class="as-sum-row"><span class="as-sum-label">${labels[k] || k}</span><span class="as-sum-val" style="color:${v >= 0 ? "#86efac" : "#fcd34d"}">${fmtL(v)}</span></div>`;
+          });
+          document.getElementById("asset-summary-block").innerHTML = sumHtml;
 
-  // Exemptions
-  const sec54    = gv('sec54');
-  const sec54ec  = Math.min(gv('sec54ec'), 5000000); // max 50L
-  const proceeds = gv('sec54f-proceeds');
-  const invested = gv('sec54f-invested');
-  const sec54f   = proceeds > 0 ? (totalLTCG * (invested / proceeds)) : 0;
-  const sec54b   = gv('sec54b');
-  const totalExempt = Math.min(sec54 + sec54ec + sec54f + sec54b, taxableLTCG);
-  const netLTCG  = Math.max(0, taxableLTCG - totalExempt);
+          document.getElementById("r-stcg").textContent = fmtL(totalSTCG);
+          document.getElementById("r-ltcg").textContent =
+            fmtL(totalLTCG) +
+            (ltcgEquityExempt > 0
+              ? ` (₹${(ltcgEquityExempt / 100000).toFixed(2)}L exempt)`
+              : "");
+          document.getElementById("r-slab").textContent = fmtL(totalSlab);
+          document.getElementById("r-exempt").textContent =
+            "- " + fmtL(totalExempt);
+          document.getElementById("r-netGain").textContent = fmtL(netGain);
+          document.getElementById("r-stcgTax").textContent = fmt(stcgTax);
+          document.getElementById("r-ltcgTax").textContent = fmt(ltcgTax);
+          document.getElementById("r-slabTax").textContent = fmt(slabTaxAmt);
+          document.getElementById("r-cryptoTax").textContent = fmt(cryptoTax);
+          document.getElementById("r-subtotal").textContent = fmt(subtotal);
+          document.getElementById("r-cess").textContent = fmt(cess);
+          document.getElementById("r-total").textContent = fmt(total);
+          document.getElementById("total-exemptions").textContent =
+            fmt(totalExempt) + " saved";
+          saveCapitalGainsToStorage();
+        }
+      }
+      // ADD THIS at the end of calcAll() function, after all UI updates
+      function saveCapitalGainsToStorage() {
+        // Get net taxable capital gains
+        const netGainEl = document.getElementById("r-netGain");
+        let amount = 0;
+        if (netGainEl && netGainEl.textContent !== "₹0") {
+          amount =
+            parseFloat(netGainEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+        }
 
-  // TAXES
-  const stcgTax   = totalSTCG  * 0.20;         // Sec 111A
-  const ltcgTax   = netLTCG    * 0.125;         // Sec 112 / 112A
-  const slabTaxAmt= slabTax(totalSlab, slabRegime);
-  const cryptoTax = totalCrypto * 0.30;
+        localStorage.setItem("capital_gains_income", amount.toString());
 
-  const subtotal  = stcgTax + ltcgTax + slabTaxAmt + cryptoTax;
-  const cess      = subtotal * 0.04;
-  const total     = subtotal + cess;
-
-  const netGain   = totalSTCG + netLTCG + totalSlab + totalCrypto;
-
-  // UPDATE UI
-  const hasData = activeAssets.size > 0;
-  document.getElementById('rp-empty').style.display   = hasData ? 'none' : 'block';
-  document.getElementById('rp-content').style.display = hasData ? 'block' : 'none';
-
-  if(hasData){
-    // Asset summary
-    let sumHtml = '<div class="as-sum-title">By Asset Type</div>';
-    Object.entries(assetTotals).forEach(([k,v])=>{
-      const labels = {equity:'Stocks/Equity MF',property:'Property',gold:'Gold',debt:'Debt MF',unlisted:'Unlisted Shares',other:'Other'};
-      sumHtml += `<div class="as-sum-row"><span class="as-sum-label">${labels[k]||k}</span><span class="as-sum-val" style="color:${v>=0?'#86efac':'#fcd34d'}">${fmtL(v)}</span></div>`;
-    });
-    document.getElementById('asset-summary-block').innerHTML = sumHtml;
-
-    document.getElementById('r-stcg').textContent    = fmtL(totalSTCG);
-    document.getElementById('r-ltcg').textContent    = fmtL(totalLTCG) + (ltcgEquityExempt>0 ? ` (₹${(ltcgEquityExempt/100000).toFixed(2)}L exempt)` : '');
-    document.getElementById('r-slab').textContent    = fmtL(totalSlab);
-    document.getElementById('r-exempt').textContent  = '- '+fmtL(totalExempt);
-    document.getElementById('r-netGain').textContent = fmtL(netGain);
-    document.getElementById('r-stcgTax').textContent = fmt(stcgTax);
-    document.getElementById('r-ltcgTax').textContent = fmt(ltcgTax);
-    document.getElementById('r-slabTax').textContent = fmt(slabTaxAmt);
-    document.getElementById('r-cryptoTax').textContent = fmt(cryptoTax);
-    document.getElementById('r-subtotal').textContent= fmt(subtotal);
-    document.getElementById('r-cess').textContent    = fmt(cess);
-    document.getElementById('r-total').textContent   = fmt(total);
-    document.getElementById('total-exemptions').textContent = fmt(totalExempt)+' saved';
-  }
-}
-
-// ── RESET ──────────────────────────────────────────────────────────────
-function resetAll(){
-  activeAssets.forEach(k => {
-    document.getElementById(`sel-${k}`).classList.remove('on');
-    document.getElementById(`sel-${k}`).querySelector('.as-chk').textContent='';
-    document.getElementById(`card-${k}`).style.display='none';
-    document.getElementById(`txns-${k}`).innerHTML='';
-    txnCounters[k]=0;
-  });
-  activeAssets.clear();
-  document.getElementById('card-exemptions').style.display='none';
-  document.getElementById('rp-empty').style.display='block';
-  document.getElementById('rp-content').style.display='none';
-  ['sec54','sec54ec','sec54f-proceeds','sec54f-invested','sec54b'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
-  });
-}
-</script>
-</body>
+        // Trigger storage event
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: "capital_gains_income",
+            newValue: amount.toString(),
+          }),
+        );
+      }
+      // ── RESET ──────────────────────────────────────────────────────────────
+      function resetAll() {
+        activeAssets.forEach((k) => {
+          document.getElementById(`sel-${k}`).classList.remove("on");
+          document
+            .getElementById(`sel-${k}`)
+            .querySelector(".as-chk").textContent = "";
+          document.getElementById(`card-${k}`).style.display = "none";
+          document.getElementById(`txns-${k}`).innerHTML = "";
+          txnCounters[k] = 0;
+        });
+        activeAssets.clear();
+        document.getElementById("card-exemptions").style.display = "none";
+        document.getElementById("rp-empty").style.display = "block";
+        document.getElementById("rp-content").style.display = "none";
+        [
+          "sec54",
+          "sec54ec",
+          "sec54f-proceeds",
+          "sec54f-invested",
+          "sec54b",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        // Add to resetAll() function
+        localStorage.removeItem("capital_gains_income");
+      }
+    </script>
+  </body>
 </html>

@@ -1,74 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITCalculator - Indian Income Tax Calculator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <div id="header"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ITCalculator - Indian Income Tax Calculator</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/style.css" />
+    </head>
+    <body>
+        <div id="header"></div>
 
-    <div class="container">
-        <section class="hero-section fade-in">
-            <h1 class="hero-title">ITCalculator</h1>
-            <p class="hero-subtitle">
-                Complete Indian Income Tax Calculator for all heads of income.
-                Accurate, up-to-date, and completely free.
-            </p>
-            <div style="display:flex; gap:15px; justify-content:center;">
-                <span class="chat-badge">Old Regime</span>
-                <span class="chat-badge">New Regime</span>
-                <span class="chat-badge">FY 2024-25</span>
+        <div class="container">
+            <section class="hero-section fade-in">
+                <h1 class="hero-title">ITCalculator</h1>
+                <p class="hero-subtitle">
+                    Complete Indian Income Tax Calculator for all heads of
+                    income. Accurate, up-to-date, and completely free.
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center">
+                    <span class="chat-badge">Old Regime</span>
+                    <span class="chat-badge">New Regime</span>
+                    <span class="chat-badge">FY 2024-25</span>
+                </div>
+            </section>
+
+            <div class="heads-grid">
+                <a href="/pages/salary.html" class="head-card">
+                    <div class="head-icon">💰</div>
+                    <h3>Salary Income</h3>
+                    <p>
+                        Calculate HRA exemptions, Standard Deduction,
+                        Professional Tax & more
+                    </p>
+                </a>
+                <a href="/pages/house-property.html" class="head-card">
+                    <div class="head-icon">🏠</div>
+                    <h3>House Property</h3>
+                    <p>
+                        Self-occupied, Let-out, Deemed let-out with home loan
+                        interest
+                    </p>
+                </a>
+                <a href="/pages/capital-gains.html" class="head-card">
+                    <div class="head-icon">📈</div>
+                    <h3>Capital Gains</h3>
+                    <p>Short-term, Long-term with indexation benefit</p>
+                </a>
+                <a href="/pages/business.html" class="head-card">
+                    <div class="head-icon">💼</div>
+                    <h3>Business/Profession</h3>
+                    <p>Presumptive taxation (44AD, 44ADA) and regular income</p>
+                </a>
+                <a href="/pages/other-sources.html" class="head-card">
+                    <div class="head-icon">📊</div>
+                    <h3>Other Sources</h3>
+                    <p>Interest, Dividends, Gifts, Family Pension & more</p>
+                </a>
+                <a href="/pages/summary.html" class="head-card">
+                    <div class="head-icon">📟</div>
+                    <h3>Summary</h3>
+                    <p>Get summary of all your income in one place</p>
+                </a>
             </div>
-        </section>
 
-        <div class="heads-grid">
-            <a href="/pages/salary.html" class="head-card">
-                <div class="head-icon">💰</div>
-                <h3>Salary Income</h3>
-                <p>Calculate HRA exemptions, Standard Deduction, Professional Tax & more</p>
-            </a>
-            <a href="/pages/house-property.html" class="head-card">
-                <div class="head-icon">🏠</div>
-                <h3>House Property</h3>
-                <p>Self-occupied, Let-out, Deemed let-out with home loan interest</p>
-            </a>
-            <a href="/pages/capital-gains.html" class="head-card">
-                <div class="head-icon">📈</div>
-                <h3>Capital Gains</h3>
-                <p>Short-term, Long-term with indexation benefit</p>
-            </a>
-            <a href="/pages/business.html" class="head-card">
-                <div class="head-icon">💼</div>
-                <h3>Business/Profession</h3>
-                <p>Presumptive taxation (44AD, 44ADA) and regular income</p>
-            </a>
-            <a href="/pages/other-sources.html" class="head-card">
-                <div class="head-icon">📊</div>
-                <h3>Other Sources</h3>
-                <p>Interest, Dividends, Gifts, Family Pension & more</p>
-            </a>
+            <div class="chat-area fade-in">
+                <div id="chatContainer"></div>
+            </div>
         </div>
 
-        <div class="chat-area fade-in">
-            <div id="chatContainer"></div>
-        </div>
-    </div>
+        <div id="footer"></div>
 
-    <div id="footer"></div>
-
-    <script src="/js/formula.js"></script>
-    <script src="/js/chat.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/components/header.html')
-                .then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
-            fetch('/components/footer.html')
-                .then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
-        });
-    </script>
-</body>
+        <script src="/js/formula.js"></script>
+        <script src="/js/chat.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("/components/header.html")
+                    .then((r) => r.text())
+                    .then(
+                        (d) =>
+                            (document.getElementById("header").innerHTML = d),
+                    );
+                fetch("/components/footer.html")
+                    .then((r) => r.text())
+                    .then(
+                        (d) =>
+                            (document.getElementById("footer").innerHTML = d),
+                    );
+            });
+        </script>
+    </body>
 </html>

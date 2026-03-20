@@ -1582,6 +1582,23 @@
         } else {
           setOffBox.style.display = "none";
         }
+        saveHousePropertyToStorage();
+      }
+
+      function saveHousePropertyToStorage() {
+        const netIncomeEl = document.getElementById("s-netIncome");
+        let amount = 0;
+        if (netIncomeEl) {
+          amount =
+            parseFloat(netIncomeEl.textContent.replace(/[^0-9-]/g, "")) || 0;
+        }
+        localStorage.setItem("house_property_income", amount.toString());
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: "house_property_income",
+            newValue: amount.toString(),
+          }),
+        );
       }
 
       // ── RESET ─────────────────────────────────────────────────────────────────
@@ -1594,6 +1611,8 @@
         document.getElementById("summaryContent").style.display = "none";
         updateSopCounter();
         addProperty();
+        // Add to resetAll() function
+        localStorage.removeItem("house_property_income");
       }
     </script>
   </body>
