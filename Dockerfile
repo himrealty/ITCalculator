@@ -37,7 +37,9 @@ COPY pnpm-workspace.yaml ./
 COPY package.json        ./
 RUN npm install -g pnpm@10 && \
     pnpm --filter @workspace/api-server install --prod --ignore-scripts || true
-
+    
+# Static site - copy from the correct source to where server expects them
+COPY artifacts/api-server/public/ ./public/
 # Start script (autopinger every 14 min)
 COPY scripts/start.sh ./scripts/start.sh
 RUN chmod +x ./scripts/start.sh
