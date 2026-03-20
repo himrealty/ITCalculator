@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>44AE Transport Business · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: transparent;
+            padding: 0;
+        }
+        
+        .module-content {
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .vehicle-badge {
+            display: inline-block;
+            background: #d69e2e;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: #fef5e7;
+            border-left: 4px solid #d69e2e;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #744210;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box.warning {
+            background: #fff3e0;
+            border-left-color: #ed8936;
+        }
+        
+        .info-box.success {
+            background: #f0fff4;
+            border-left-color: #48bb78;
+        }
+        
+        .info-box.blue {
+            background: #e6f6ff;
+            border-left-color: #3182ce;
+            color: #1e4a6b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        
+        .stat-sub {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+        
+        .vehicle-type-section {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .section-title .icon {
+            font-size: 1.3rem;
+        }
+        
+        .vehicle-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .vehicle-table th {
+            text-align: left;
+            padding: 12px 8px;
+            background: #edf2f7;
+            font-size: 0.8rem;
+            color: #4a5568;
+        }
+        
+        .vehicle-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .vehicle-table input {
+            width: 100px;
+            padding: 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        
+        .vehicle-table input:focus {
+            outline: none;
+            border-color: #d69e2e;
+        }
+        
+        .add-vehicle-row {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f7fafc;
+            border: 1px dashed #cbd5e0;
+            border-radius: 6px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .add-vehicle-row select {
+            padding: 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 4px;
+            flex: 1;
+        }
+        
+        .add-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .add-btn:hover {
+            background: #38a169;
+        }
+        
+        .remove-vehicle {
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+        
+        .hint {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+        
+        input[type="number"] {
+            padding-left: 28px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #d69e2e;
+            box-shadow: 0 0 0 3px rgba(214, 158, 46, 0.1);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: auto;
+            padding: 0;
+            accent-color: #d69e2e;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #744210 0%, #975a16 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .result-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-calculate {
+            background: #d69e2e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            width: 100%;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+        
+        .btn-calculate:hover {
+            background: #b7791f;
+        }
+        
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 640px) {
+            .vehicle-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="module-content">
+        <!-- Info Section -->
+        <div class="info-box">
+            <strong>🚛 Section 44AE – Presumptive Taxation for Transport Business</strong><br>
+            For assessees owning up to 10 goods vehicles. Income is presumed at:
+            <ul style="margin-top: 8px; margin-left: 20px;">
+                <li><strong>₹7,500</strong> per month per heavy vehicle (gross vehicle weight > 12,000 kg)</li>
+                <li><strong>₹4,500</strong> per month per light vehicle (other than heavy)</li>
+            </ul>
+            No need to maintain books of accounts. Applicable for FY 2024-25.
+        </div>
+
+        <div class="info-box warning">
+            <strong>⚠️ Important:</strong> This scheme is applicable only if you own <strong>NOT MORE THAN 10 VEHICLES</strong>. 
+            If you own more than 10 vehicles, you cannot opt for presumptive taxation under 44AE.
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Heavy Vehicles</div>
+                <div class="stat-value" id="heavyCount">0</div>
+                <div class="stat-sub">@ ₹7,500/month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Light Vehicles</div>
+                <div class="stat-value" id="lightCount">0</div>
+                <div class="stat-sub">@ ₹4,500/month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Vehicles</div>
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-sub">Max 10 allowed</div>
+            </div>
+        </div>
+
+        <!-- Vehicle Type Selection -->
+        <div class="vehicle-type-section">
+            <div class="section-title">
+                <span class="icon">🚛</span>
+                <span>Heavy Goods Vehicles (>12,000 kg GVW)</span>
+            </div>
+            
+            <table class="vehicle-table" id="heavyVehiclesTable">
+                <thead>
+                    <tr>
+                        <th>Vehicle No./Identifier</th>
+                        <th>Number of Months Operated</th>
+                        <th>Presumptive Income</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="heavyVehiclesBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="add-vehicle-row">
+                <select id="heavyMonths">
+                    <option value="12">12 months (Full Year)</option>
+                    <option value="11">11 months</option>
+                    <option value="10">10 months</option>
+                    <option value="9">9 months</option>
+                    <option value="8">8 months</option>
+                    <option value="7">7 months</option>
+                    <option value="6">6 months</option>
+                    <option value="5">5 months</option>
+                    <option value="4">4 months</option>
+                    <option value="3">3 months</option>
+                    <option value="2">2 months</option>
+                    <option value="1">1 month</option>
+                </select>
+                <button class="add-btn" onclick="addHeavyVehicle()">+ Add Heavy Vehicle</button>
+            </div>
+        </div>
+
+        <div class="vehicle-type-section">
+            <div class="section-title">
+                <span class="icon">🚐</span>
+                <span>Light Goods Vehicles (≤12,000 kg GVW)</span>
+            </div>
+            
+            <table class="vehicle-table" id="lightVehiclesTable">
+                <thead>
+                    <tr>
+                        <th>Vehicle No./Identifier</th>
+                        <th>Number of Months Operated</th>
+                        <th>Presumptive Income</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="lightVehiclesBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="add-vehicle-row">
+                <select id="lightMonths">
+                    <option value="12">12 months (Full Year)</option>
+                    <option value="11">11 months</option>
+                    <option value="10">10 months</option>
+                    <option value="9">9 months</option>
+                    <option value="8">8 months</option>
+                    <option value="7">7 months</option>
+                    <option value="6">6 months</option>
+                    <option value="5">5 months</option>
+                    <option value="4">4 months</option>
+                    <option value="3">3 months</option>
+                    <option value="2">2 months</option>
+                    <option value="1">1 month</option>
+                </select>
+                <button class="add-btn" onclick="addLightVehicle()">+ Add Light Vehicle</button>
+            </div>
+        </div>
+
+        <!-- Additional Income -->
+        <div class="vehicle-type-section">
+            <div class="section-title">
+                <span class="icon">💰</span>
+                <span>Additional Income (Optional)</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Any other income from transport business</label>
+                <div class="hint">Loading/unloading charges, detention charges, etc.</div>
+                <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="otherIncome" placeholder="e.g. 50000" oninput="calculateIncome()">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Do you want to declare higher income?</label>
+                <div class="hint">You can declare higher than presumptive rate if actual profit is more</div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="declareHigher" value="no" checked onchange="toggleHigherIncome()">
+                        <span>No, use presumptive rates</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="declareHigher" value="yes" onchange="toggleHigherIncome()">
+                        <span>Yes, declare higher income</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="higherIncomeSection" style="display: none;">
+                <div class="info-box blue">
+                    <strong>Note:</strong> If your actual profit is higher than the presumptive amount, 
+                    you must declare the actual profit. Enter your actual business income below.
+                </div>
+                <div class="form-group">
+                    <label>Actual Business Income (if higher)</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="actualIncome" placeholder="e.g. 600000" oninput="calculateIncome()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button class="btn-calculate" onclick="calculateIncome()">Calculate Transport Business Income</button>
+
+        <!-- Results -->
+        <div class="result-box" id="resultBox" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Income from Heavy Vehicles:</span>
+                <span class="result-value" id="heavyIncome">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Income from Light Vehicles:</span>
+                <span class="result-value" id="lightIncome">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Other Income:</span>
+                <span class="result-value" id="otherIncomeVal">₹0</span>
+            </div>
+            <div class="result-row result-total">
+                <span class="result-label">Total Presumptive Income:</span>
+                <span class="result-value" id="totalIncome">₹0</span>
+            </div>
+            <div class="result-row" id="higherIncomeRow" style="display: none;">
+                <span class="result-label">Actual Income (Higher):</span>
+                <span class="result-value" id="actualIncomeVal">₹0</span>
+            </div>
+            <div class="result-row result-total" id="finalIncomeRow">
+                <span class="result-label">Net Business Income:</span>
+                <span class="result-value" id="netIncome">₹0</span>
+            </div>
+        </div>
+
+        <div class="info-box warning" id="limitWarning" style="display: none; margin-top: 15px;">
+            <strong>⚠️ You have exceeded the 10 vehicle limit!</strong><br>
+            Section 44AE is only applicable if you own 10 or fewer vehicles. 
+            You have <span id="excessCount">0</span> vehicles. Please consult a CA for regular business taxation.
+        </div>
+        
+        <div class="disclaimer">
+            * Under Section 44AE, income is presumed at ₹7,500 per heavy vehicle and ₹4,500 per light vehicle per month.
+            If you own more than 10 vehicles, presumptive scheme is not applicable.
+        </div>
+    </div>
+
+    <script>
+        let heavyVehicles = [];
+        let lightVehicles = [];
+        let vehicleCounter = 0;
+
+        // Initialize with one vehicle each for demo
+        window.addEventListener('load', function() {
+            addHeavyVehicle();
+            addLightVehicle();
+        });
+
+        function addHeavyVehicle() {
+            if (heavyVehicles.length + lightVehicles.length >= 10) {
+                alert('Maximum 10 vehicles allowed under 44AE scheme');
+                return;
+            }
+            
+            const months = parseInt(document.getElementById('heavyMonths').value);
+            const vehicleId = `H${++vehicleCounter}`;
+            
+            heavyVehicles.push({
+                id: vehicleId,
+                months: months,
+                income: months * 7500
+            });
+            
+            renderHeavyVehicles();
+            calculateIncome();
+            updateVehicleCounts();
+        }
+
+        function addLightVehicle() {
+            if (heavyVehicles.length + lightVehicles.length >= 10) {
+                alert('Maximum 10 vehicles allowed under 44AE scheme');
+                return;
+            }
+            
+            const months = parseInt(document.getElementById('lightMonths').value);
+            const vehicleId = `L${++vehicleCounter}`;
+            
+            lightVehicles.push({
+                id: vehicleId,
+                months: months,
+                income: months * 4500
+            });
+            
+            renderLightVehicles();
+            calculateIncome();
+            updateVehicleCounts();
+        }
+
+        function removeVehicle(type, index) {
+            if (type === 'heavy') {
+                heavyVehicles.splice(index, 1);
+                renderHeavyVehicles();
+            } else {
+                lightVehicles.splice(index, 1);
+                renderLightVehicles();
+            }
+            calculateIncome();
+            updateVehicleCounts();
+        }
+
+        function updateVehicleMonths(type, index, months) {
+            if (type === 'heavy') {
+                heavyVehicles[index].months = parseInt(months);
+                heavyVehicles[index].income = parseInt(months) * 7500;
+                renderHeavyVehicles();
+            } else {
+                lightVehicles[index].months = parseInt(months);
+                lightVehicles[index].income = parseInt(months) * 4500;
+                renderLightVehicles();
+            }
+            calculateIncome();
+        }
+
+        function renderHeavyVehicles() {
+            const tbody = document.getElementById('heavyVehiclesBody');
+            tbody.innerHTML = '';
+            
+            heavyVehicles.forEach((vehicle, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>Vehicle ${vehicle.id}</td>
+                    <td>
+                        <select onchange="updateVehicleMonths('heavy', ${index}, this.value)">
+                            ${generateMonthOptions(vehicle.months)}
+                        </select>
+                    </td>
+                    <td>₹${vehicle.income.toLocaleString('en-IN')}</td>
+                    <td><span class="remove-vehicle" onclick="removeVehicle('heavy', ${index})">✕</span></td>
+                `;
+            });
+        }
+
+        function renderLightVehicles() {
+            const tbody = document.getElementById('lightVehiclesBody');
+            tbody.innerHTML = '';
+            
+            lightVehicles.forEach((vehicle, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>Vehicle ${vehicle.id}</td>
+                    <td>
+                        <select onchange="updateVehicleMonths('light', ${index}, this.value)">
+                            ${generateMonthOptions(vehicle.months)}
+                        </select>
+                    </td>
+                    <td>₹${vehicle.income.toLocaleString('en-IN')}</td>
+                    <td><span class="remove-vehicle" onclick="removeVehicle('light', ${index})">✕</span></td>
+                `;
+            });
+        }
+
+        function generateMonthOptions(selected) {
+            let options = '';
+            for (let i = 12; i >= 1; i--) {
+                options += `<option value="${i}" ${i === selected ? 'selected' : ''}>${i} months</option>`;
+            }
+            return options;
+        }
+
+        function updateVehicleCounts() {
+            const heavyCount = heavyVehicles.length;
+            const lightCount = lightVehicles.length;
+            const totalCount = heavyCount + lightCount;
+            
+            document.getElementById('heavyCount').textContent = heavyCount;
+            document.getElementById('lightCount').textContent = lightCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            
+            // Show warning if more than 10 vehicles
+            if (totalCount > 10) {
+                document.getElementById('limitWarning').style.display = 'block';
+                document.getElementById('excessCount').textContent = totalCount - 10;
+            } else {
+                document.getElementById('limitWarning').style.display = 'none';
+            }
+        }
+
+        function toggleHigherIncome() {
+            const declareHigher = document.querySelector('input[name="declareHigher"]:checked').value;
+            const section = document.getElementById('higherIncomeSection');
+            section.style.display = declareHigher === 'yes' ? 'block' : 'none';
+            calculateIncome();
+        }
+
+        function calculateIncome() {
+            // Calculate presumptive income
+            const heavyIncome = heavyVehicles.reduce((sum, v) => sum + v.income, 0);
+            const lightIncome = lightVehicles.reduce((sum, v) => sum + v.income, 0);
+            const otherIncome = parseFloat(document.getElementById('otherIncome').value) || 0;
+            
+            const presumptiveTotal = heavyIncome + lightIncome + otherIncome;
+            
+            // Check if declaring higher
+            const declareHigher = document.querySelector('input[name="declareHigher"]:checked').value;
+            const actualIncome = parseFloat(document.getElementById('actualIncome').value) || 0;
+            
+            let netIncome = presumptiveTotal;
+            let showHigherRow = false;
+            
+            if (declareHigher === 'yes' && actualIncome > presumptiveTotal) {
+                netIncome = actualIncome;
+                showHigherRow = true;
+            }
+            
+            // Update display
+            document.getElementById('heavyIncome').textContent = '₹' + heavyIncome.toLocaleString('en-IN');
+            document.getElementById('lightIncome').textContent = '₹' + lightIncome.toLocaleString('en-IN');
+            document.getElementById('otherIncomeVal').textContent = '₹' + otherIncome.toLocaleString('en-IN');
+            document.getElementById('totalIncome').textContent = '₹' + presumptiveTotal.toLocaleString('en-IN');
+            document.getElementById('netIncome').textContent = '₹' + netIncome.toLocaleString('en-IN');
+            
+            // Show/hide higher income row
+            if (showHigherRow) {
+                document.getElementById('higherIncomeRow').style.display = 'flex';
+                document.getElementById('actualIncomeVal').textContent = '₹' + actualIncome.toLocaleString('en-IN');
+            } else {
+                document.getElementById('higherIncomeRow').style.display = 'none';
+            }
+            
+            // Show result box
+            document.getElementById('resultBox').style.display = 'block';
+            
+            // Send result to parent
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'PGBP_RESULT',
+                    moduleId: 'business-44ae',
+                    amount: netIncome
+                }, '*');
+            }
+        }
+
+        // Height adjustment for iframe
+        function sendHeight() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'setHeight',
+                    height: document.body.scrollHeight
+                }, '*');
+            }
+        }
+        
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        
+        const observer = new ResizeObserver(sendHeight);
+        observer.observe(document.body);
+    </script>
+</body>
+</html>

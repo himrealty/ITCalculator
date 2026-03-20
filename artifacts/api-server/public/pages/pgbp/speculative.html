@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speculative Business · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: transparent;
+            padding: 0;
+        }
+        
+        .module-content {
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .spec-badge {
+            display: inline-block;
+            background: #dd6b20;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: #fff3e0;
+            border-left: 4px solid #dd6b20;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #7b341e;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box.warning {
+            background: #fff3e0;
+            border-left-color: #ed8936;
+        }
+        
+        .info-box.success {
+            background: #f0fff4;
+            border-left-color: #48bb78;
+        }
+        
+        .info-box.blue {
+            background: #e6f6ff;
+            border-left-color: #3182ce;
+            color: #1e4a6b;
+        }
+        
+        .info-box.purple {
+            background: #f3e8ff;
+            border-left-color: #805ad5;
+            color: #44337a;
+        }
+        
+        .transaction-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .type-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .type-tab:hover {
+            border-color: #dd6b20;
+            background: #fff3e0;
+        }
+        
+        .type-tab.active {
+            background: #dd6b20;
+            border-color: #dd6b20;
+            color: white;
+        }
+        
+        .type-tab .icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .type-tab .label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .type-tab .sub {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card.speculative {
+            background: linear-gradient(135deg, #7b341e, #9b4f2b);
+        }
+        
+        .stat-card.nonspec {
+            background: linear-gradient(135deg, #1e4a6b, #2c5282);
+        }
+        
+        .stat-card.total {
+            background: linear-gradient(135deg, #22543d, #276749);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-value.positive {
+            color: #68d391;
+        }
+        
+        .stat-value.negative {
+            color: #fc8181;
+        }
+        
+        .transactions-section {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .section-header h3.spec {
+            color: #dd6b20;
+        }
+        
+        .section-header h3.nonspec {
+            color: #3182ce;
+        }
+        
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .transaction-table th {
+            background: #edf2f7;
+            padding: 12px 8px;
+            font-size: 0.8rem;
+            text-align: left;
+            color: #4a5568;
+        }
+        
+        .transaction-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .transaction-table input, .transaction-table select {
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .transaction-table input:focus, .transaction-table select:focus {
+            outline: none;
+            border-color: #dd6b20;
+        }
+        
+        .transaction-table .profit {
+            color: #48bb78;
+            font-weight: 600;
+        }
+        
+        .transaction-table .loss {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+        
+        .add-transaction-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        
+        .add-transaction-btn:hover {
+            background: #38a169;
+        }
+        
+        .remove-transaction {
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+        }
+        
+        .rule-box {
+            background: #fff3e0;
+            border: 1px solid #fbd38d;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .rule-title {
+            font-weight: 700;
+            color: #7b341e;
+            margin-bottom: 8px;
+        }
+        
+        .rule-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .rule-list li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+        
+        .rule-list li:before {
+            content: "•";
+            color: #dd6b20;
+            font-weight: bold;
+            position: absolute;
+            left: 5px;
+        }
+        
+        .carry-forward-box {
+            background: #e6f6ff;
+            border: 1px solid #90cdf4;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px 10px 28px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #dd6b20;
+            box-shadow: 0 0 0 3px rgba(221, 107, 32, 0.1);
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #7b341e 0%, #9b4f2b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .result-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-calculate {
+            background: #dd6b20;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            width: 100%;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+        
+        .btn-calculate:hover {
+            background: #c05621;
+        }
+        
+        .loss-note {
+            background: #fed7d7;
+            border: 1px solid #fc8181;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            color: #c53030;
+        }
+        
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 640px) {
+            .transaction-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .type-tab {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="module-content">
+        <!-- Info Section -->
+        <div class="info-box">
+            <strong>📈 Speculative Business Income</strong><br>
+            Covers speculative transactions, derivatives (F&O), commodities, and intra-day trading.
+            Special rules apply for set-off and carry forward of losses.
+        </div>
+
+        <!-- Transaction Type Selector -->
+        <div class="transaction-type-tabs">
+            <div class="type-tab active" onclick="switchTransactionType('speculative')">
+                <div class="icon">📊</div>
+                <div class="label">Speculative</div>
+                <div class="sub">Intra-day, Commodities</div>
+            </div>
+            <div class="type-tab" onclick="switchTransactionType('nonspeculative')">
+                <div class="icon">📈</div>
+                <div class="label">Non-Speculative</div>
+                <div class="sub">F&O, Derivatives, Currency</div>
+            </div>
+            <div class="type-tab" onclick="switchTransactionType('both')">
+                <div class="icon">🔄</div>
+                <div class="label">Both Types</div>
+                <div class="sub">Show separate sections</div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="summary-stats" id="summaryStats">
+            <div class="stat-card speculative">
+                <div class="stat-label">Speculative P/L</div>
+                <div class="stat-value" id="speculativePL">₹0</div>
+            </div>
+            <div class="stat-card nonspec">
+                <div class="stat-label">Non-Speculative P/L</div>
+                <div class="stat-value" id="nonspeculativePL">₹0</div>
+            </div>
+            <div class="stat-card total">
+                <div class="stat-label">Net P/L</div>
+                <div class="stat-value" id="netPL">₹0</div>
+            </div>
+        </div>
+
+        <!-- Rules Box -->
+        <div class="rule-box">
+            <div class="rule-title">📋 Important Rules for Speculative Business:</div>
+            <ul class="rule-list">
+                <li><strong>Speculative losses</strong> can ONLY be set off against speculative profits</li>
+                <li><strong>Non-speculative losses</strong> (F&O) can be set off against any business income</li>
+                <li>Both types can be carried forward for <strong>4 assessment years</strong></li>
+                <li>Speculative: Intra-day equity, commodity futures, etc.</li>
+                <li>Non-Speculative: F&O, currency derivatives, etc. (treated as business income)</li>
+            </ul>
+        </div>
+
+        <!-- SPECULATIVE TRANSACTIONS SECTION -->
+        <div class="transactions-section" id="speculativeSection">
+            <div class="section-header">
+                <h3 class="spec">📊 Speculative Transactions (Intra-day, Commodities)</h3>
+                <span class="spec-badge">Can only set off against speculative profits</span>
+            </div>
+
+            <table class="transaction-table" id="speculativeTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Instrument/Commodity</th>
+                        <th>Buy Value (₹)</th>
+                        <th>Sell Value (₹)</th>
+                        <th>Brokerage/Charges</th>
+                        <th>Profit/Loss</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="speculativeBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <button class="add-transaction-btn" onclick="addSpeculativeTransaction()">+ Add Speculative Transaction</button>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Brought Forward Speculative Loss (from earlier years)</label>
+                <div class="hint">Losses from earlier years (can be carried forward for 4 years)</div>
+                <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="bfSpeculativeLoss" placeholder="e.g. 50000" oninput="calculateSpeculative()">
+                </div>
+            </div>
+        </div>
+
+        <!-- NON-SPECULATIVE TRANSACTIONS SECTION -->
+        <div class="transactions-section" id="nonspeculativeSection">
+            <div class="section-header">
+                <h3 class="nonspec">📈 Non-Speculative (F&O, Derivatives, Currency)</h3>
+                <span class="spec-badge" style="background:#3182ce;">Can set off against any business income</span>
+            </div>
+
+            <table class="transaction-table" id="nonspeculativeTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Contract/Instrument</th>
+                        <th>Buy/Entry Value</th>
+                        <th>Sell/Exit Value</th>
+                        <th>Brokerage/STT</th>
+                        <th>Profit/Loss</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="nonspeculativeBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <button class="add-transaction-btn" onclick="addNonspeculativeTransaction()">+ Add F&O/Derivative Transaction</button>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Brought Forward Non-Speculative Loss (from earlier years)</label>
+                <div class="hint">F&O/derivative losses from earlier years (4 year carry forward)</div>
+                <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="bfNonspeculativeLoss" placeholder="e.g. 75000" oninput="calculateSpeculative()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Income/Expenses -->
+        <div class="transactions-section">
+            <div class="section-header">
+                <h3>💰 Other Income & Expenses (related to trading)</h3>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>Interest on Trading Capital</label>
+                    <div class="hint">Interest from trading accounts</div>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="otherIncome" placeholder="e.g. 15000" oninput="calculateSpeculative()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Trading Expenses</label>
+                    <div class="hint">Terminal charges, software, data feeds</div>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="tradingExpenses" placeholder="e.g. 25000" oninput="calculateSpeculative()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button class="btn-calculate" onclick="calculateSpeculative()">Calculate Speculative Business Income</button>
+
+        <!-- Results -->
+        <div class="result-box" id="resultBox" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Speculative P/L:</span>
+                <span class="result-value" id="resultSpeculative">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Less: B/F Speculative Loss:</span>
+                <span class="result-value" id="resultSpecLossSetoff">- ₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Net Speculative Income:</span>
+                <span class="result-value" id="resultNetSpeculative">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Non-Speculative P/L:</span>
+                <span class="result-value" id="resultNonspeculative">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Less: B/F Non-Spec Loss:</span>
+                <span class="result-value" id="resultNonSpecLossSetoff">- ₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Add: Other Income:</span>
+                <span class="result-value" id="resultOtherIncome">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Less: Trading Expenses:</span>
+                <span class="result-value" id="resultExpenses">- ₹0</span>
+            </div>
+            <div class="result-row result-total">
+                <span class="result-label">Total Speculative Business Income:</span>
+                <span class="result-value" id="resultTotal">₹0</span>
+            </div>
+        </div>
+
+        <!-- Loss Carry Forward Note -->
+        <div class="loss-note" id="lossNote" style="display: none;">
+            <strong>⚠️ Losses to Carry Forward:</strong><br>
+            <span id="lossCarrySpec">Speculative Loss: ₹0</span><br>
+            <span id="lossCarryNonSpec">Non-Speculative Loss: ₹0</span><br>
+            <small>Can be carried forward for 4 assessment years</small>
+        </div>
+        
+        <div class="disclaimer">
+            * Speculative and Non-Speculative transactions have different set-off rules. 
+            Consult a CA for accurate tax treatment of your trading activities.
+        </div>
+    </div>
+
+    <script>
+        let speculativeTransactions = [];
+        let nonspeculativeTransactions = [];
+        let transCounter = 0;
+        let currentView = 'speculative';
+
+        // Initialize with sample transactions
+        window.addEventListener('load', function() {
+            addSpeculativeTransaction();
+            addNonspeculativeTransaction();
+        });
+
+        function switchTransactionType(type) {
+            currentView = type;
+            
+            // Update tabs
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.type-tab').classList.add('active');
+            
+            // Show/hide sections
+            const specSection = document.getElementById('speculativeSection');
+            const nonspecSection = document.getElementById('nonspeculativeSection');
+            
+            if (type === 'speculative') {
+                specSection.style.display = 'block';
+                nonspecSection.style.display = 'none';
+            } else if (type === 'nonspeculative') {
+                specSection.style.display = 'none';
+                nonspecSection.style.display = 'block';
+            } else {
+                specSection.style.display = 'block';
+                nonspecSection.style.display = 'block';
+            }
+        }
+
+        function addSpeculativeTransaction() {
+            const id = ++transCounter;
+            speculativeTransactions.push({
+                id: id,
+                date: new Date().toISOString().split('T')[0],
+                instrument: '',
+                buyValue: 0,
+                sellValue: 0,
+                brokerage: 0
+            });
+            renderSpeculativeTransactions();
+            calculateSpeculative();
+        }
+
+        function addNonspeculativeTransaction() {
+            const id = ++transCounter;
+            nonspeculativeTransactions.push({
+                id: id,
+                date: new Date().toISOString().split('T')[0],
+                instrument: '',
+                buyValue: 0,
+                sellValue: 0,
+                brokerage: 0
+            });
+            renderNonspeculativeTransactions();
+            calculateSpeculative();
+        }
+
+        function removeSpeculativeTransaction(id) {
+            speculativeTransactions = speculativeTransactions.filter(t => t.id !== id);
+            renderSpeculativeTransactions();
+            calculateSpeculative();
+        }
+
+        function removeNonspeculativeTransaction(id) {
+            nonspeculativeTransactions = nonspeculativeTransactions.filter(t => t.id !== id);
+            renderNonspeculativeTransactions();
+            calculateSpeculative();
+        }
+
+        function updateSpeculativeTransaction(id, field, value) {
+            const transaction = speculativeTransactions.find(t => t.id === id);
+            if (transaction) {
+                if (field === 'date') {
+                    transaction.date = value;
+                } else if (field === 'instrument') {
+                    transaction.instrument = value;
+                } else {
+                    transaction[field] = parseFloat(value) || 0;
+                }
+            }
+            calculateSpeculative();
+        }
+
+        function updateNonspeculativeTransaction(id, field, value) {
+            const transaction = nonspeculativeTransactions.find(t => t.id === id);
+            if (transaction) {
+                if (field === 'date') {
+                    transaction.date = value;
+                } else if (field === 'instrument') {
+                    transaction.instrument = value;
+                } else {
+                    transaction[field] = parseFloat(value) || 0;
+                }
+            }
+            calculateSpeculative();
+        }
+
+        function renderSpeculativeTransactions() {
+            const tbody = document.getElementById('speculativeBody');
+            tbody.innerHTML = '';
+            
+            speculativeTransactions.forEach(transaction => {
+                const row = tbody.insertRow();
+                const profitLoss = (transaction.sellValue || 0) - (transaction.buyValue || 0) - (transaction.brokerage || 0);
+                const plClass = profitLoss >= 0 ? 'profit' : 'loss';
+                
+                row.innerHTML = `
+                    <td><input type="date" value="${transaction.date}" onchange="updateSpeculativeTransaction(${transaction.id}, 'date', this.value)"></td>
+                    <td><input type="text" value="${transaction.instrument}" placeholder="e.g., RELIANCE" onchange="updateSpeculativeTransaction(${transaction.id}, 'instrument', this.value)"></td>
+                    <td><input type="number" value="${transaction.buyValue}" placeholder="Buy value" onchange="updateSpeculativeTransaction(${transaction.id}, 'buyValue', this.value)"></td>
+                    <td><input type="number" value="${transaction.sellValue}" placeholder="Sell value" onchange="updateSpeculativeTransaction(${transaction.id}, 'sellValue', this.value)"></td>
+                    <td><input type="number" value="${transaction.brokerage}" placeholder="Brokerage" onchange="updateSpeculativeTransaction(${transaction.id}, 'brokerage', this.value)"></td>
+                    <td class="${plClass}">₹${Math.abs(profitLoss).toLocaleString('en-IN')} ${profitLoss >= 0 ? 'P' : 'L'}</td>
+                    <td><span class="remove-transaction" onclick="removeSpeculativeTransaction(${transaction.id})">✕</span></td>
+                `;
+            });
+        }
+
+        function renderNonspeculativeTransactions() {
+            const tbody = document.getElementById('nonspeculativeBody');
+            tbody.innerHTML = '';
+            
+            nonspeculativeTransactions.forEach(transaction => {
+                const row = tbody.insertRow();
+                const profitLoss = (transaction.sellValue || 0) - (transaction.buyValue || 0) - (transaction.brokerage || 0);
+                const plClass = profitLoss >= 0 ? 'profit' : 'loss';
+                
+                row.innerHTML = `
+                    <td><input type="date" value="${transaction.date}" onchange="updateNonspeculativeTransaction(${transaction.id}, 'date', this.value)"></td>
+                    <td><input type="text" value="${transaction.instrument}" placeholder="e.g., NIFTY 28MAR FUT" onchange="updateNonspeculativeTransaction(${transaction.id}, 'instrument', this.value)"></td>
+                    <td><input type="number" value="${transaction.buyValue}" placeholder="Buy/Entry value" onchange="updateNonspeculativeTransaction(${transaction.id}, 'buyValue', this.value)"></td>
+                    <td><input type="number" value="${transaction.sellValue}" placeholder="Sell/Exit value" onchange="updateNonspeculativeTransaction(${transaction.id}, 'sellValue', this.value)"></td>
+                    <td><input type="number" value="${transaction.brokerage}" placeholder="Brokerage+STT" onchange="updateNonspeculativeTransaction(${transaction.id}, 'brokerage', this.value)"></td>
+                    <td class="${plClass}">₹${Math.abs(profitLoss).toLocaleString('en-IN')} ${profitLoss >= 0 ? 'P' : 'L'}</td>
+                    <td><span class="remove-transaction" onclick="removeNonspeculativeTransaction(${transaction.id})">✕</span></td>
+                `;
+            });
+        }
+
+        function calculateSpeculative() {
+            // Calculate speculative P/L
+            let speculativePL = speculativeTransactions.reduce((sum, t) => {
+                return sum + (t.sellValue || 0) - (t.buyValue || 0) - (t.brokerage || 0);
+            }, 0);
+
+            // Calculate non-speculative P/L
+            let nonspeculativePL = nonspeculativeTransactions.reduce((sum, t) => {
+                return sum + (t.sellValue || 0) - (t.buyValue || 0) - (t.brokerage || 0);
+            }, 0);
+
+            // Get brought forward losses
+            const bfSpecLoss = parseFloat(document.getElementById('bfSpeculativeLoss').value) || 0;
+            const bfNonSpecLoss = parseFloat(document.getElementById('bfNonspeculativeLoss').value) || 0;
+
+            // Get other income/expenses
+            const otherIncome = parseFloat(document.getElementById('otherIncome').value) || 0;
+            const tradingExpenses = parseFloat(document.getElementById('tradingExpenses').value) || 0;
+
+            // Apply loss set-off rules
+            let specLossSetoff = 0;
+            let netSpeculative = speculativePL;
+            
+            if (speculativePL > 0 && bfSpecLoss > 0) {
+                specLossSetoff = Math.min(speculativePL, bfSpecLoss);
+                netSpeculative = speculativePL - specLossSetoff;
+            }
+
+            let nonSpecLossSetoff = 0;
+            let netNonspeculative = nonspeculativePL;
+            
+            if (nonspeculativePL > 0 && bfNonSpecLoss > 0) {
+                nonSpecLossSetoff = Math.min(nonspeculativePL, bfNonSpecLoss);
+                netNonspeculative = nonspeculativePL - nonSpecLossSetoff;
+            }
+
+            // Calculate total (Note: speculative and non-speculative cannot be set off against each other)
+            const totalIncome = netSpeculative + netNonspeculative + otherIncome - tradingExpenses;
+
+            // Update summary stats
+            document.getElementById('speculativePL').textContent = '₹' + speculativePL.toLocaleString('en-IN');
+            document.getElementById('speculativePL').className = 'stat-value ' + (speculativePL >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('nonspeculativePL').textContent = '₹' + nonspeculativePL.toLocaleString('en-IN');
+            document.getElementById('nonspeculativePL').className = 'stat-value ' + (nonspeculativePL >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('netPL').textContent = '₹' + totalIncome.toLocaleString('en-IN');
+            document.getElementById('netPL').className = 'stat-value ' + (totalIncome >= 0 ? 'positive' : 'negative');
+
+            // Update detailed results
+            document.getElementById('resultSpeculative').textContent = '₹' + speculativePL.toLocaleString('en-IN');
+            document.getElementById('resultSpecLossSetoff').textContent = '- ₹' + specLossSetoff.toLocaleString('en-IN');
+            document.getElementById('resultNetSpeculative').textContent = '₹' + netSpeculative.toLocaleString('en-IN');
+            
+            document.getElementById('resultNonspeculative').textContent = '₹' + nonspeculativePL.toLocaleString('en-IN');
+            document.getElementById('resultNonSpecLossSetoff').textContent = '- ₹' + nonSpecLossSetoff.toLocaleString('en-IN');
+            
+            document.getElementById('resultOtherIncome').textContent = '₹' + otherIncome.toLocaleString('en-IN');
+            document.getElementById('resultExpenses').textContent = '- ₹' + tradingExpenses.toLocaleString('en-IN');
+            document.getElementById('resultTotal').textContent = '₹' + totalIncome.toLocaleString('en-IN');
+
+            document.getElementById('resultBox').style.display = 'block';
+
+            // Calculate losses to carry forward
+            const specLossToCarry = Math.max(0, speculativePL < 0 ? Math.abs(speculativePL) : 
+                                          (bfSpecLoss - specLossSetoff > 0 ? bfSpecLoss - specLossSetoff : 0));
+            
+            const nonSpecLossToCarry = Math.max(0, nonspeculativePL < 0 ? Math.abs(nonspeculativePL) : 
+                                             (bfNonSpecLoss - nonSpecLossSetoff > 0 ? bfNonSpecLoss - nonSpecLossSetoff : 0));
+
+            if (specLossToCarry > 0 || nonSpecLossToCarry > 0) {
+                document.getElementById('lossNote').style.display = 'block';
+                document.getElementById('lossCarrySpec').innerHTML = `Speculative Loss: ₹${specLossToCarry.toLocaleString('en-IN')}`;
+                document.getElementById('lossCarryNonSpec').innerHTML = `Non-Speculative Loss: ₹${nonSpecLossToCarry.toLocaleString('en-IN')}`;
+            } else {
+                document.getElementById('lossNote').style.display = 'none';
+            }
+
+            // Send result to parent (use net income for total PGBP)
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'PGBP_RESULT',
+                    moduleId: 'speculative',
+                    amount: totalIncome
+                }, '*');
+            }
+        }
+
+        // Height adjustment for iframe
+        function sendHeight() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'setHeight',
+                    height: document.body.scrollHeight
+                }, '*');
+            }
+        }
+        
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        
+        const observer = new ResizeObserver(sendHeight);
+        observer.observe(document.body);
+    </script>
+</body>
+</html>

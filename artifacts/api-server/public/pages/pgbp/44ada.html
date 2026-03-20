@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>44ADA Presumptive Profession · ITCalculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: transparent;
+            padding: 0;
+        }
+        
+        .module-content {
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .profession-badge {
+            display: inline-block;
+            background: #9f7aea;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: #e8f0fe;
+            border-left: 4px solid #9f7aea;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box.warning {
+            background: #fff3e0;
+            border-left-color: #ed8936;
+        }
+        
+        .info-box.success {
+            background: #f0fff4;
+            border-left-color: #48bb78;
+        }
+        
+        .profession-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .profession-chip {
+            background: #f7fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        
+        .profession-chip:hover {
+            border-color: #9f7aea;
+            background: #faf5ff;
+        }
+        
+        .profession-chip.selected {
+            background: #9f7aea;
+            border-color: #9f7aea;
+            color: white;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+        
+        .hint {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px 10px 28px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #9f7aea;
+            box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.1);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: auto;
+            padding: 0;
+            accent-color: #9f7aea;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #9f7aea 0%, #6b46c1 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .result-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .expandable-section {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .expandable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .expandable-header h4 {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .expandable-content {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .expandable-content.show {
+            display: block;
+        }
+        
+        .btn-calculate {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            width: 100%;
+            font-size: 1rem;
+            margin-top: 16px;
+        }
+        
+        .btn-calculate:hover {
+            background: #38a169;
+        }
+        
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="module-content">
+        <!-- Profession Type Selector -->
+        <div class="info-box">
+            <strong>Section 44ADA – Presumptive Taxation for Professionals</strong><br>
+            For specified professions with gross receipts up to ₹50 Lakhs. 
+            <strong>50% of gross receipts</strong> is deemed as profit. No need to maintain books.
+        </div>
+        
+        <div class="profession-badge">Select Your Profession</div>
+        <div class="profession-grid" id="professionGrid">
+            <div class="profession-chip selected" data-profession="medical" onclick="selectProfession(this, 'medical')">👨‍⚕️ Medical</div>
+            <div class="profession-chip" data-profession="legal" onclick="selectProfession(this, 'legal')">⚖️ Legal</div>
+            <div class="profession-chip" data-profession="ca" onclick="selectProfession(this, 'ca')">📊 Chartered Accountant</div>
+            <div class="profession-chip" data-profession="architect" onclick="selectProfession(this, 'architect')">🏛️ Architect</div>
+            <div class="profession-chip" data-profession="engineer" onclick="selectProfession(this, 'engineer')">⚙️ Engineer</div>
+            <div class="profession-chip" data-profession="designer" onclick="selectProfession(this, 'designer')">🎨 Interior Designer</div>
+            <div class="profession-chip" data-profession="consultant" onclick="selectProfession(this, 'consultant')">💼 Consultant</div>
+            <div class="profession-chip" data-profession="other" onclick="selectProfession(this, 'other')">📋 Other Specified</div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label>Gross Receipts / Professional Fees for FY 2024-25</label>
+                <div class="hint">Total fees received before any expenses</div>
+                <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="grossReceipts" placeholder="e.g. 2500000" oninput="calculateTax()">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Payment Mode for Receipts</label>
+                <div class="hint">How did you receive payments?</div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="paymentMode44ada" value="mixed" checked onchange="calculateTax()">
+                        <span>Mixed (Cash & Digital)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="paymentMode44ada" value="mostlyDigital" onchange="calculateTax()">
+                        <span>Mostly Digital (≥95%)</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>First time opting for presumptive?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="firstTime" value="yes" checked onchange="calculateTax()">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="firstTime" value="no" onchange="calculateTax()">
+                        <span>No</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expandable Section for Actual Expenses (Optional) -->
+        <div class="expandable-section">
+            <div class="expandable-header" onclick="toggleExpandable()">
+                <h4>📋 I want to declare actual expenses (Optional)</h4>
+                <span id="expandIcon">▼</span>
+            </div>
+            <div class="expandable-content" id="expandableContent">
+                <div class="info-box success" style="margin-top: 10px;">
+                    <strong>Note:</strong> Under 44ADA, you can declare higher profit than 50% if your actual expenses are lower. 
+                    But you cannot declare lower than 50% (except in first year if gross receipts ≤ ₹50L).
+                </div>
+                <div class="form-group">
+                    <label>Actual Professional Expenses Incurred</label>
+                    <div class="hint">Office rent, staff salary, equipment, etc.</div>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="actualExpenses" placeholder="e.g. 800000" oninput="calculateTax()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Depreciation on Assets</label>
+                    <div class="hint">Computers, furniture, equipment depreciation</div>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">₹</span>
+                        <input type="number" id="depreciation" placeholder="e.g. 50000" oninput="calculateTax()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button class="btn-calculate" onclick="calculateTax()">Calculate Professional Income</button>
+
+        <!-- Results -->
+        <div class="result-box" id="resultBox" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Gross Receipts:</span>
+                <span class="result-value" id="displayReceipts">₹0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Presumptive Rate:</span>
+                <span class="result-value" id="displayRate">50%</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Presumptive Income:</span>
+                <span class="result-value" id="presumptiveIncome">₹0</span>
+            </div>
+            <div class="result-row" id="actualExpensesRow" style="display: none;">
+                <span class="result-label">Actual Expenses:</span>
+                <span class="result-value" id="displayActualExpenses">₹0</span>
+            </div>
+            <div class="result-row result-total">
+                <span class="result-label">Net Professional Income:</span>
+                <span class="result-value" id="netIncome">₹0</span>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            * For specified professions under 44ADA: Medical, Legal, CA, Architect, Engineer, Interior Designer, Consultant, etc.
+            If actual profit is higher than 50%, you must declare actual profit.
+        </div>
+    </div>
+
+    <script>
+        let selectedProfession = 'medical';
+        
+        function selectProfession(element, profession) {
+            // Remove selected class from all chips
+            document.querySelectorAll('.profession-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            // Add selected class to clicked chip
+            element.classList.add('selected');
+            selectedProfession = profession;
+            calculateTax();
+        }
+        
+        function toggleExpandable() {
+            const content = document.getElementById('expandableContent');
+            const icon = document.getElementById('expandIcon');
+            content.classList.toggle('show');
+            icon.textContent = content.classList.contains('show') ? '▲' : '▼';
+        }
+        
+        function calculateTax() {
+            const grossReceipts = parseFloat(document.getElementById('grossReceipts').value) || 0;
+            const paymentMode = document.querySelector('input[name="paymentMode44ada"]:checked').value;
+            const firstTime = document.querySelector('input[name="firstTime"]:checked').value;
+            const actualExpenses = parseFloat(document.getElementById('actualExpenses').value) || 0;
+            const depreciation = parseFloat(document.getElementById('depreciation').value) || 0;
+            const totalActualExpenses = actualExpenses + depreciation;
+            
+            // Calculate presumptive income (50% of gross receipts)
+            let presumptiveIncome = grossReceipts * 0.5;
+            
+            // Check if actual expenses are entered and calculate actual profit
+            let actualProfit = grossReceipts - totalActualExpenses;
+            
+            // Determine which income to use
+            let netIncome;
+            let usingActual = false;
+            
+            if (totalActualExpenses > 0) {
+                // If actual profit is higher than presumptive, must use actual
+                if (actualProfit > presumptiveIncome) {
+                    netIncome = actualProfit;
+                    usingActual = true;
+                } else {
+                    // Can choose to declare higher than 50% but not lower (except first year)
+                    if (firstTime === 'yes' && grossReceipts <= 5000000) {
+                        // First year special: can declare lower than 50% if actual is lower
+                        netIncome = Math.min(presumptiveIncome, actualProfit);
+                        usingActual = true;
+                    } else {
+                        netIncome = presumptiveIncome;
+                    }
+                }
+            } else {
+                netIncome = presumptiveIncome;
+            }
+            
+            // Update display
+            document.getElementById('displayReceipts').textContent = '₹' + grossReceipts.toLocaleString('en-IN');
+            document.getElementById('presumptiveIncome').textContent = '₹' + presumptiveIncome.toLocaleString('en-IN');
+            document.getElementById('netIncome').textContent = '₹' + netIncome.toLocaleString('en-IN');
+            
+            // Show/hide actual expenses row
+            const actualRow = document.getElementById('actualExpensesRow');
+            if (totalActualExpenses > 0) {
+                actualRow.style.display = 'flex';
+                document.getElementById('displayActualExpenses').textContent = '₹' + totalActualExpenses.toLocaleString('en-IN');
+            } else {
+                actualRow.style.display = 'none';
+            }
+            
+            // Show result box
+            document.getElementById('resultBox').style.display = 'block';
+            
+            // Add note about calculation method
+            const rateDisplay = document.getElementById('displayRate');
+            if (usingActual) {
+                rateDisplay.textContent = 'Actual Profit (higher)';
+            } else {
+                rateDisplay.textContent = '50% (Presumptive)';
+            }
+            
+            // Send result to parent
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'PGBP_RESULT',
+                    moduleId: 'profession-44ada',
+                    amount: netIncome
+                }, '*');
+            }
+        }
+        
+        // Auto-calculate if values exist on load
+        window.addEventListener('load', function() {
+            if (document.getElementById('grossReceipts').value) {
+                calculateTax();
+            }
+        });
+        
+        // Height adjustment for iframe
+        function sendHeight() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'setHeight',
+                    height: document.body.scrollHeight
+                }, '*');
+            }
+        }
+        
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        
+        const observer = new ResizeObserver(sendHeight);
+        observer.observe(document.body);
+    </script>
+</body>
+</html>

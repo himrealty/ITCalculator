@@ -1,0 +1,196 @@
+<!-- /public/pages/pgbp.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Business & Profession Income · ITCalculator</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/style.css" />
+        <style>
+            /* Additional styles specific to PGBP container */
+            .module-container {
+                margin-top: 20px;
+            }
+
+            .module-card {
+                background: white;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                padding: 20px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .module-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .module-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .module-result {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #667eea;
+            }
+
+            .module-iframe {
+                width: 100%;
+                border: none;
+                transition: height 0.3s ease;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 40px;
+                background: #f9f9f9;
+                border-radius: 12px;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header"></div>
+
+        <div class="container">
+            <!-- Hero Section -->
+            <div class="hero-section fade-in">
+                <h1 class="hero-title">Business & Profession Income</h1>
+                <p class="hero-subtitle">
+                    Select the types of business or professional income you
+                    have. Each section will load its own calculator.
+                </p>
+            </div>
+
+            <!-- Section Selector Grid -->
+            <div class="section-selector">
+                <h3>Select your income types:</h3>
+                <div class="heads-grid" id="moduleSelector">
+                    <!-- Business Section -->
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="business-regular"
+                    >
+                        <div class="head-icon">🏢</div>
+                        <h4>Regular Business</h4>
+                        <p>
+                            For businesses with books of accounts - full P&L,
+                            expenses & depreciation
+                        </p>
+                    </div>
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="business-44ad"
+                    >
+                        <div class="head-icon">📊</div>
+                        <h4>Presumptive Business (44AD)</h4>
+                        <p>Turnover based scheme for small businesses</p>
+                    </div>
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="business-44ae"
+                    >
+                        <div class="head-icon">🚛</div>
+                        <h4>Transport Business (44AE)</h4>
+                        <p>Per vehicle income scheme</p>
+                    </div>
+
+                    <!-- Profession Section -->
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="profession-regular"
+                    >
+                        <div class="head-icon">👨‍⚕️</div>
+                        <h4>Regular Profession</h4>
+                        <p>Professionals maintaining books</p>
+                    </div>
+
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="profession-44ada"
+                    >
+                        <div class="head-icon">⚕️</div>
+                        <h4>Presumptive Profession (44ADA)</h4>
+                        <p>
+                            For specified professions like doctor, lawyer,
+                            architect
+                        </p>
+                    </div>
+
+                    <!-- Speculative Section -->
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="speculative"
+                    >
+                        <div class="head-icon">📈</div>
+                        <h4>Speculative Business</h4>
+                        <p>Trading, derivatives, speculative transactions</p>
+                    </div>
+
+                    <!-- Other Income -->
+                    <div
+                        class="head-card module-checkbox"
+                        data-module="other-business"
+                    >
+                        <div class="head-icon">💰</div>
+                        <h4>Other Business Income</h4>
+                        <p>Interest, rent from business assets, etc.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Module Container -->
+            <div id="modulesContainer" class="module-container">
+                <div class="empty-state">
+                    <span style="font-size: 3rem">📋</span>
+                    <p>
+                        Select any business or profession type above to start
+                        calculating
+                    </p>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-area" id="resultsPanel" style="display: none">
+                <h3>PGBP Income Summary</h3>
+                <div id="modulesSummary"></div>
+                <div class="result-item result-total">
+                    <span class="result-label">Total PGBP Income:</span>
+                    <span class="result-value" id="totalPGBP">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+
+        <script src="/js/pgbp-loader.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("/components/header.html")
+                    .then((r) => r.text())
+                    .then(
+                        (d) =>
+                            (document.getElementById("header").innerHTML = d),
+                    );
+                fetch("/components/footer.html")
+                    .then((r) => r.text())
+                    .then(
+                        (d) =>
+                            (document.getElementById("footer").innerHTML = d),
+                    );
+            });
+        </script>
+    </body>
+</html>
